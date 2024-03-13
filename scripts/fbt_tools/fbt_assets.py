@@ -94,6 +94,7 @@ def _proto_ver_generator(target, source, env):
 
     def describe():
         try:
+            return "0.0" #!TODO
             return __invoke_git(
                 ["describe", "--tags", "--abbrev=0"],
                 source_dir=src_dir,

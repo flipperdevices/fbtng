@@ -16,8 +16,8 @@ assetsenv.Alias("icons", icons)
 
 
 # Protobuf .proto -> .c + .h
-proto_src = assetsenv.Glob("protobuf/*.proto", source=True)
-proto_options = assetsenv.Glob("protobuf/*.options", source=True)
+proto_src = assetsenv.Glob("protobuf_tmp/*.proto", source=True)
+proto_options = assetsenv.Glob("protobuf_tmp/*.options", source=True)
 proto = assetsenv.ProtoBuilder(assetsenv["ASSETS_WORK_DIR"], proto_src)
 assetsenv.Depends(proto, proto_options)
 # Precious(proto)
@@ -47,7 +47,7 @@ assetsenv.Alias("dolphin_blocking", dolphin_blocking)
 # Protobuf version meta
 proto_ver = assetsenv.ProtoVerBuilder(
     "${ASSETS_WORK_DIR}/protobuf_version.h",
-    assetsenv["ASSETS_SRC_DIR"].File("protobuf/Changelog"),
+    assetsenv["ASSETS_SRC_DIR"].File("protobuf_tmp/Changelog"),
 )
 assetsenv.Depends(proto_ver, proto)
 assetsenv.Alias("proto_ver", proto_ver)

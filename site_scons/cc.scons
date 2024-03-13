@@ -40,7 +40,7 @@ ENV.AppendUnique(
         *GetOption("extra_defines"),
     ],
     LINKFLAGS=[
-        "-mcpu=cortex-m4",
+        "-mcpu=cortex-m33",
         "-mfloat-abi=hard",
         "-mfpu=fpv4-sp-d16",
         "-mlittle-endian",

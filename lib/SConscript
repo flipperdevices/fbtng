@@ -5,12 +5,15 @@ env.Append(
     CPPPATH=[
         "#/",
         "#/lib",
+        # Ugly hack
+        Dir("../assets/compiled"),
     ],
 )
 
 
 libs = env.BuildModules(
     [
+        "stm32u5",
     ],
 )
 

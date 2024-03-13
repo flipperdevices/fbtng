@@ -1,0 +1,17 @@
+Import("env")
+
+env.Append(
+    CPPDEFINES=[
+        "STM32U5G9xx",
+        "USE_HAL_DRIVER",
+    ],
+)
+
+libenv = env.Clone(FW_LIB_NAME="stm32u5")
+libenv.ApplyLibFlags()
+
+sources = []
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

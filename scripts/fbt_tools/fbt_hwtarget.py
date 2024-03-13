@@ -17,6 +17,7 @@ class HardwareTargetLoader:
         self.linker_script_app = None
         self.sdk_symbols = None
         self.linker_dependencies = []
+        self.included_sources = []
         self.excluded_sources = []
         self.excluded_headers = []
         self.excluded_modules = []
@@ -47,6 +48,7 @@ class HardwareTargetLoader:
                 target_dir.Dir(p) for p in config.get(path_list, [])
             )
 
+        self.included_sources.extend(config.get("included_sources", []))
         self.excluded_sources.extend(config.get("excluded_sources", []))
         self.excluded_headers.extend(config.get("excluded_headers", []))
         self.excluded_modules.extend(config.get("excluded_modules", []))
@@ -77,6 +79,11 @@ class HardwareTargetLoader:
 
     def gatherSources(self):
         sources = [self.startup_script]
+        if self.included_sources:
+            return sources + list(
+                self.target_dir.File(p) for p in self.included_sources
+            )
+
         seen_filenames = set(self.excluded_sources)
         # print("Layers: ", self.layered_target_dirs)
         for target_dir in self.layered_target_dirs:

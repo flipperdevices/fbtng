@@ -6,11 +6,16 @@ env.Append(
 
 libenv = env.Clone(FW_LIB_NAME="flipper${TARGET_HW}")
 libenv.ApplyLibFlags()
-
+libenv.Append(
+    CFLAGS=[
+        "-Wno-unused-parameter",
+    ],
+)
 
 lib = libenv.StaticLibrary(
     "${FW_LIB_NAME}",
     env.get("TARGET_CFG").gatherSources(),
 )
 libenv.Install("${LIB_DIST_DIR}", lib)
+print(lib)
 Return("lib")
