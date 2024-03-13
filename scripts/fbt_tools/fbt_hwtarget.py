@@ -81,7 +81,7 @@ class HardwareTargetLoader:
         sources = [self.startup_script]
         if self.included_sources:
             return sources + list(
-                self.target_dir.File(p) for p in self.included_sources
+                self.target_dir.File(p).get_path(self.all_targets_root_dir) for p in self.included_sources
             )
 
         seen_filenames = set(self.excluded_sources)

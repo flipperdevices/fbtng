@@ -252,6 +252,7 @@ fw_artifacts.extend(
     ]
 )
 
+fwenv.Default(fw_artifacts)
 
 fwcdb = fwenv["FW_CDB"] = fwenv.CompilationDatabase()
 # without filtering, both updater & firmware commands would be generated in same file
