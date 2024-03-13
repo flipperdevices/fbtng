@@ -1,0 +1,153 @@
+# Commandline options
+
+AddOption(
+    "--options",
+    dest="optionfile",
+    type="string",
+    nargs=1,
+    action="store",
+    default="fbt_options.py",
+    help="Environment option file",
+)
+
+AddOption(
+    "--extra-define",
+    action="append",
+    dest="extra_defines",
+    default=[],
+    help="Extra global define that will be passed to C/C++ compiler, can be specified multiple times",
+)
+
+AddOption(
+    "--proxy-env",
+    action="store",
+    dest="proxy_env",
+    default="",
+    help="Comma-separated list of additional environment variables to pass to child SCons processes",
+)
+
+
+# Construction environment variables
+
+vars = Variables(GetOption("optionfile"), ARGUMENTS)
+
+vars.AddVariables(
+    BoolVariable(
+        "VERBOSE",
+        help="Print full commands",
+        default=False,
+    ),
+    BoolVariable(
+        "FORCE",
+        help="Force target action (for supported targets)",
+        default=False,
+    ),
+    BoolVariable(
+        "DEBUG",
+        help="Enable debug build",
+        default=True,
+    ),
+    BoolVariable(
+        "LIB_DEBUG",
+        help="Enable debug build for libraries",
+        default=False,
+    ),
+    BoolVariable(
+        "COMPACT",
+        help="Optimize for size",
+        default=False,
+    ),
+    EnumVariable(
+        "TARGET_HW",
+        help="Hardware target",
+        default="u5m1",
+        allowed_values=[
+            "u5m1",
+        ],
+    ),
+    PathVariable(
+        "SVD_FILE",
+        help="Path to SVD file",
+        validator=PathVariable.PathAccept,
+        default="",
+    ),
+    (
+        "FBT_TOOLCHAIN_VERSIONS",
+        "Whitelisted toolchain versions (leave empty for no check)",
+        tuple(),
+    ),
+    (
+        "FIRMWARE_APPS",
+        "Map of (configuration_name->application_list)",
+        {
+            "default": (
+                # Svc
+                "basic_services",
+                # Apps
+                "main_apps",
+                "system_apps",
+                # Settings
+                "settings_apps",
+            ),
+        },
+    ),
+    (
+        "FIRMWARE_APP_SET",
+        "Application set to use from FIRMWARE_APPS",
+        "default",
+    ),
+    (
+        "APPSRC",
+        "Application source directory for app to build & upload",
+        "",
+    ),
+    # List of tuples (directory, add_to_global_include_path)
+    (
+        "APPDIRS",
+        "Directories to search for firmware components & external apps",
+        [
+            ("applications", False),
+            ("applications/services", True),
+            ("applications/main", True),
+            ("applications/settings", False),
+            ("applications/system", False),
+            ("applications/debug", False),
+            ("applications/examples", False),
+            ("applications/drivers", False),
+            ("applications_user", False),
+        ],
+    ),
+    (
+        "FIRMWARE_ORIGIN",
+        "Firmware origin. 'Official' if follows upstream's API structure, otherwise fork name. "
+        " This will also create a C define FW_ORIGIN_<origin> so that "
+        " app can check what version it is being built for.",
+        "Official",
+    ),
+    (
+        "FLIP_PORT",
+        "Full port name of Flipper to use, if multiple Flippers are connected",
+        "auto",
+    ),
+    EnumVariable(
+        "LANG_SERVER",
+        help="Language server type for vscode_dist.",
+        default="cpptools",
+        allowed_values=[
+            "cpptools",
+            "clangd",
+        ],
+    ),
+    BoolVariable(
+        "STRICT_FAP_IMPORT_CHECK",
+        help="Enable strict import check for .faps",
+        default=True,
+    ),
+    (
+        "ARGS",
+        "Extra arguments to pass to certain scripts supporting it",
+        "",
+    ),
+)
+
+Return("vars")

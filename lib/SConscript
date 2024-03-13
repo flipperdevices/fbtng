@@ -1,0 +1,17 @@
+Import("env")
+
+
+env.Append(
+    CPPPATH=[
+        "#/",
+        "#/lib",
+    ],
+)
+
+
+libs = env.BuildModules(
+    [
+    ],
+)
+
+Return("libs")

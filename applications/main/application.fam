@@ -1,0 +1,15 @@
+App(
+    appid="main_apps",
+    name="Basic applications for main menu",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[
+    ],
+)
+
+App(
+    appid="main_apps_on_start",
+    name="On start hooks",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[
+    ],
+)
