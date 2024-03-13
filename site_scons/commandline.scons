@@ -130,6 +130,18 @@ vars.AddVariables(
         "auto",
     ),
     EnumVariable(
+        "SWD_TRANSPORT",
+        help="SWD interface adapter type",
+        default="auto",
+        allowed_values=[
+            "auto",
+            "cmsis-dap",
+            "stlink",
+            "blackmagic_usb",
+            "blackmagic_wifi",
+        ],
+    ),
+    EnumVariable(
         "LANG_SERVER",
         help="Language server type for vscode_dist.",
         default="cpptools",

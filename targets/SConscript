@@ -17,5 +17,4 @@ lib = libenv.StaticLibrary(
     env.get("TARGET_CFG").gatherSources(),
 )
 libenv.Install("${LIB_DIST_DIR}", lib)
-print(lib)
 Return("lib")
