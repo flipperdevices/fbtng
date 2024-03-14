@@ -1,8 +1,12 @@
 Import("env")
 
 env.Append(
+    CFLAGS=[
+        "-Wno-unused-parameter",
+    ],
     CPPDEFINES=[
         "STM32U5G9xx",
+        # "USE_HAL_DRIVER",
         "USE_FULL_LL_DRIVER",
         "HSE_VALUE=16000000",
         # "HSE_STARTUP_TIMEOUT=100",
@@ -14,6 +18,12 @@ env.Append(
         # "LSI_VALUE=32000",
         # "VDD_VALUE=3300",
     ],
+    CPPPATH=[
+        "#/lib/cmsis_core",
+        "#/lib/stm32u5_hal/Inc",
+        "#/lib/stm32u5_cmsis/Include",
+        "#/targets/fu5m1/u5_cube/Core/Inc", # ugly hack
+    ],
 )
 
 
@@ -21,7 +31,16 @@ env.Append(
 libenv = env.Clone(FW_LIB_NAME="stm32u5")
 libenv.ApplyLibFlags()
 
-sources = []
+# sources = libenv.GlobRecursive("*.c", "#/lib/stm32u5_hal/Src", exclude=["*_template.c"]) # build with HAL
+excluded_sources = [    
+    "*_template.c",
+    "*_hal*.c",
+    "stm32u5xx_ll_dlyb.c",
+    "stm32u5xx_ll_fmc.c",
+    "stm32u5xx_ll_sdmmc.c",
+    "stm32u5xx_ll_usb.c",
+]
+sources = libenv.GlobRecursive("*.c", "stm32u5_hal/Src", exclude=excluded_sources)
 
 lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
 libenv.Install("${LIB_DIST_DIR}", lib)
