@@ -2,17 +2,17 @@ Import("env")
 
 env.Append(
     CPPDEFINES=[
-        "STM32U5G9xx"
-        "USE_FULL_LL_DRIVER"
-        "HSE_VALUE=16000000"
-        "HSE_STARTUP_TIMEOUT=100"
-        "LSE_STARTUP_TIMEOUT=5000"
-        "LSE_VALUE=32768"
-        "MSI_VALUE=4000000"
-        "EXTERNALSAI1_CLOCK_VALUE=48000"
-        "HSI_VALUE=16000000"
-        "LSI_VALUE=32000"
-        "VDD_VALUE=3300"
+        "STM32U5G9xx",
+        "USE_FULL_LL_DRIVER",
+        "HSE_VALUE=16000000",
+        # "HSE_STARTUP_TIMEOUT=100",
+        # "LSE_STARTUP_TIMEOUT=5000",
+        # "LSE_VALUE=32768",
+        # "MSI_VALUE=4000000",
+        # "EXTERNALSAI1_CLOCK_VALUE=48000",
+        # "HSI_VALUE=16000000",
+        # "LSI_VALUE=32000",
+        # "VDD_VALUE=3300",
     ],
 )
 
