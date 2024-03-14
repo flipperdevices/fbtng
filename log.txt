@@ -1,3 +1,0 @@
-
-scons: *** Cannot build module stm32u5: scons file not found
-File "/Users/drzlo/work/u5-fbt/scripts/fbt_tools/sconsmodular.py", line 13, in BuildModule

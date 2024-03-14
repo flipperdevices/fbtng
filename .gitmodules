@@ -4,3 +4,6 @@
 [submodule "lib/stm32u5_hal"]
 	path = lib/stm32u5_hal
 	url = https://github.com/STMicroelectronics/stm32u5xx_hal_driver.git
+[submodule "lib/stm32u5_cmsis"]
+	path = lib/stm32u5_cmsis
+	url = https://github.com/STMicroelectronics/cmsis_device_u5.git

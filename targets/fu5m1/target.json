@@ -1,9 +1,6 @@
 {
     "include_paths": [
-        "u5_cube/Core/Inc",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Inc",
-        "u5_cube/Drivers/CMSIS/Device/ST/STM32U5xx/Include",
-        "u5_cube/Drivers/CMSIS/Include"
+        "u5_cube/Core/Inc"
     ],
     "sdk_header_paths": [],
     "startup_script": "u5_cube/startup_stm32u5g9xx.s",
@@ -14,19 +11,5 @@
     "linker_dependencies": [
         "flipperu5m1",
         "stm32u5"
-    ],
-    "included_sources": [
-        "u5_cube/Core/Src/main.c",
-        "u5_cube/Core/Src/stm32u5xx_it.c",
-        "u5_cube/Core/Src/system_stm32u5xx.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_exti.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_utils.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_gpio.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_lpgpio.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_icache.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_pwr.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_usart.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_rcc.c",
-        "u5_cube/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_dma.c"
     ]
 }
