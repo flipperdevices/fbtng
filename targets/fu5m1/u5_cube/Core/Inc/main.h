@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32u5xx_hal.h"
 #include "stm32u5xx_ll_icache.h"
 #include "stm32u5xx_ll_pwr.h"
 #include "stm32u5xx_ll_crs.h"
@@ -40,10 +41,6 @@ extern "C" {
 #include "stm32u5xx_ll_usart.h"
 #include "stm32u5xx_ll_gpio.h"
 #include "stm32u5xx_ll_lpgpio.h"
-
-#if defined(USE_FULL_ASSERT)
-#include "stm32_assert.h"
-#endif /* USE_FULL_ASSERT */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -73,20 +70,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SD_POWER_PIN_Pin LL_GPIO_PIN_13
+#define SD_POWER_PIN_GPIO_Port GPIOI
 #define LED_PIN_Pin LL_GPIO_PIN_7
 #define LED_PIN_GPIO_Port GPIOA
-#ifndef NVIC_PRIORITYGROUP_0
-#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
-                                                                 4 bits for subpriority */
-#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
-                                                                 3 bits for subpriority */
-#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
-                                                                 2 bits for subpriority */
-#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
-                                                                 1 bit  for subpriority */
-#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
-                                                                 0 bit  for subpriority */
-#endif
 
 /* USER CODE BEGIN Private defines */
 
