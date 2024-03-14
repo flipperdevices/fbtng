@@ -1,3 +1,6 @@
 [submodule "lib/cxxheaderparser"]
 	path = lib/cxxheaderparser
 	url = https://github.com/robotpy/cxxheaderparser.git
+[submodule "lib/stm32u5_hal"]
+	path = lib/stm32u5_hal
+	url = https://github.com/STMicroelectronics/stm32u5xx_hal_driver.git
