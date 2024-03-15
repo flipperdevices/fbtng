@@ -64,7 +64,7 @@
 void HAL_MspInit(void)
 {
   /* USER CODE BEGIN MspInit 0 */
-  asm("bkpt 255");
+
   /* USER CODE END MspInit 0 */
 
   /* System interrupt init*/

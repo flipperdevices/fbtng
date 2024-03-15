@@ -1,7 +1,14 @@
 Import("ENV")
 
+MCU = [
+    "-mcpu=cortex-m33",
+    "-mthumb",
+    "-mfpu=fpv4-sp-d16",
+    "-mfloat-abi=hard",
+]
 
 ENV.AppendUnique(
+    ASFLAGS = MCU,
     CFLAGS=[
         "-std=gnu2x",
     ],
@@ -13,11 +20,8 @@ ENV.AppendUnique(
         "-fno-threadsafe-statics",
         "-ftemplate-depth=4096",
     ],
-    CCFLAGS=[
-        "-mcpu=cortex-m4",
-        "-mfloat-abi=hard",
-        "-mfpu=fpv4-sp-d16",
-        "-mthumb",
+    CCFLAGS=MCU+[
+        "-mlittle-endian",
         # "-MMD",
         # "-MP",
         "-Wall",
@@ -39,12 +43,8 @@ ENV.AppendUnique(
         "_GNU_SOURCE",
         *GetOption("extra_defines"),
     ],
-    LINKFLAGS=[
-        "-mcpu=cortex-m33",
-        "-mfloat-abi=hard",
-        "-mfpu=fpv4-sp-d16",
+    LINKFLAGS=MCU+[
         "-mlittle-endian",
-        "-mthumb",
         "-Wl,--no-warn-rwx-segment",
     ],
 )

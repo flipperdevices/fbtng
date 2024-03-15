@@ -10,6 +10,7 @@
     "sdk_symbols": "api_symbols.csv",
     "linker_dependencies": [
         "flipperu5m1",
-        "stm32u5"
+        "stm32u5",
+        "flipperu5m1"
     ]
 }
