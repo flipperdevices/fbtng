@@ -74,6 +74,9 @@ def generate(env, **kw):
             "OBJDUMP",
         ],
     )
+    env.Replace(AS="arm-none-eabi-gcc")
+    env.Replace(LINK="arm-none-eabi-gcc")
+    env.Replace(CXX="arm-none-eabi-gcc")
     # Call CC to check version
     if whitelisted_versions := kw.get("versions", ()):
         cc_version = _get_tool_version(env, "CC")

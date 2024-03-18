@@ -3,11 +3,17 @@ Import("env")
 env.Append(
     LINT_SOURCES=[Dir(".")],
     LINKFLAGS=[
-        # "-Wl,--undefined=HAL_MspInit",
-        # "-Wl,--undefined=HAL_InitTick",
-        # "-Wl,--undefined=HardFault_Handler",
+        "-specs=nano.specs",
+    ],
+    CPPDEFINES=[
+        "STM32U5G9xx",
+        "USE_HAL_DRIVER",
+        "USE_FULL_LL_DRIVER",
     ],
 )
+
+env.Prepend(_LIBFLAGS="-Wl,--whole-archive ")
+env.Append(_LIBFLAGS=" -Wl,--no-whole-archive")
 
 libenv = env.Clone(FW_LIB_NAME="flipper${TARGET_HW}")
 libenv.ApplyLibFlags()

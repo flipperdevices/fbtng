@@ -8,7 +8,7 @@ MCU = [
 ]
 
 ENV.AppendUnique(
-    ASFLAGS = MCU,
+    ASFLAGS = ["-x", "assembler-with-cpp", "-c"] + MCU,
     CFLAGS=[
         "-std=gnu2x",
     ],
