@@ -18,7 +18,7 @@ void dbg_log(DbgLogLevel level, const char* tag, const char* format, ...) {
         level_letter = 'I';
     }
 
-    uint32_t timestamp = 0; //chTimeI2MS(chVTGetSystemTime());
+    uint32_t timestamp = HAL_GetTick();
 
     printf_("[%c] %lu.%03lu [%s]: ", level_letter, timestamp / 1000, timestamp % 1000, tag);
 
