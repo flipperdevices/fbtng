@@ -9,7 +9,8 @@ typedef enum {
     DBG_LOG_LVL_INFO = 3,
 } DbgLogLevel;
 
-void dbg_log(DbgLogLevel level, const char* tag, const char* format, ...);
+void dbg_log(DbgLogLevel level, const char* tag, const char* format, ...)
+    __attribute__((format(printf, 3, 4)));
 void dbg_dump(DbgLogLevel level, const char* tag, const uint8_t* data, uint32_t len);
 void dbg_log_init(DbgLogLevel level_max);
 
