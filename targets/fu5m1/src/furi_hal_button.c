@@ -55,11 +55,6 @@ static void furi_hal_button_irq_cb(FuriHalHalfLPUartEvent event, void* context) 
         } else if((data & FURI_HAL_BUTTON_FLAG_MASK) == FURI_HAL_BUTTON_FLAG_B6_B11) {
             furi_hal_button_state.state_b7_b11 = ~data & FURI_HAL_BUTTON_MASK;
         }
-        DBG_LOG_I(
-            TAG,
-            "Button state: %02X %02X",
-            furi_hal_button_state.state_b0_b6,
-            furi_hal_button_state.state_b7_b11);
     }
     if(event & FuriHalHalfLPUartEventIdle) {
         //idle line detected, packet transmission may have ended
