@@ -25,26 +25,8 @@ void _read(void) {
 void _write(void) {
 }
 
-uint32_t memory_latency_write_test(uint32_t* addr, size_t cycles) {
-    uint32_t start = DWT->CYCCNT;
-    for(size_t i = 0; i < cycles; i++) {
-        *addr = i;
-    }
-    uint32_t end = DWT->CYCCNT;
-
-    return end - start;
-}
-
-uint32_t memory_latency_read_test(uint32_t* addr, size_t cycles) {
-    uint32_t start = DWT->CYCCNT;
-    for(size_t i = 0; i < cycles; i++) {
-        volatile uint32_t val = *addr;
-        UNUSED(val);
-    }
-    uint32_t end = DWT->CYCCNT;
-
-    return end - start;
-}
+DCACHE_HandleTypeDef hdcache1;
+DCACHE_HandleTypeDef hdcache2;
 
 int main(void) {
     furi_hal_cortex_init_early();
@@ -78,23 +60,6 @@ int main(void) {
     DBG_LOG_I(TAG, "PSSI init done");
 
     furi_hal_mem_print_memory_layout();
-
-    uint32_t sram1_var;
-    uint32_t* psram_addr = (uint32_t*)furi_hal_mem_pool_get_addr(FuriHalMemPoolPSram);
-    uint32_t cycles = 10000000;
-    uint32_t latency;
-
-    latency = memory_latency_write_test(psram_addr, cycles);
-    DBG_LOG_I(TAG, "PSRAM write latency: %lu", latency);
-
-    latency = memory_latency_write_test(&sram1_var, cycles);
-    DBG_LOG_I(TAG, "SRAM1 write latency: %lu", latency);
-
-    latency = memory_latency_read_test(psram_addr, cycles);
-    DBG_LOG_I(TAG, "PSRAM read latency: %lu", latency);
-
-    latency = memory_latency_read_test(&sram1_var, cycles);
-    DBG_LOG_I(TAG, "SRAM1 read latency: %lu", latency);
 
     while(1) {
         // LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_7);
