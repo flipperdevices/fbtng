@@ -11,6 +11,14 @@ extern "C" {
 
 extern const GpioPin gpio_swdio;
 extern const GpioPin gpio_swclk;
+extern const GpioPin gpio_sd_card_power_switch;
+extern const GpioPin gpio_sd_card_detect;
+
+void furi_hal_resources_init_early();
+
+void furi_hal_resources_deinit_early();
+
+void furi_hal_resources_init();
 
 #ifdef __cplusplus
 }
