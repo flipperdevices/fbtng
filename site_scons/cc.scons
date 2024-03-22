@@ -7,8 +7,22 @@ MCU = [
     "-mfloat-abi=hard",
 ]
 
+DEFINES = [
+    "STM32U5G9xx",
+    # "HSE_VALUE=16000000U",
+]
+
+LINKFLAGS = [
+    # "-specs=nosys.specs",
+    # "-specs=nano.specs",
+    "-ffreestanding",
+    "-nostdlib",
+    "-nostartfiles",
+    "-nolibc",
+]
+
 ENV.AppendUnique(
-    ASFLAGS = ["-x", "assembler-with-cpp", "-c"] + MCU,
+    ASFLAGS=["-x", "assembler-with-cpp", "-c"] + MCU,
     CFLAGS=[
         "-std=gnu2x",
     ],
@@ -20,7 +34,8 @@ ENV.AppendUnique(
         "-fno-threadsafe-statics",
         "-ftemplate-depth=4096",
     ],
-    CCFLAGS=MCU+[
+    CCFLAGS=MCU
+    + [
         "-mlittle-endian",
         # "-MMD",
         # "-MP",
@@ -39,11 +54,14 @@ ENV.AppendUnique(
         # "-fstack-usage",
         "-g",
     ],
-    CPPDEFINES=[
+    CPPDEFINES=DEFINES
+    + [
         "_GNU_SOURCE",
         *GetOption("extra_defines"),
     ],
-    LINKFLAGS=MCU+[
+    LINKFLAGS=MCU
+    + LINKFLAGS
+    + [
         "-mlittle-endian",
         "-Wl,--no-warn-rwx-segment",
     ],
