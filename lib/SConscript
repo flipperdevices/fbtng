@@ -16,6 +16,7 @@ libs = env.BuildModules(
         "freertos",
         "mlib",
         "toolbox",
+        "print",
     ],
 )
 

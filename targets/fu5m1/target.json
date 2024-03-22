@@ -15,6 +15,8 @@
     "linker_script_app": "application_ext.ld",
     "sdk_symbols": "api_symbols.csv",
     "linker_dependencies": [
+        "gcc",
+        "print",
         "flipperu5m1",
         "flibc",
         "furi",
