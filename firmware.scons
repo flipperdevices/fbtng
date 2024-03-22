@@ -103,7 +103,7 @@ lib_targets = env.BuildModules(
         "lib",
         "assets",
         "targets",
-        # "furi",
+        "furi",
     ],
 )
 
