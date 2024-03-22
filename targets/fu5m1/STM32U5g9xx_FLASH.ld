@@ -39,13 +39,12 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM); /* end of "RAM" Ram type memory */
 
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
-_Min_Stack_Size = 0x400; /* required amount of stack */
+_Min_Stack_Size = 0x1000; /* required amount of stack */
 
 /* Memories definition */
 MEMORY
 {
-  RAM (xrw)   : ORIGIN = 0x20000000, LENGTH = 2496K
+  RAM (xrw)   : ORIGIN = 0x20000000, LENGTH = 3008K
   SRAM4 (xrw) : ORIGIN = 0x28000000, LENGTH = 16K
   FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 4096K
 }
@@ -151,18 +150,22 @@ SECTIONS
     . = ALIGN(8);
     PROVIDE ( end = . );
     PROVIDE ( _end = . );
-    . = . + _Min_Heap_Size;
+    __heap_start__ = .;
+    . = ORIGIN(RAM) + LENGTH(RAM) - _Min_Stack_Size;
+    __heap_end__ = .;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
 
   /* Remove information from the compiler libraries */
+  /*
   /DISCARD/ :
   {
     libc.a ( * )
     libm.a ( * )
     libgcc.a ( * )
   }
+  */
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }

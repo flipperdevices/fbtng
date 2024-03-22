@@ -1,10 +1,12 @@
 {
     "include_paths": [
         "src",
-        "cmsis/Include",
-        "cmsis/Device/ST/STM32U5xx/Include",
-        "st_hal",
-        "st_hal/Inc"
+        "config",
+        "furi_hal_include",
+        "cmsis/include",
+        "cmsis/device",
+        "st",
+        "st/include"
     ],
     "sdk_header_paths": [],
     "startup_script": "startup_stm32u5g9xx.s",
@@ -13,6 +15,9 @@
     "linker_script_app": "application_ext.ld",
     "sdk_symbols": "api_symbols.csv",
     "linker_dependencies": [
-        "flipperu5m1"
+        "flipperu5m1",
+        "flibc",
+        "furi",
+        "freertos"
     ]
 }
