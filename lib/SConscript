@@ -1,6 +1,5 @@
 Import("env")
 
-
 env.Append(
     CPPPATH=[
         "#/",
@@ -13,7 +12,10 @@ env.Append(
 
 libs = env.BuildModules(
     [
-        "freertos"
+        "flibc",
+        "freertos",
+        "mlib",
+        "toolbox",
     ],
 )
 

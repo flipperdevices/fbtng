@@ -4,8 +4,11 @@ env.Append(
     CPPPATH=[
         "#/lib/drivers",
         "#/lib/FreeRTOS-Kernel/include",
-        "#/lib/FreeRTOS-Kernel/portable/GCC/ARM_CM4F",
+        "#/lib/FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure",
         "#/lib/FreeRTOS-glue",
+    ],
+    CCFLAGS=[
+        "-Wno-unused-parameter",
     ],
 )
 
@@ -16,7 +19,8 @@ libenv.ApplyLibFlags()
 
 sources = libenv.Glob("FreeRTOS-Kernel/*.c", source=True)
 sources += [
-    "FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure/port.c",
+    "FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c",
+    "FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c",
 ]
 
 lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
