@@ -1,0 +1,55 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "[Debug] Make",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt DEBUG=1 LIB_DEBUG=1"
+        },
+        {
+            "label": "[Debug] CDB",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt DEBUG=1 LIB_DEBUG=1 firmware_cdb"
+        },
+        {
+            "label": "[Debug] List",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt DEBUG=1 LIB_DEBUG=1 firmware_list"
+        },
+        {
+            "label": "[Debug] Flash",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt FORCE=1 DEBUG=1 LIB_DEBUG=1 flash"
+        },
+        {
+            "label": "[Release] Make",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt COMPACT=1 DEBUG=0"
+        },
+        {
+            "label": "[Release] CDB",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt COMPACT=1 DEBUG=0 firmware_cdb"
+        },
+        {
+            "label": "[Release] List",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt COMPACT=1 DEBUG=0 firmware_list"
+        },
+        {
+            "label": "[Release] Flash",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt COMPACT=1 DEBUG=0 FORCE=1 flash"
+        }
+    ]
+}

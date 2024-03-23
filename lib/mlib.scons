@@ -23,5 +23,6 @@ env.Append(
     ],
     CPPDEFINES=[
         '"M_MEMORY_FULL(x)=abort()"',
+        "NDEBUG",
     ],
 )
