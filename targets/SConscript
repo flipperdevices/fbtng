@@ -9,13 +9,6 @@ env.Append(_LIBFLAGS=" -Wl,--no-whole-archive")
 
 libenv = env.Clone(FW_LIB_NAME="flipper${TARGET_HW}")
 libenv.ApplyLibFlags()
-libenv.Append(
-    CCFLAGS=[
-        "-Wno-unused-parameter",
-        "-Wno-double-promotion",
-        "-Wno-overflow",
-    ],
-)
 
 lib = libenv.StaticLibrary(
     "${FW_LIB_NAME}",
