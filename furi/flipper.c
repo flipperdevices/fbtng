@@ -1,37 +1,39 @@
 #include "flipper.h"
 #include <applications.h>
 #include <furi.h>
-// #include <furi_hal_version.h>
+#include <toolbox/version.h>
 // #include <furi_hal_rtc.h>
 
 #include <FreeRTOS.h>
 
 #define TAG "Flipper"
 
-// static void flipper_print_version(const char* target, const Version* version) {
-//     if(version) {
-//         FURI_LOG_I(
-//             TAG,
-//             "\r\n\t%s version:\t%s\r\n"
-//             "\tBuild date:\t\t%s\r\n"
-//             "\tGit Commit:\t\t%s (%s)%s\r\n"
-//             "\tGit Branch:\t\t%s",
-//             target,
-//             version_get_version(version),
-//             version_get_builddate(version),
-//             version_get_githash(version),
-//             version_get_gitbranchnum(version),
-//             version_get_dirty_flag(version) ? " (dirty)" : "",
-//             version_get_gitbranch(version));
-//     } else {
-//         FURI_LOG_I(TAG, "No build info for %s", target);
-//     }
-// }
+static void flipper_print_version(const char* target, const Version* version) {
+    if(version) {
+        FURI_LOG_I(
+            TAG,
+            "\r\n\t%s version:\t%s\r\n"
+            "\tBuild date:\t\t%s\r\n"
+            "\tGit Commit:\t\t%s (%s)%s\r\n"
+            "\tGit Branch:\t\t%s",
+            target,
+            version_get_version(version),
+            version_get_builddate(version),
+            version_get_githash(version),
+            version_get_gitbranchnum(version),
+            version_get_dirty_flag(version) ? " (dirty)" : "",
+            version_get_gitbranch(version));
+    } else {
+        FURI_LOG_I(TAG, "No build info for %s", target);
+    }
+}
 
 void flipper_init() {
-    // flipper_print_version("Firmware", furi_hal_version_get_firmware_version());
+    // TODO: get version from HAL?
+    flipper_print_version("Firmware", version_get());
 
-    // FURI_LOG_I(TAG, "Boot mode %d, starting services", furi_hal_rtc_get_boot_mode());
+    // FURI_LOG_I(TAG, "Boot mode %d", furi_hal_rtc_get_boot_mode());
+    FURI_LOG_I(TAG, "Starting %d services", FLIPPER_SERVICES_COUNT);
 
     for(size_t i = 0; i < FLIPPER_SERVICES_COUNT; i++) {
         FURI_LOG_D(TAG, "Starting service %s", FLIPPER_SERVICES[i].name);

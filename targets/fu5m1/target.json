@@ -20,6 +20,7 @@
         "flipperu5m1",
         "flibc",
         "furi",
-        "freertos"
+        "freertos",
+        "toolbox"
     ]
 }
