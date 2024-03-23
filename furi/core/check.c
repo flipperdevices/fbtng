@@ -140,7 +140,7 @@ FURI_NORETURN void __furi_crash_implementation() {
     // Check if debug enabled by DAP
     // https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/Debug-register-support-in-the-SCS/Debug-Halting-Control-and-Status-Register--DHCSR?lang=en
     bool debug = CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk;
-#ifdef FURI_NDEBUG
+#ifndef FURI_DEBUG
     if(debug) {
 #endif
         furi_log_puts("\r\nSystem halted. Connect debugger for more info\r\n");
@@ -148,7 +148,7 @@ FURI_NORETURN void __furi_crash_implementation() {
         furi_hal_debug_enable();
 
         RESTORE_REGISTERS_AND_HALT_MCU(debug);
-#ifdef FURI_NDEBUG
+#ifndef FURI_DEBUG
     } else {
         uint32_t ptr = (uint32_t)__furi_check_message;
         if(ptr < FLASH_BASE || ptr > (FLASH_BASE + FLASH_SIZE)) {
