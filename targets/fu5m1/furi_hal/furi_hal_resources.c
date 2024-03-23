@@ -5,6 +5,8 @@ const GpioPin gpio_swdio = {.port = GPIOA, .pin = LL_GPIO_PIN_13};
 const GpioPin gpio_swclk = {.port = GPIOA, .pin = LL_GPIO_PIN_14};
 const GpioPin gpio_sd_card_power_switch = {.port = GPIOI, .pin = LL_GPIO_PIN_13};
 const GpioPin gpio_sd_card_detect = {.port = GPIOI, .pin = LL_GPIO_PIN_14};
+const GpioPin gpio_led = {.port = GPIOA, .pin = LL_GPIO_PIN_7};
+const GpioPin gpio_log_usart_tx = {.port = GPIOA, .pin = LL_GPIO_PIN_9};
 
 void furi_hal_resources_init_early() {
     furi_hal_bus_enable(FuriHalBusGPIOA);

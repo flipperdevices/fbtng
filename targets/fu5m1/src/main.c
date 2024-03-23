@@ -13,6 +13,14 @@ int32_t init_task(void* context) {
     // Init flipper
     flipper_init();
 
+    furi_hal_gpio_init(&gpio_led, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
+    while(1){
+        furi_hal_gpio_write(&gpio_led, 1);
+        furi_delay_ms(500);
+        furi_hal_gpio_write(&gpio_led, 0);
+        furi_delay_ms(500);
+    }
+
     return 0;
 }
 

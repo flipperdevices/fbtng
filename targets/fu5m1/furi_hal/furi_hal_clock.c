@@ -1,6 +1,7 @@
 #include <core/log.h>
 #include <furi_hal_bus.h>
 #include <furi_hal_clock.h>
+#include <stm32u5xx_ll_cortex.h>
 #include <stm32u5xx_ll_system.h>
 #include <stm32u5xx_ll_pwr.h>
 #include <stm32u5xx_ll_utils.h>
@@ -8,6 +9,7 @@
 #define TAG "FuriHalClock"
 
 #define CPU_CLOCK_EARLY_HZ 4000000U
+#define TICK_INT_PRIORITY 15U
 
 void furi_hal_clock_init_early() {
     LL_SetSystemCoreClock(CPU_CLOCK_EARLY_HZ);
@@ -21,6 +23,7 @@ void furi_hal_clock_init() {
     // TODO: here lies the dragon
     // We need to figure out how to properly initialize the clocks
 
+    LL_SYSTICK_DisableIT();
     furi_hal_bus_enable(FuriHalBusPWR);
 
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
@@ -62,6 +65,7 @@ void furi_hal_clock_init() {
 
     LL_SetSystemCoreClock(160000000);
     LL_InitTick(SystemCoreClock, 1000U);
+    LL_SYSTICK_EnableIT();
 
     FURI_LOG_I(TAG, "Init OK");
 }
