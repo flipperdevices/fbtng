@@ -5,50 +5,71 @@
 #include <stm32u5xx_ll_rcc.h>
 #include <stm32u5xx_ll_usart.h>
 
-static void todo_uart_init(void) {
-    furi_hal_bus_enable(FuriHalBusUSART1);
+typedef struct {
+    USART_TypeDef* usart;
+} UartDriver;
 
-    furi_hal_gpio_init_ex(
-        &gpio_log_usart_tx,
-        GpioModeAltFunctionPushPull,
-        GpioPullNo,
-        GpioSpeedLow,
-        GpioAltFn7USART1);
+UartDriver* driver_uart_init(
+    USART_TypeDef* usart,
+    const GpioPin* gpio,
+    const GpioAltFn alt_fn,
+    uint32_t baudrate) {
+    FuriHalBus bus;
+    uint32_t clock_source;
 
-    LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_PCLK2);
+    switch((uint32_t)usart) {
+    case(uint32_t)USART1:
+        bus = FuriHalBusUSART1;
+        clock_source = LL_RCC_USART1_CLKSOURCE_PCLK2;
+        break;
+
+    default:
+        furi_crash("Unknown USART");
+        break;
+    }
+
+    UartDriver* driver = malloc(sizeof(UartDriver));
+    driver->usart = usart;
+
+    furi_hal_bus_enable(bus);
+    furi_hal_gpio_init_ex(gpio, GpioModeAltFunctionPushPull, GpioPullNo, GpioSpeedLow, alt_fn);
+
+    LL_RCC_SetUSARTClockSource(clock_source);
 
     LL_USART_ConfigCharacter(
-        USART1, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
-    LL_USART_SetTransferDirection(USART1, LL_USART_DIRECTION_TX);
-    LL_USART_SetHWFlowCtrl(USART1, LL_USART_HWCONTROL_NONE);
+        usart, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
+    LL_USART_SetTransferDirection(usart, LL_USART_DIRECTION_TX);
+    LL_USART_SetHWFlowCtrl(usart, LL_USART_HWCONTROL_NONE);
     LL_USART_SetBaudRate(
-        USART1, SystemCoreClock, LL_USART_PRESCALER_DIV1, LL_USART_OVERSAMPLING_16, 230400);
+        usart, SystemCoreClock, LL_USART_PRESCALER_DIV1, LL_USART_OVERSAMPLING_16, baudrate);
 
-    LL_USART_SetTXFIFOThreshold(USART1, LL_USART_FIFOTHRESHOLD_1_8);
-    LL_USART_EnableFIFO(USART1);
-    LL_USART_ConfigAsyncMode(USART1);
-    LL_USART_Enable(USART1);
+    LL_USART_SetTXFIFOThreshold(usart, LL_USART_FIFOTHRESHOLD_1_8);
+    LL_USART_EnableFIFO(usart);
+    LL_USART_ConfigAsyncMode(usart);
+    LL_USART_Enable(usart);
+
+    return driver;
 }
 
-static void todo_uart_tx(uint8_t data) {
-    while(LL_USART_IsActiveFlag_TXE_TXFNF(USART1) == 0) {
+void driver_uart_tx(UartDriver* driver, uint8_t data) {
+    while(LL_USART_IsActiveFlag_TXE_TXFNF(driver->usart) == 0) {
     }
-    LL_USART_TransmitData8(USART1, data);
+    LL_USART_TransmitData8(driver->usart, data);
 }
 
 void todo_uart_log_cb(const uint8_t* data, size_t size, void* context) {
-    UNUSED(context);
+    UartDriver* driver = context;
     for(size_t i = 0; i < size; i++) {
-        todo_uart_tx(data[i]);
+        driver_uart_tx(driver, data[i]);
     }
 }
 
 void furi_hal_todo_init(void) {
-    todo_uart_init();
+    UartDriver* driver = driver_uart_init(USART1, &gpio_log_usart_tx, GpioAltFn7USART1, 230400);
 
     FuriLogHandler todo_uart_log_handler = {
         .callback = todo_uart_log_cb,
-        .context = NULL,
+        .context = driver,
     };
     furi_log_add_handler(todo_uart_log_handler);
 
