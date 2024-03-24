@@ -64,3 +64,7 @@ PVS-Studio.log
 .gdbinit
 
 /fbt_options_local.py
+
+# TODO: remove
+targets/fu5m1_cube
+targets/fu5m1_psram
