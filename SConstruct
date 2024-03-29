@@ -52,6 +52,7 @@ firmware_env = distenv.AddFwProject(
     fw_env_key="FW_ENV",
 )
 
+distenv.Default(firmware_env["FW_ARTIFACTS"])
 # Target for copying & renaming binaries to dist folder
 # basic_dist = distenv.DistCommand("fw_dist", distenv["DIST_DEPENDS"])
 # distenv.Default(basic_dist)

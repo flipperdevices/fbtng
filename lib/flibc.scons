@@ -1,0 +1,21 @@
+Import("env")
+
+env.Append(
+    CPPPATH=[
+        "#/lib/flibc",
+    ],
+    CCFLAGS=[
+        "-fno-builtin",
+    ],
+)
+
+
+libenv = env.Clone(FW_LIB_NAME="flibc")
+libenv.ApplyLibFlags()
+
+
+sources = libenv.Glob("flibc/*.c", source=True)
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

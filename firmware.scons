@@ -44,8 +44,7 @@ env = ENV.Clone(
                 "-Og" if ENV["LIB_DEBUG"] else "-Os",
             ],
             "CPPDEFINES": [
-                "NDEBUG",
-                "FURI_DEBUG" if ENV["LIB_DEBUG"] else "FURI_NDEBUG",
+                "FURI_DEBUG" if ENV["LIB_DEBUG"] else "",
             ],
             # You can add other entries named after libraries
             # If they are present, they have precedence over Default
@@ -56,8 +55,7 @@ env = ENV.Clone(
                 "-Os",
             ],
             "CPPDEFINES": [
-                "NDEBUG",
-                "FURI_DEBUG" if ENV["DEBUG"] else "FURI_NDEBUG",
+                "FURI_DEBUG" if ENV["DEBUG"] else "",
             ],
         },
         "flipper_application": {
@@ -65,8 +63,7 @@ env = ENV.Clone(
                 "-Og",
             ],
             "CPPDEFINES": [
-                "NDEBUG",
-                "FURI_DEBUG" if ENV["DEBUG"] else "FURI_NDEBUG",
+                "FURI_DEBUG" if ENV["DEBUG"] else "",
             ],
         },
     },
@@ -103,7 +100,7 @@ lib_targets = env.BuildModules(
         "lib",
         "assets",
         "targets",
-        # "furi",
+        "furi",
     ],
 )
 
