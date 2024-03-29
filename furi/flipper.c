@@ -28,7 +28,7 @@ static void flipper_print_version(const char* target, const Version* version) {
     }
 }
 
-void flipper_init() {
+void flipper_init(void) {
     // TODO: get version from HAL?
     flipper_print_version("Firmware", version_get());
 

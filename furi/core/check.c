@@ -69,7 +69,7 @@ static void __furi_put_uint32_as_hex(uint32_t data) {
     furi_log_puts(tmp_str);
 }
 
-static void __furi_print_register_info() {
+static void __furi_print_register_info(void) {
     // Print registers
     for(uint8_t i = 0; i < 12; i++) {
         furi_log_puts("\r\n\tr");
@@ -82,12 +82,12 @@ static void __furi_print_register_info() {
     __furi_put_uint32_as_hex(__furi_check_registers[12]);
 }
 
-static void __furi_print_stack_info() {
+static void __furi_print_stack_info(void) {
     furi_log_puts("\r\n\tstack watermark: ");
     __furi_put_uint32_as_text(uxTaskGetStackHighWaterMark(NULL) * 4);
 }
 
-static void __furi_print_heap_info() {
+static void __furi_print_heap_info(void) {
     furi_log_puts("\r\n\t     heap total: ");
     __furi_put_uint32_as_text(xPortGetTotalHeapSize());
     furi_log_puts("\r\n\t      heap free: ");
@@ -113,7 +113,7 @@ static void __furi_print_name(bool isr) {
     }
 }
 
-FURI_NORETURN void __furi_crash_implementation() {
+FURI_NORETURN void __furi_crash_implementation(void) {
     __disable_irq();
     GET_MESSAGE_AND_STORE_REGISTERS();
 
@@ -163,7 +163,7 @@ FURI_NORETURN void __furi_crash_implementation() {
     __builtin_unreachable();
 }
 
-FURI_NORETURN void __furi_halt_implementation() {
+FURI_NORETURN void __furi_halt_implementation(void) {
     __disable_irq();
     GET_MESSAGE_AND_STORE_REGISTERS();
 
