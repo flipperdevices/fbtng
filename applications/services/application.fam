@@ -4,5 +4,6 @@ App(
     apptype=FlipperAppType.METAPACKAGE,
     provides=[
         "blinker",
+        "storage",
     ],
 )

@@ -3,7 +3,8 @@ Import("ENV")
 
 ENV.Append(
     CPPDEFINES=[
-        "FURI_DEBUG" if ENV["DEBUG"] else "",
+        "FURI_DEBUG" if ENV["DEBUG"] else "FURI_NDEBUG",
+        "DEBUG" if ENV["DEBUG"] else "NDEBUG",
     ],
     CCFLAGS=[
         "-Os" if ENV["COMPACT"] else "-Og",

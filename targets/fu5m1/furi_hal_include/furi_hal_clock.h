@@ -40,6 +40,12 @@ bool furi_hal_clock_switch_hse2pll();
  */
 bool furi_hal_clock_switch_pll2hse();
 
+typedef enum {
+    FuriHalClockHwSdMmc12,
+} FuriHalClockHW;
+
+uint32_t furi_hal_clock_get_freq(FuriHalClockHW hw);
+
 #ifdef __cplusplus
 }
 #endif

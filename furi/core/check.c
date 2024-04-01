@@ -53,10 +53,6 @@ uint32_t __furi_check_registers[13] = {0};
 
 extern size_t xPortGetTotalHeapSize(void);
 
-void abort(void) {
-    furi_crash("abort() called");
-}
-
 static void __furi_put_uint32_as_text(uint32_t data) {
     char tmp_str[] = "-2147483648";
     itoa(data, tmp_str, 10);

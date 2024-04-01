@@ -3,7 +3,9 @@
 #include "furi_hal_cortex.h"
 #include "furi_hal_clock.h"
 #include "furi_hal_debug.h"
+#include "furi_hal_interrupt.h"
 #include "furi_hal_gpio.h"
+#include "furi_hal_sdmmc.h"
 #include "furi_hal_resources.h"
 
 #ifdef __cplusplus

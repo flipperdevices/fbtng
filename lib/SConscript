@@ -17,6 +17,7 @@ libs = env.BuildModules(
         "mlib",
         "toolbox",
         "print",
+        "fatfs",
     ],
 )
 

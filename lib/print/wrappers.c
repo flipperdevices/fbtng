@@ -1,7 +1,8 @@
-#include "wrappers.h"
+// #include "wrappers.h"
 
 #include <stdbool.h>
 #include <stdarg.h>
+#include <furi/core/check.h>
 #include <furi/core/thread.h>
 #include <furi/core/common_defines.h>
 #include "printf_tiny.h"
@@ -56,16 +57,20 @@ int fflush(FILE* stream) {
 }
 
 // TODO: Implement asserts
-// __attribute__((__noreturn__)) void __assert(const char* file, int line, const char* e) {
-//     UNUSED(file);
-//     UNUSED(line);
-//     furi_crash(e);
-// }
+__attribute__((__noreturn__)) void __assert(const char* file, int line, const char* e) {
+    UNUSED(file);
+    UNUSED(line);
+    furi_crash(e);
+}
 
-// __attribute__((__noreturn__)) void
-//     __assert_func(const char* file, int line, const char* func, const char* e) {
-//     UNUSED(file);
-//     UNUSED(line);
-//     UNUSED(func);
-//     furi_crash(e);
-// }
+__attribute__((__noreturn__)) void
+    __assert_func(const char* file, int line, const char* func, const char* e) {
+    UNUSED(file);
+    UNUSED(line);
+    UNUSED(func);
+    furi_crash(e);
+}
+
+void abort(void) {
+    furi_crash("abort() called");
+}

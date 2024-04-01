@@ -2,11 +2,13 @@
     "include_paths": [
         "src",
         "config",
+        "fatfs",
         "furi_hal_include",
         "cmsis/include",
         "cmsis/device",
         "st",
-        "st/include"
+        "st/include",
+        "st_abomination"
     ],
     "sdk_header_paths": [],
     "startup_script": "startup_stm32u5g9xx.s",
@@ -21,6 +23,7 @@
         "flibc",
         "furi",
         "freertos",
+        "fatfs",
         "toolbox"
     ]
 }

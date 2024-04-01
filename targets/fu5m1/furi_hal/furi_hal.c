@@ -31,10 +31,12 @@ void furi_hal_init() {
     furi_hal_clock_init();
     furi_hal_todo_init();
 
+    furi_hal_sdmmc_init();
+
     // furi_hal_random_init();
     // furi_hal_serial_control_init();
     // furi_hal_rtc_init();
-    // furi_hal_interrupt_init();
+    furi_hal_interrupt_init();
     // furi_hal_flash_init();
     // furi_hal_resources_init();
     // furi_hal_version_init();

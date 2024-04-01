@@ -1,0 +1,8 @@
+App(
+    appid="storage",
+    name="StorageSrv",
+    apptype=FlipperAppType.SERVICE,
+    entry_point="storage",
+    stack_size=1024 * 4,
+    order=70,
+)

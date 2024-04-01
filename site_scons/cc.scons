@@ -9,7 +9,7 @@ MCU = [
 
 DEFINES = [
     "STM32U5G9xx",
-    # "HSE_VALUE=16000000U",
+    "HSE_VALUE=16000000U",
 ]
 
 LINKFLAGS = [

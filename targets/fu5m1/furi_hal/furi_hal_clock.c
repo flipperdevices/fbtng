@@ -1,4 +1,5 @@
 #include <core/log.h>
+#include <core/check.h>
 #include <furi_hal_bus.h>
 #include <furi_hal_clock.h>
 #include <stm32u5xx_ll_cortex.h>
@@ -10,6 +11,14 @@
 
 #define CPU_CLOCK_EARLY_HZ 4000000U
 #define TICK_INT_PRIORITY 15U
+
+// Common PLL1 settings
+#define FURI_CLOCK_PLL1_M 1
+#define FURI_CLOCK_PLL1_N 10
+// PLL1R is used for system clock
+#define FURI_CLOCK_PLL1_R 1
+// PLL1P is used for SDMMC block
+#define FURI_CLOCK_PLL1_Q 4
 
 void furi_hal_clock_init_early() {
     LL_SetSystemCoreClock(CPU_CLOCK_EARLY_HZ);
@@ -26,6 +35,18 @@ void furi_hal_clock_init() {
     LL_SYSTICK_DisableIT();
     furi_hal_bus_enable(FuriHalBusPWR);
 
+    {
+        LL_PWR_EnableVddIO2();
+
+        LL_PWR_DisableUCPDDeadBattery();
+
+        // Switch to SMPS regulator instead of LDO
+        LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+
+        while(LL_PWR_IsActiveFlag_REGULATOR() != 1) {
+        }
+    }
+
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
     while(LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4) {
     }
@@ -38,12 +59,21 @@ void furi_hal_clock_init() {
     while(LL_RCC_HSE_IsReady() != 1) {
     }
 
-    LL_RCC_PLL1_ConfigDomain_SYS(LL_RCC_PLL1SOURCE_HSE, 1, 10, 1);
+    // PLL1R used for system clock, 160 MHz
+    LL_RCC_PLL1_ConfigDomain_SYS(
+        LL_RCC_PLL1SOURCE_HSE, FURI_CLOCK_PLL1_M, FURI_CLOCK_PLL1_N, FURI_CLOCK_PLL1_R);
+
+    // PLL1P used for SDMMC block
+    // ST has very weird naming conventions for the PLLs
+    LL_RCC_PLL1_ConfigDomain_SAI(
+        LL_RCC_PLL1SOURCE_HSE, FURI_CLOCK_PLL1_M, FURI_CLOCK_PLL1_N, FURI_CLOCK_PLL1_Q);
+
     LL_RCC_PLL1_EnableDomain_SYS();
+    LL_RCC_PLL1_EnableDomain_SAI();
     LL_RCC_SetPll1EPodPrescaler(LL_RCC_PLL1MBOOST_DIV_1);
     LL_RCC_PLL1_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
-
     LL_RCC_PLL1_Enable();
+
     while(LL_RCC_PLL1_IsReady() != 1) {
     }
 
@@ -68,4 +98,23 @@ void furi_hal_clock_init() {
     LL_SYSTICK_EnableIT();
 
     FURI_LOG_I(TAG, "Init OK");
+}
+
+uint32_t furi_hal_clock_get_freq(FuriHalClockHW hw) {
+    switch(hw) {
+    case FuriHalClockHwSdMmc12:
+        furi_check(
+            LL_RCC_GetSDMMCKernelClockSource(LL_RCC_SDMMC_KERNELCLKSOURCE) ==
+            LL_RCC_SDMMC12_KERNELCLKSOURCE_PLL1);
+        furi_check(LL_RCC_PLL1_GetMainSource() == LL_RCC_PLL1SOURCE_HSE);
+        furi_check(LL_RCC_PLL1_GetDivider() == FURI_CLOCK_PLL1_M);
+        furi_check(LL_RCC_PLL1_GetN() == FURI_CLOCK_PLL1_N);
+        furi_check(LL_RCC_PLL1_GetP() == FURI_CLOCK_PLL1_Q);
+        return (HSE_VALUE / FURI_CLOCK_PLL1_M * FURI_CLOCK_PLL1_N / FURI_CLOCK_PLL1_Q);
+    default:
+        furi_crash("Unknown hardware");
+        break;
+    }
+
+    return 0;
 }
