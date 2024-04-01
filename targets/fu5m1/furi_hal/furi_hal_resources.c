@@ -34,7 +34,7 @@ static inline void furi_hal_nvic_enable(IRQn_Type irqn) {
     NVIC_EnableIRQ(irqn);
 }
 
-void furi_hal_resources_init_early() {
+void furi_hal_resources_init_early(void) {
     furi_hal_bus_enable(FuriHalBusGPIOA);
     furi_hal_bus_enable(FuriHalBusGPIOB);
     furi_hal_bus_enable(FuriHalBusGPIOC);
@@ -83,7 +83,7 @@ void furi_hal_resources_init_early() {
     furi_hal_nvic_enable(EXTI15_IRQn);
 }
 
-void furi_hal_resources_deinit_early() {
+void furi_hal_resources_deinit_early(void) {
     furi_hal_bus_disable(FuriHalBusGPIOA);
     furi_hal_bus_disable(FuriHalBusGPIOB);
     furi_hal_bus_disable(FuriHalBusGPIOC);

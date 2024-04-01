@@ -20,15 +20,15 @@
 // PLL1P is used for SDMMC block
 #define FURI_CLOCK_PLL1_Q 4
 
-void furi_hal_clock_init_early() {
+void furi_hal_clock_init_early(void) {
     LL_SetSystemCoreClock(CPU_CLOCK_EARLY_HZ);
     LL_InitTick(SystemCoreClock, 1000U);
 }
 
-void furi_hal_clock_deinit_early() {
+void furi_hal_clock_deinit_early(void) {
 }
 
-void furi_hal_clock_init() {
+void furi_hal_clock_init(void) {
     // TODO: here lies the dragon
     // We need to figure out how to properly initialize the clocks
 

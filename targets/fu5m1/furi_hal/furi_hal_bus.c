@@ -267,7 +267,7 @@ const uint32_t furi_hal_bus[] = {
     // [FuriHalBusSRD_SRAM4] = LL_SRDAMR_GRP1_PERIPH_SRAM4,
 };
 
-void furi_hal_bus_init_early() {
+void furi_hal_bus_init_early(void) {
     FURI_CRITICAL_ENTER();
 
     // FURI_HAL_BUS_PERIPH_DISABLE(AHB1, FURI_HAL_BUS_AHB1_GRP1, 1);
@@ -281,7 +281,7 @@ void furi_hal_bus_init_early() {
     FURI_CRITICAL_EXIT();
 }
 
-void furi_hal_bus_deinit_early() {
+void furi_hal_bus_deinit_early(void) {
     FURI_CRITICAL_ENTER();
 
     // FURI_HAL_BUS_PERIPH_ENABLE(AHB1, FURI_HAL_BUS_AHB1_GRP1, 1);

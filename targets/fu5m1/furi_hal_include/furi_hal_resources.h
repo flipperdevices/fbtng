@@ -37,11 +37,11 @@ extern const GpioPin gpio_sd_card_d3;
 extern const GpioPin gpio_sd_card_ck;
 extern const GpioPin gpio_sd_card_cmd;
 
-void furi_hal_resources_init_early();
+void furi_hal_resources_init_early(void);
 
-void furi_hal_resources_deinit_early();
+void furi_hal_resources_deinit_early(void);
 
-void furi_hal_resources_init();
+void furi_hal_resources_init(void);
 
 #ifdef __cplusplus
 }

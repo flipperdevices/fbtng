@@ -46,6 +46,7 @@ ENV.AppendUnique(
         "-Wno-address-of-packed-member",
         "-Wredundant-decls",
         "-Wdouble-promotion",
+        "-Wstrict-prototypes",
         "-fdata-sections",
         "-ffunction-sections",
         "-fsingle-precision-constant",
