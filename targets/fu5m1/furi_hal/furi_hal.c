@@ -30,9 +30,8 @@ void furi_hal_init() {
     // furi_hal_mpu_init();
     furi_hal_clock_init();
     furi_hal_todo_init();
-
+    furi_hal_psram_init();
     furi_hal_sdmmc_init();
-
     // furi_hal_random_init();
     // furi_hal_serial_control_init();
     // furi_hal_rtc_init();

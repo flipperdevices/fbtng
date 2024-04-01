@@ -10,6 +10,18 @@ const GpioPin gpio_sd_card_detect = {.port = GPIOI, .pin = LL_GPIO_PIN_14};
 const GpioPin gpio_led = {.port = GPIOA, .pin = LL_GPIO_PIN_7};
 const GpioPin gpio_log_usart_tx = {.port = GPIOA, .pin = LL_GPIO_PIN_9};
 
+const GpioPin gpio_octospi1_psram_io0 = {.port = GPIOE, .pin = LL_GPIO_PIN_12};
+const GpioPin gpio_octospi1_psram_io1 = {.port = GPIOE, .pin = LL_GPIO_PIN_13};
+const GpioPin gpio_octospi1_psram_io2 = {.port = GPIOE, .pin = LL_GPIO_PIN_14};
+const GpioPin gpio_octospi1_psram_io3 = {.port = GPIOE, .pin = LL_GPIO_PIN_15};
+const GpioPin gpio_octospi1_psram_io4 = {.port = GPIOH, .pin = LL_GPIO_PIN_2};
+const GpioPin gpio_octospi1_psram_io5 = {.port = GPIOD, .pin = LL_GPIO_PIN_5};
+const GpioPin gpio_octospi1_psram_io6 = {.port = GPIOC, .pin = LL_GPIO_PIN_3};
+const GpioPin gpio_octospi1_psram_io7 = {.port = GPIOC, .pin = LL_GPIO_PIN_4};
+const GpioPin gpio_octospi1_psram_clk = {.port = GPIOE, .pin = LL_GPIO_PIN_10};
+const GpioPin gpio_octospi1_psram_ncs = {.port = GPIOE, .pin = LL_GPIO_PIN_11};
+const GpioPin gpio_octospi1_psram_dqs = {.port = GPIOG, .pin = LL_GPIO_PIN_6};
+
 const GpioPin gpio_sd_card_d0 = {.port = GPIOC, .pin = LL_GPIO_PIN_8};
 const GpioPin gpio_sd_card_d1 = {.port = GPIOC, .pin = LL_GPIO_PIN_9};
 const GpioPin gpio_sd_card_d2 = {.port = GPIOC, .pin = LL_GPIO_PIN_10};

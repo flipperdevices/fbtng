@@ -7,6 +7,7 @@
 #include "furi_hal_gpio.h"
 #include "furi_hal_sdmmc.h"
 #include "furi_hal_resources.h"
+#include "furi_hal_psram.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -15,6 +15,18 @@ extern const GpioPin gpio_swclk;
 extern const GpioPin gpio_led;
 extern const GpioPin gpio_log_usart_tx;
 
+extern const GpioPin gpio_octospi1_psram_io0;
+extern const GpioPin gpio_octospi1_psram_io1;
+extern const GpioPin gpio_octospi1_psram_io2;
+extern const GpioPin gpio_octospi1_psram_io3;
+extern const GpioPin gpio_octospi1_psram_io4;
+extern const GpioPin gpio_octospi1_psram_io5;
+extern const GpioPin gpio_octospi1_psram_io6;
+extern const GpioPin gpio_octospi1_psram_io7;
+extern const GpioPin gpio_octospi1_psram_clk;
+extern const GpioPin gpio_octospi1_psram_ncs;
+extern const GpioPin gpio_octospi1_psram_dqs;
+
 extern const GpioPin gpio_sd_card_power_switch;
 extern const GpioPin gpio_sd_card_detect;
 

@@ -8,6 +8,7 @@
         "cmsis/device",
         "st",
         "st/include",
+        "driver",
         "st_abomination"
     ],
     "sdk_header_paths": [],

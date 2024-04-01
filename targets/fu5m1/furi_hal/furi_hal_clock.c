@@ -36,6 +36,7 @@ void furi_hal_clock_init() {
     furi_hal_bus_enable(FuriHalBusPWR);
 
     {
+        // Todo move to furi_hal_bus? furi_hal_cortex?
         LL_PWR_EnableVddIO2();
 
         LL_PWR_DisableUCPDDeadBattery();
