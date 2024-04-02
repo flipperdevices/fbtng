@@ -5,9 +5,11 @@
 #include "furi_hal_debug.h"
 #include "furi_hal_interrupt.h"
 #include "furi_hal_gpio.h"
+#include "furi_hal_dma.h"
 #include "furi_hal_sdmmc.h"
 #include "furi_hal_resources.h"
 #include "furi_hal_psram.h"
+#include "furi_hal_pssi_dma.h"
 
 #ifdef __cplusplus
 extern "C" {

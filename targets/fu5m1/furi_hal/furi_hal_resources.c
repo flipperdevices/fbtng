@@ -29,6 +29,27 @@ const GpioPin gpio_sd_card_d3 = {.port = GPIOC, .pin = LL_GPIO_PIN_11};
 const GpioPin gpio_sd_card_ck = {.port = GPIOC, .pin = LL_GPIO_PIN_12};
 const GpioPin gpio_sd_card_cmd = {.port = GPIOD, .pin = LL_GPIO_PIN_2};
 
+const GpioPin gpio_pssi_pdck = {.port = GPIOH, .pin = LL_GPIO_PIN_5};
+const GpioPin gpio_pssi_rdy = {.port = GPIOI, .pin = LL_GPIO_PIN_5};
+const GpioPin gpio_pssi_de = {.port = GPIOH, .pin = LL_GPIO_PIN_8};
+const GpioPin gpio_pssi_d0 = {.port = GPIOH, .pin = LL_GPIO_PIN_9};
+const GpioPin gpio_pssi_d1 = {.port = GPIOH, .pin = LL_GPIO_PIN_10};
+const GpioPin gpio_pssi_d2 = {.port = GPIOH, .pin = LL_GPIO_PIN_11};
+const GpioPin gpio_pssi_d3 = {.port = GPIOH, .pin = LL_GPIO_PIN_12};
+const GpioPin gpio_pssi_d4 = {.port = GPIOH, .pin = LL_GPIO_PIN_14};
+const GpioPin gpio_pssi_d5 = {.port = GPIOI, .pin = LL_GPIO_PIN_4};
+const GpioPin gpio_pssi_d6 = {.port = GPIOI, .pin = LL_GPIO_PIN_6};
+const GpioPin gpio_pssi_d7 = {.port = GPIOI, .pin = LL_GPIO_PIN_7};
+const GpioPin gpio_pssi_d8 = {.port = GPIOI, .pin = LL_GPIO_PIN_1};
+const GpioPin gpio_pssi_d9 = {.port = GPIOI, .pin = LL_GPIO_PIN_2};
+const GpioPin gpio_pssi_d10 = {.port = GPIOI, .pin = LL_GPIO_PIN_3};
+const GpioPin gpio_pssi_d11 = {.port = GPIOH, .pin = LL_GPIO_PIN_15};
+const GpioPin gpio_pssi_d12 = {.port = GPIOF, .pin = LL_GPIO_PIN_6};
+const GpioPin gpio_pssi_d13 = {.port = GPIOI, .pin = LL_GPIO_PIN_0};
+const GpioPin gpio_pssi_d14 = {.port = GPIOH, .pin = LL_GPIO_PIN_4};
+const GpioPin gpio_pssi_d15 = {.port = GPIOF, .pin = LL_GPIO_PIN_9};
+
+
 static inline void furi_hal_nvic_enable(IRQn_Type irqn) {
     NVIC_SetPriority(irqn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 10, 0));
     NVIC_EnableIRQ(irqn);

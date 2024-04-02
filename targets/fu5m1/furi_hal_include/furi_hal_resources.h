@@ -37,6 +37,27 @@ extern const GpioPin gpio_sd_card_d3;
 extern const GpioPin gpio_sd_card_ck;
 extern const GpioPin gpio_sd_card_cmd;
 
+extern const GpioPin gpio_pssi_pdck;
+extern const GpioPin gpio_pssi_rdy;
+extern const GpioPin gpio_pssi_de;
+extern const GpioPin gpio_pssi_d0;
+extern const GpioPin gpio_pssi_d1;
+extern const GpioPin gpio_pssi_d2;
+extern const GpioPin gpio_pssi_d3;
+extern const GpioPin gpio_pssi_d4;
+extern const GpioPin gpio_pssi_d5;
+extern const GpioPin gpio_pssi_d6;
+extern const GpioPin gpio_pssi_d7;
+extern const GpioPin gpio_pssi_d8;
+extern const GpioPin gpio_pssi_d9;
+extern const GpioPin gpio_pssi_d10;
+extern const GpioPin gpio_pssi_d11;
+extern const GpioPin gpio_pssi_d12;
+extern const GpioPin gpio_pssi_d13;
+extern const GpioPin gpio_pssi_d14;
+extern const GpioPin gpio_pssi_d15;
+
+
 void furi_hal_resources_init_early(void);
 
 void furi_hal_resources_deinit_early(void);

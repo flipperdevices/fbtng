@@ -11,6 +11,31 @@ typedef enum {
     // SDMMC
     FuriHalInterruptIdSdMmc1,
 
+    // GPDMA
+    FuriHalInterruptIdGPDMA1Channel0,
+    FuriHalInterruptIdGPDMA1Channel1,
+    FuriHalInterruptIdGPDMA1Channel2,
+    FuriHalInterruptIdGPDMA1Channel3,
+    FuriHalInterruptIdGPDMA1Channel4,
+    FuriHalInterruptIdGPDMA1Channel5,
+    FuriHalInterruptIdGPDMA1Channel6,
+    FuriHalInterruptIdGPDMA1Channel7,
+    FuriHalInterruptIdGPDMA1Channel8,
+    FuriHalInterruptIdGPDMA1Channel9,
+    FuriHalInterruptIdGPDMA1Channel10,
+    FuriHalInterruptIdGPDMA1Channel11,
+    FuriHalInterruptIdGPDMA1Channel12,
+    FuriHalInterruptIdGPDMA1Channel13,
+    FuriHalInterruptIdGPDMA1Channel14,
+    FuriHalInterruptIdGPDMA1Channel15,
+
+    //LPDMA
+    FuriHalInterruptIdLPDMA1Channel0,
+    FuriHalInterruptIdLPDMA1Channel1,
+    FuriHalInterruptIdLPDMA1Channel2,
+    FuriHalInterruptIdLPDMA1Channel3,
+    
+
     // RCC
     FuriHalInterruptIdRcc,
 

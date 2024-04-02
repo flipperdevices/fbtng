@@ -2,8 +2,6 @@
 #include <furi_hal.h>
 #include <flipper.h>
 
-#include "furi_hal_psram.h"
-
 #define TAG "Main"
 
 int32_t init_task(void* context) {
