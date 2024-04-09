@@ -54,7 +54,7 @@ def AddFwProject(env, base_env, fw_type, fw_env_key):
 
 def AddFwFlashTarget(env, targetenv, **kw):
     fwflash_target = env.FwFlash(
-        "#build/flash.flag",
+        "#build/${FIRMWARE_BUILD_CFG}_flash.flag",
         targetenv["FW_ELF"],
         **kw,
     )
@@ -75,6 +75,9 @@ def generate(env):
 
     env.SetDefault(
         FW_FLASH_SCRIPT="${FBT_SCRIPT_DIR}/fwflash.py",
+        FW_FLASH_TARGET_INTEFACE="auto",
+        SWD_TRANSPORT_SERIAL="auto",
+        FW_FLASH_EXTRA_COMMANDS="",
     )
 
     env.Append(
@@ -87,6 +90,8 @@ def generate(env):
                         "-d" if env["VERBOSE"] else "",
                         "--interface=${SWD_TRANSPORT}",
                         "--serial=${SWD_TRANSPORT_SERIAL}",
+                        "--target=${FW_FLASH_TARGET_INTEFACE}",
+                        '--extra-commands="${FW_FLASH_EXTRA_COMMANDS}"',
                         "${SOURCE}",
                         "${ARGS}",
                     ],

@@ -14,7 +14,6 @@ from serial.tools.list_ports_common import ListPortInfo
 
 # When adding an interface, also add it to SWD_TRANSPORT in fbt/ufbt options
 
-TARGET_CONFIG_FILE = "target/stm32u5x.cfg"
 
 class Programmer(ABC):
     root_logger = logging.getLogger("Programmer")
@@ -33,6 +32,14 @@ class Programmer(ABC):
 
     @abstractmethod
     def set_serial(self, serial: str):
+        pass
+
+    @abstractmethod
+    def set_mcu_interface_config(self, mcu_interface_config: str):
+        pass
+
+    @abstractmethod
+    def add_programming_commands(self, options):
         pass
 
     @classmethod
@@ -67,8 +74,12 @@ class OpenOCDInterface:
 class OpenOCDProgrammer(Programmer):
     def __init__(self, interface: OpenOCDInterface):
         self.interface = interface
+        self.mcu_interface_config = None
         self.logger = self.root_logger.getChild("OpenOCD")
         self.serial: typing.Optional[str] = None
+
+    def set_mcu_interface_config(self, mcu_interface_config: str):
+        self.mcu_interface_config = mcu_interface_config
 
     def _add_file(self, params: list[str], file: str):
         params += ["-f", file]
@@ -82,6 +93,9 @@ class OpenOCDProgrammer(Programmer):
     def set_serial(self, serial: str):
         self.serial = serial
 
+    def add_programming_commands(self, options):
+        self.interface.additional_args.extend(filter(lambda x: x, options))
+
     def flash(self, file_path: str, do_verify: bool) -> bool:
         if os.altsep:
             file_path = file_path.replace(os.sep, os.altsep)
@@ -93,7 +107,12 @@ class OpenOCDProgrammer(Programmer):
         if self.interface.additional_args:
             for additional_arg in self.interface.additional_args:
                 self._add_command(openocd_launch_params, additional_arg)
-        self._add_file(openocd_launch_params, TARGET_CONFIG_FILE)
+
+        if not self.mcu_interface_config:
+            self.logger.error("No target configuration file provided")
+            return False
+        self._add_file(openocd_launch_params, self.mcu_interface_config)
+
         self._add_command(openocd_launch_params, "init")
         program_params = [
             "program",
@@ -130,7 +149,7 @@ class OpenOCDProgrammer(Programmer):
         if self.interface.additional_args:
             for additional_arg in self.interface.additional_args:
                 self._add_command(openocd_launch_params, additional_arg)
-        self._add_file(openocd_launch_params, TARGET_CONFIG_FILE)
+        self._add_file(openocd_launch_params, self.mcu_interface_config)
         self._add_command(openocd_launch_params, "init")
         self._add_command(openocd_launch_params, "exit")
 
@@ -350,6 +369,12 @@ class BlackmagicProgrammer(Programmer):
     def get_name(self) -> str:
         return self.name
 
+    def set_mcu_interface_config(self, mcu_interface_config: str):
+        pass
+
+    def add_programming_commands(self, options):
+        pass
+
 
 ####################
 
@@ -377,7 +402,11 @@ network_flash_interfaces: list[Programmer] = [
     BlackmagicProgrammer(blackmagic_find_networked, "blackmagic_wifi")
 ]
 
-all_flash_interfaces = [*local_flash_interfaces, *network_flash_interfaces]
+all_flash_interfaces = [
+    *local_flash_interfaces,
+    *network_flash_interfaces,
+]
+
 
 ####################
 
@@ -416,6 +445,17 @@ class Main(App):
             default=self.AUTO_INTERFACE,
             help="Serial number or port of the programmer",
         )
+        self.parser.add_argument(
+            "--target",
+            type=str,
+            default="target/stm32u5x.cfg",
+            help="OpenOCD interface file for acessing target MPU",
+        )
+        self.parser.add_argument(
+            "--extra-commands",
+            action="append",
+            default=[],
+        )
         self.parser.set_defaults(func=self.flash)
 
     def _search_interface(self, interface_list: list[Programmer]) -> list[Programmer]:
@@ -428,6 +468,9 @@ class Main(App):
                 self.logger.debug(f"Trying {name} with {serial}")
             else:
                 self.logger.debug(f"Trying {name}")
+
+            p.set_mcu_interface_config(self.args.target)
+            p.add_programming_commands(self.args.extra_commands)
 
             if p.probe():
                 self.logger.debug(f"Found {name}")
@@ -473,6 +516,7 @@ class Main(App):
                 return 1
 
         interface = available_interfaces.pop(0)
+        interface.set_mcu_interface_config(self.args.target)
 
         if self.args.serial != self.AUTO_INTERFACE:
             interface.set_serial(self.args.serial)

@@ -1,1 +1,0 @@
-openocd -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32g0x.cfg -c "reset_config srst_only srst_nogate connect_assert_srst" -c "init" -c "program keys.bin reset exit 0x08000000"

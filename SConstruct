@@ -31,6 +31,15 @@ coreenv = SConscript(
     exports={"VAR_ENV": cmd_environment},
     toolpath=["#/scripts/fbt_tools"],
 )
+
+keyboard_env = coreenv.Clone()
+SConscript(
+    "#companions/keyboard/SConscript",
+    exports={"ENV": keyboard_env},
+    variant_dir=Dir("#build/companions/keyboard"),
+    duplicate=0,
+)
+
 SConscript("site_scons/cc.scons", exports={"ENV": coreenv})
 
 # Create a separate "dist" environment and add construction envs to it
@@ -103,7 +112,9 @@ fap_deploy = distenv.PhonyTarget(
 )
 Depends(fap_deploy, firmware_env["FW_RESOURCES_MANIFEST"])
 
-firmware_flash = distenv.AddFwFlashTarget(firmware_env)
+firmware_flash = distenv.AddFwFlashTarget(
+    firmware_env, FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg"
+)
 distenv.Alias("flash", firmware_flash)
 
 distenv.PhonyTarget(

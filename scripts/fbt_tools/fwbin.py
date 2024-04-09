@@ -52,7 +52,7 @@ def generate(env):
                             "-a",
                             "${IMAGE_BASE_ADDRESS}",
                             "-l",
-                            "Flipper Zero F${TARGET_HW}",
+                            "Flipper F${TARGET_HW}",
                         ]
                     ],
                     "${DFUCOMSTR}",

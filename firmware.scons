@@ -71,6 +71,7 @@ env = ENV.Clone(
     _APP_ICONS=None,
     APPS=[],
     EXTRA_EXT_APPS=[],
+    FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg",
 )
 
 env.PreConfigureFwEnvionment()
