@@ -77,6 +77,11 @@ vars.AddVariables(
         tuple(),
     ),
     (
+        "OPENOCD_OPTS",
+        "Options to pass to OpenOCD",
+        "",
+    ),
+    (
         "FIRMWARE_APPS",
         "Map of (configuration_name->application_list)",
         {

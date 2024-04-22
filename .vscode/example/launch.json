@@ -37,7 +37,7 @@
             "svdFile": "./scripts/debug/STM32U5Gx.svd",
             "rtos": "FreeRTOS",
             "configFiles": [
-                "interface/stlink-dap.cfg",
+                "interface/cmsis-dap.cfg",
                 "./scripts/debug/stm32u5x.cfg"
             ],
             "postAttachCommands": [
@@ -79,7 +79,7 @@
             "device": "cmsis-dap",
             "svdFile": "./scripts/debug/STM32U5Gx.svd",
             "configFiles": [
-                "interface/stlink-dap.cfg",
+                "interface/cmsis-dap.cfg",
                 "./scripts/debug/stm32u5x.cfg"
             ],
             "postAttachCommands": [
