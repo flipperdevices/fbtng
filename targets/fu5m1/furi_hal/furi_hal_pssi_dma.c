@@ -4,6 +4,7 @@
 #include "furi_hal_resources.h"
 #include "furi_hal_gpio.h"
 #include "furi_hal_interrupt.h"
+#include "furi_hal_dma.h"
 
 #include "furi_hal_pssi_def.h"
 
@@ -18,6 +19,7 @@ typedef struct {
     uint8_t* buf;
     uint16_t buf_size;
     uint32_t dma_link_reg[8];
+    uint32_t dma_channel;
     FuriHalPssiRxCallback callback;
     void* context;
 } FuriHalPssi;
@@ -73,30 +75,30 @@ static void furi_hal_pssi_dma_pin_deinit(void) {
 
 void furi_hal_pssi_dma_isr(void* context) {
     //Check if User Setting Error flag is active
-    if(LL_DMA_IsActiveFlag_USE(GPDMA1, LL_DMA_CHANNEL_1) != 0U) {
+    if(LL_DMA_IsActiveFlag_USE(GPDMA1, furi_hal_pssi.dma_channel) != 0U) {
         //Clear User Setting Error flag
-        LL_DMA_ClearFlag_USE(GPDMA1, LL_DMA_CHANNEL_1);
+        LL_DMA_ClearFlag_USE(GPDMA1, furi_hal_pssi.dma_channel);
         furi_crash("PSSI: GPDMA User Setting Error");
     }
 
     //Check if Update Link Error flag is active
-    if(LL_DMA_IsActiveFlag_ULE(GPDMA1, LL_DMA_CHANNEL_1) != 0U) {
+    if(LL_DMA_IsActiveFlag_ULE(GPDMA1, furi_hal_pssi.dma_channel) != 0U) {
         //Clear Update Link Error flag
-        LL_DMA_ClearFlag_ULE(GPDMA1, LL_DMA_CHANNEL_1);
+        LL_DMA_ClearFlag_ULE(GPDMA1, furi_hal_pssi.dma_channel);
         furi_crash("PSSI: GPDMA Update Link Error");
     }
 
     //Check if Data Transfer Error flag is active
-    if(LL_DMA_IsActiveFlag_DTE(GPDMA1, LL_DMA_CHANNEL_1) != 0U) {
+    if(LL_DMA_IsActiveFlag_DTE(GPDMA1, furi_hal_pssi.dma_channel) != 0U) {
         //Clear Data Transfer Error flag
-        LL_DMA_ClearFlag_DTE(GPDMA1, LL_DMA_CHANNEL_1);
+        LL_DMA_ClearFlag_DTE(GPDMA1, furi_hal_pssi.dma_channel);
         furi_crash("PSSI: GPDMA Data Transfer Error");
     }
 
     //Check if Transfer Complete flag is active
-    if(LL_DMA_IsActiveFlag_TC(GPDMA1, LL_DMA_CHANNEL_1) != 0U) {
+    if(LL_DMA_IsActiveFlag_TC(GPDMA1, furi_hal_pssi.dma_channel) != 0U) {
         //Clear Transfer Complete flag
-        LL_DMA_ClearFlag_TC(GPDMA1, LL_DMA_CHANNEL_1);
+        LL_DMA_ClearFlag_TC(GPDMA1, furi_hal_pssi.dma_channel);
         if(furi_hal_pssi.callback) {
             furi_hal_pssi.callback(
                 furi_hal_pssi.buf + furi_hal_pssi.buf_size / 2,
@@ -106,9 +108,9 @@ void furi_hal_pssi_dma_isr(void* context) {
     }
 
     //Check if Transfer Complete flag is active
-    if(LL_DMA_IsActiveFlag_HT(GPDMA1, LL_DMA_CHANNEL_1) != 0U) {
+    if(LL_DMA_IsActiveFlag_HT(GPDMA1, furi_hal_pssi.dma_channel) != 0U) {
         //Clear Half Transmit flag
-        LL_DMA_ClearFlag_HT(GPDMA1, LL_DMA_CHANNEL_1);
+        LL_DMA_ClearFlag_HT(GPDMA1, furi_hal_pssi.dma_channel);
         if(furi_hal_pssi.callback) {
             furi_hal_pssi.callback(
                 furi_hal_pssi.buf, furi_hal_pssi.buf_size / 2, furi_hal_pssi.context);
@@ -118,6 +120,7 @@ void furi_hal_pssi_dma_isr(void* context) {
 
 static void furi_hal_pssi_dma_init(void) {
     LL_DMA_InitTypeDef dma_init_strust = {0};
+
     furi_hal_pssi.dma_link_reg[0] = (uint32_t)furi_hal_pssi.buf;
 
     dma_init_strust.SrcAddress = (uint32_t)&PSSI->DR;
@@ -150,23 +153,26 @@ static void furi_hal_pssi_dma_init(void) {
     dma_init_strust.LinkStepMode = LL_DMA_LSM_FULL_EXECUTION;
     dma_init_strust.LinkedListBaseAddr = (uint32_t)&furi_hal_pssi.dma_link_reg[0];
     dma_init_strust.LinkedListAddrOffset = (uint32_t)&furi_hal_pssi.dma_link_reg[0];
-    LL_DMA_Init(GPDMA1, LL_DMA_CHANNEL_1, &dma_init_strust);
-    LL_DMA_EnableCDARUpdate(GPDMA1, LL_DMA_CHANNEL_1);
-    //LL_DMA_EnableCSARUpdate(GPDMA1,LL_DMA_CHANNEL_1);
+    LL_DMA_Init(GPDMA1, furi_hal_pssi.dma_channel, &dma_init_strust);
+    LL_DMA_EnableCDARUpdate(GPDMA1, furi_hal_pssi.dma_channel);
+    //LL_DMA_EnableCSARUpdate(GPDMA1,furi_hal_pssi.dma_channel);
 
     //if needed to enable DMA interrupts
-    LL_DMA_EnableIT_USE(GPDMA1, LL_DMA_CHANNEL_1);
-    LL_DMA_EnableIT_ULE(GPDMA1, LL_DMA_CHANNEL_1);
-    LL_DMA_EnableIT_DTE(GPDMA1, LL_DMA_CHANNEL_1);
+    LL_DMA_EnableIT_USE(GPDMA1, furi_hal_pssi.dma_channel);
+    LL_DMA_EnableIT_ULE(GPDMA1, furi_hal_pssi.dma_channel);
+    LL_DMA_EnableIT_DTE(GPDMA1, furi_hal_pssi.dma_channel);
 
-    LL_DMA_EnableIT_TC(GPDMA1, LL_DMA_CHANNEL_1);
-    LL_DMA_EnableIT_HT(GPDMA1, LL_DMA_CHANNEL_1);
+    LL_DMA_EnableIT_TC(GPDMA1, furi_hal_pssi.dma_channel);
+    LL_DMA_EnableIT_HT(GPDMA1, furi_hal_pssi.dma_channel);
 
     //DMA1_Channel1_IRQn interrupt configuration
-    furi_hal_interrupt_set_isr(FuriHalInterruptIdGPDMA1Channel1, furi_hal_pssi_dma_isr, NULL);
+    furi_hal_interrupt_set_isr(
+        furi_hal_dma_get_gpdma_interrupt_id(furi_hal_pssi.dma_channel),
+        furi_hal_pssi_dma_isr,
+        NULL);
 
     //Start DMA Channel
-    LL_DMA_EnableChannel(GPDMA1, LL_DMA_CHANNEL_1);
+    LL_DMA_EnableChannel(GPDMA1, furi_hal_pssi.dma_channel);
 }
 
 void furi_hal_pssi_set_rx_callback(FuriHalPssiRxCallback callback, void* context) {
@@ -174,8 +180,12 @@ void furi_hal_pssi_set_rx_callback(FuriHalPssiRxCallback callback, void* context
     furi_hal_pssi.context = context;
 }
 
-void furi_hal_pssi_init_bus8line(uint16_t buf_size) {
+bool furi_hal_pssi_init_bus8line(uint16_t buf_size) {
     furi_hal_pssi.buf = malloc(buf_size);
+
+    if(!furi_hal_dma_allocate_gpdma_channel(&furi_hal_pssi.dma_channel)) {
+        return false;
+    }
     furi_hal_pssi.buf_size = buf_size;
 
     //PSSI Init pin
@@ -196,18 +206,23 @@ void furi_hal_pssi_init_bus8line(uint16_t buf_size) {
         PSSI_CR_DERDYCFG | PSSI_CR_EDM | PSSI_CR_DEPOL | PSSI_CR_RDYPOL,
         FURI_HAL_PSSI_CONTROL_SIGNAL | FURI_HAL_PSSI_DATA_ENABLE_POLARITY |
             FURI_HAL_PSSI_READY_POLARITY | FURI_HAL_PSSI_BUS_DATA);
+    return true;
 }
 
 void furi_hal_pssi_deinit(void) {
     //Stop GDMA
-    LL_DMA_DisableChannel(GPDMA1, LL_DMA_CHANNEL_1);
-    furi_hal_interrupt_set_isr(FuriHalInterruptIdGPDMA1Channel1, NULL, NULL);
+    LL_DMA_DisableChannel(GPDMA1, furi_hal_pssi.dma_channel);
+    furi_hal_interrupt_set_isr(
+        furi_hal_dma_get_gpdma_interrupt_id(furi_hal_pssi.dma_channel), NULL, NULL);
 
     //PSSI bus disable
     furi_hal_bus_disable(FuriHalBusDCMI_PSSI);
 
     //PSSI deinit pin
     furi_hal_pssi_dma_pin_deinit();
+
+    //Free GPDMA channel
+    furi_hal_dma_free_gpdma_channel(furi_hal_pssi.dma_channel);
 
     free(furi_hal_pssi.buf);
 }
@@ -216,8 +231,8 @@ void furi_hal_pssi_dma_receive_stop(void) {
     //PSSI disable DMA Request
     PSSI->CR |= FURI_HAL_PSSI_CR_DMA_ENABLE;
 
-    //Stop GDMA Channel 1
-    LL_DMA_DisableChannel(GPDMA1, LL_DMA_CHANNEL_1);
+    //Stop GDMA Channel
+    LL_DMA_DisableChannel(GPDMA1, furi_hal_pssi.dma_channel);
 
     //PSSI disable
     PSSI->CR &= (~PSSI_CR_ENABLE);
