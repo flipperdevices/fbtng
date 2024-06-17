@@ -29,12 +29,21 @@ typedef enum {
     FuriHalInterruptIdGPDMA1Channel14,
     FuriHalInterruptIdGPDMA1Channel15,
 
-    //LPDMA
+    // LPDMA
     FuriHalInterruptIdLPDMA1Channel0,
     FuriHalInterruptIdLPDMA1Channel1,
     FuriHalInterruptIdLPDMA1Channel2,
     FuriHalInterruptIdLPDMA1Channel3,
-    
+
+    // USART
+    FuriHalInterruptIdUsart1,
+    FuriHalInterruptIdUsart2,
+    FuriHalInterruptIdUsart3,
+    FuriHalInterruptIdUsart6,
+
+    // UART
+    FuriHalInterruptIdUart4,
+    FuriHalInterruptIdUart5,
 
     // RCC
     FuriHalInterruptIdRcc,

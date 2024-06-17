@@ -42,6 +42,16 @@ const IRQn_Type furi_hal_interrupt_irqn[FuriHalInterruptIdMax] = {
     [FuriHalInterruptIdLPDMA1Channel2] = LPDMA1_Channel2_IRQn,
     [FuriHalInterruptIdLPDMA1Channel3] = LPDMA1_Channel3_IRQn,
 
+    // USART
+    [FuriHalInterruptIdUsart1] = USART1_IRQn,
+    [FuriHalInterruptIdUsart2] = USART2_IRQn,
+    [FuriHalInterruptIdUsart3] = USART3_IRQn,
+    [FuriHalInterruptIdUsart6] = USART6_IRQn,
+
+    // UART
+    [FuriHalInterruptIdUart4] = UART4_IRQn,
+    [FuriHalInterruptIdUart5] = UART5_IRQn,
+
     // RCC
     [FuriHalInterruptIdRcc] = RCC_IRQn,
 };
@@ -224,6 +234,30 @@ void LPDMA1_Channel2_IRQHandler() {
 
 void LPDMA1_Channel3_IRQHandler() {
     furi_hal_interrupt_call(FuriHalInterruptIdLPDMA1Channel3);
+}
+
+void USART1_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdUsart1);
+}
+
+void USART2_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdUsart2);
+}
+
+void USART3_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdUsart3);
+}
+
+void USART6_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdUsart6);
+}
+
+void UART4_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdUart4);
+}
+
+void UART5_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdUart5);
 }
 
 void TAMP_IRQHandler(void) {

@@ -14,6 +14,13 @@ extern const GpioPin gpio_swdio;
 extern const GpioPin gpio_swclk;
 extern const GpioPin gpio_led;
 extern const GpioPin gpio_log_usart_tx;
+extern const GpioPin gpio_log_usart_rx;
+
+extern const GpioPin gpio_uart5_tx;
+extern const GpioPin gpio_uart5_rx;
+
+extern const GpioPin gpio_test_pc0;
+extern const GpioPin gpio_test_pc1;
 
 extern const GpioPin gpio_octospi1_psram_io0;
 extern const GpioPin gpio_octospi1_psram_io1;

@@ -9,6 +9,13 @@ const GpioPin gpio_sd_card_power_switch = {.port = GPIOI, .pin = LL_GPIO_PIN_13}
 const GpioPin gpio_sd_card_detect = {.port = GPIOI, .pin = LL_GPIO_PIN_14};
 const GpioPin gpio_led = {.port = GPIOA, .pin = LL_GPIO_PIN_7};
 const GpioPin gpio_log_usart_tx = {.port = GPIOA, .pin = LL_GPIO_PIN_9};
+const GpioPin gpio_log_usart_rx = {.port = GPIOA, .pin = LL_GPIO_PIN_10};
+
+const GpioPin gpio_uart5_tx = {.port = GPIOF, .pin = LL_GPIO_PIN_3};
+const GpioPin gpio_uart5_rx = {.port = GPIOF, .pin = LL_GPIO_PIN_4};
+
+const GpioPin gpio_test_pc0 = {.port = GPIOC, .pin = LL_GPIO_PIN_0};
+const GpioPin gpio_test_pc1 = {.port = GPIOC, .pin = LL_GPIO_PIN_1};
 
 const GpioPin gpio_octospi1_psram_io0 = {.port = GPIOE, .pin = LL_GPIO_PIN_12};
 const GpioPin gpio_octospi1_psram_io1 = {.port = GPIOE, .pin = LL_GPIO_PIN_13};
