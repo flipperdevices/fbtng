@@ -9,6 +9,7 @@
 #include "furi_hal_sdmmc.h"
 #include "furi_hal_resources.h"
 #include "furi_hal_psram.h"
+#include "furi_hal_usb.h"
 #include "furi_hal_pssi_dma.h"
 
 #ifdef __cplusplus

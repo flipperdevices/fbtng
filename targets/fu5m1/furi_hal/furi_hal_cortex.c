@@ -1,7 +1,10 @@
 #include <furi_hal_cortex.h>
+#include <furi_hal_bus.h>
 #include <furi.h>
 
 #include <stm32u5xx.h>
+#include <stm32u5xx_ll_icache.h>
+#include <stm32u5xx_ll_dcache.h>
 
 #define FURI_HAL_CORTEX_INSTRUCTIONS_PER_MICROSECOND (SystemCoreClock / 1000000)
 
@@ -12,6 +15,17 @@ void furi_hal_cortex_init_early(void) {
 
     /* Enable instruction prefetch */
     SET_BIT(FLASH->ACR, FLASH_ACR_PRFTEN);
+
+    /* Enable iCache*/
+    LL_ICACHE_SetMode(LL_ICACHE_1WAY);
+    LL_ICACHE_Enable();
+
+#ifdef DCACHE_ENABLE
+    /* Enable dCache*/
+    furi_hal_bus_enable(FuriHalBusDCACHE1);
+    LL_DCACHE_SetReadBurstType(DCACHE1, LL_DCACHE_READ_BURST_WRAP);
+    LL_DCACHE_Enable(DCACHE1);
+#endif
 }
 
 void furi_hal_cortex_delay_us(uint32_t microseconds) {
@@ -42,8 +56,7 @@ bool furi_hal_cortex_timer_is_expired(FuriHalCortexTimer cortex_timer) {
 }
 
 void furi_hal_cortex_timer_wait(FuriHalCortexTimer cortex_timer) {
-    while(!furi_hal_cortex_timer_is_expired(cortex_timer))
-        ;
+    while(!furi_hal_cortex_timer_is_expired(cortex_timer));
 }
 
 // // Duck ST

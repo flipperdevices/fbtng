@@ -18,6 +18,7 @@ libs = env.BuildModules(
         "toolbox",
         "print",
         "fatfs",
+        "tinyusb",
     ],
 )
 

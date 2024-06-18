@@ -14,6 +14,8 @@ extern const GpioPin gpio_swdio;
 extern const GpioPin gpio_swclk;
 extern const GpioPin gpio_led;
 extern const GpioPin gpio_log_usart_tx;
+extern const GpioPin gpio_usb_dm;
+extern const GpioPin gpio_usb_dp;
 extern const GpioPin gpio_log_usart_rx;
 
 extern const GpioPin gpio_uart5_tx;
@@ -63,7 +65,6 @@ extern const GpioPin gpio_pssi_d12;
 extern const GpioPin gpio_pssi_d13;
 extern const GpioPin gpio_pssi_d14;
 extern const GpioPin gpio_pssi_d15;
-
 
 void furi_hal_resources_init_early(void);
 

@@ -25,6 +25,7 @@
         "furi",
         "freertos",
         "fatfs",
-        "toolbox"
+        "toolbox",
+        "tinyusb"
     ]
 }

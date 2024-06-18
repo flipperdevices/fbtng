@@ -36,6 +36,9 @@ const GpioPin gpio_sd_card_d3 = {.port = GPIOC, .pin = LL_GPIO_PIN_11};
 const GpioPin gpio_sd_card_ck = {.port = GPIOC, .pin = LL_GPIO_PIN_12};
 const GpioPin gpio_sd_card_cmd = {.port = GPIOD, .pin = LL_GPIO_PIN_2};
 
+const GpioPin gpio_usb_dm = {.port = GPIOA, .pin = LL_GPIO_PIN_11};
+const GpioPin gpio_usb_dp = {.port = GPIOA, .pin = LL_GPIO_PIN_12};
+
 const GpioPin gpio_pssi_pdck = {.port = GPIOH, .pin = LL_GPIO_PIN_5};
 const GpioPin gpio_pssi_rdy = {.port = GPIOI, .pin = LL_GPIO_PIN_5};
 const GpioPin gpio_pssi_de = {.port = GPIOH, .pin = LL_GPIO_PIN_8};
@@ -55,7 +58,6 @@ const GpioPin gpio_pssi_d12 = {.port = GPIOF, .pin = LL_GPIO_PIN_6};
 const GpioPin gpio_pssi_d13 = {.port = GPIOI, .pin = LL_GPIO_PIN_0};
 const GpioPin gpio_pssi_d14 = {.port = GPIOH, .pin = LL_GPIO_PIN_4};
 const GpioPin gpio_pssi_d15 = {.port = GPIOF, .pin = LL_GPIO_PIN_9};
-
 
 static inline void furi_hal_nvic_enable(IRQn_Type irqn) {
     NVIC_SetPriority(irqn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 10, 0));
