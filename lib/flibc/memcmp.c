@@ -41,7 +41,7 @@ QUICKREF
 #define TOO_SMALL(LEN) ((LEN) < LBLOCKSIZE)
 
 int memcmp(const void* m1, const void* m2, size_t n) {
-#if defined(PREFER_SIZE_OVER_SPEED) || defined(__OPTIMIZE_SIZE__)
+#if defined(PREFER_SIZE_OVER_SPEED) /* || defined(__OPTIMIZE_SIZE__) */
     unsigned char* s1 = (unsigned char*)m1;
     unsigned char* s2 = (unsigned char*)m2;
 

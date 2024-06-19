@@ -158,7 +158,7 @@ static void furi_hal_sdmmc_gpio_init(void) {
     furi_hal_gpio_init(&gpio_sd_card_detect, GpioModeInterruptRiseFall, GpioPullNo, GpioSpeedLow);
 }
 
-bool furi_hal_is_sd_present(void) {
+bool furi_hal_sdmmc_is_sd_present(void) {
     bool sd_present = (furi_hal_gpio_read(&gpio_sd_card_detect) == 0);
     return sd_present;
 }
@@ -266,6 +266,7 @@ static uint32_t sdmmc_power_on(void) {
     errorstate = SDMMC_CmdOperCond(FURI_SDMMC_BLOCK);
     if(errorstate == SDMMC_ERROR_CMD_RSP_TIMEOUT) /* No response to CMD8 */
     {
+        FURI_LOG_D(TAG, "No response to CMD8, assume SD card v1.x");
         sdmmc1.info.version = FuriHalSdVersion1;
 
         /* CMD0: GO_IDLE_STATE */
@@ -274,6 +275,7 @@ static uint32_t sdmmc_power_on(void) {
             return errorstate;
         }
     } else {
+        FURI_LOG_D(TAG, "Response to CMD8, assume SD card v2.x");
         sdmmc1.info.version = FuriHalSdVersion2;
 
         /* SEND CMD55 APP_CMD with RCA as 0 */

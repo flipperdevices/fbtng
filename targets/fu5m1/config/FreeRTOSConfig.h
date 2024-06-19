@@ -6,7 +6,7 @@
 #endif
 
 #ifndef CMSIS_device_header
-#define CMSIS_device_header "stm32u5xx.h"
+#define CMSIS_device_header "stm32u5xx_safe.h"
 #endif /* CMSIS_device_header */
 
 #include CMSIS_device_header

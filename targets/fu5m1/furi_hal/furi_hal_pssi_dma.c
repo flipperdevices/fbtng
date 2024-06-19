@@ -7,6 +7,7 @@
 #include "furi_hal_dma.h"
 
 #include "furi_hal_pssi_def.h"
+#include <stm32u5xx_safe.h>
 
 #define FURI_HAL_PSSI_DATA_WIDTH (FURI_HAL_PSSI_8BITS)
 #define FURI_HAL_PSSI_BUS_DATA (FURI_HAL_PSSI_8LINES)

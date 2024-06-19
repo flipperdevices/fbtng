@@ -1,7 +1,7 @@
 #pragma once
-
-#include "stm32u5xx.h"
+#include <stdint.h>
 #include <stdbool.h>
+
 
 typedef void (*FuriHalPssiRxCallback)(uint8_t* buf, uint16_t size, void* context);
 

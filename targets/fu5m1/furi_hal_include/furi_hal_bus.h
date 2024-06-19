@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#include "stm32u5xx.h"
+#include <stm32u5xx_safe.h>
 #include "stdbool.h"
 
 typedef enum {

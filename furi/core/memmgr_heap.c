@@ -45,6 +45,16 @@
 /* Furi heap extension */
 #include <m-dict.h>
 
+/* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
+all the API functions to use the MPU wrappers.  That should only be done when
+task.h is included from an application file. */
+#define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+
+#include <FreeRTOS.h>
+#include <task.h>
+
+#undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+
 /* Allocation tracking types */
 DICT_DEF2(MemmgrHeapAllocDict, uint32_t, uint32_t) //-V1048
 
@@ -54,17 +64,6 @@ DICT_DEF2( //-V1048
     M_DEFAULT_OPLIST,
     MemmgrHeapAllocDict_t,
     DICT_OPLIST(MemmgrHeapAllocDict))
-
-/* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
-all the API functions to use the MPU wrappers.  That should only be done when
-task.h is included from an application file. */
-#define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
-
-// FreeRTOS includes stm32u5xx.h, that breaks the mlib macro
-#include <FreeRTOS.h>
-#include <task.h>
-
-#undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 #ifdef HEAP_PRINT_DEBUG
 #error This feature is broken, logging transport must be replaced with RTT

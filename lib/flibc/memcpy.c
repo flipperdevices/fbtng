@@ -45,7 +45,7 @@ QUICKREF
 
 void* __inhibit_loop_to_libcall
     memcpy(void* __restrict dst0, const void* __restrict src0, size_t len0) {
-#if defined(PREFER_SIZE_OVER_SPEED) || defined(__OPTIMIZE_SIZE__)
+#if defined(PREFER_SIZE_OVER_SPEED) /* || defined(__OPTIMIZE_SIZE__) */
     char* dst = (char*)dst0;
     char* src = (char*)src0;
 

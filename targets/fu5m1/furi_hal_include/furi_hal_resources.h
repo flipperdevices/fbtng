@@ -3,8 +3,6 @@
 #include <furi.h>
 #include <furi_hal_gpio.h>
 
-#include <stm32u5xx.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

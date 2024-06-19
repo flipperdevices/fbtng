@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stm32u5xx.h"
 #include "stm32u5xx_ll_dlyb.h"
+#include <stm32u5xx_safe.h>
 #include <stdbool.h>
 
 #define FURI_HAL_OSPI_FUNCTIONAL_MODE_INDIRECT_WRITE ((uint32_t)0x00000000)         /*!< Indirect write mode    */

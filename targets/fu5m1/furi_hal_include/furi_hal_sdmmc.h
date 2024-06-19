@@ -42,7 +42,7 @@ void furi_hal_sdmmc_init(void);
 
 void furi_hal_sdmmc_set_presence_callback(FuriHalSdMmcPresentCallback callback, void* context);
 
-bool furi_hal_is_sd_present(void);
+bool furi_hal_sdmmc_is_sd_present(void);
 
 bool furi_hal_sdmmc_init_card(void);
 
