@@ -208,10 +208,10 @@ sources.extend(
 # print(fwenv.Dump())
 
 # Full firmware definition
+fwenv.Append(LIBS=fwenv["TARGET_CFG"].linker_dependencies)
 fwelf = fwenv["FW_ELF"] = fwenv.Program(
     "${FIRMWARE_BUILD_CFG}",
     sources,
-    LIBS=fwenv["TARGET_CFG"].linker_dependencies,
 )
 
 # Firmware depends on everything child builders returned

@@ -1,0 +1,20 @@
+Import("env")
+LIB_FOLDER = "canvas"
+
+env.Append(
+    CPPPATH=[
+        "#/lib/" + LIB_FOLDER,
+    ],
+)
+
+
+libenv = env.Clone(FW_LIB_NAME=LIB_FOLDER)
+libenv.ApplyLibFlags()
+
+
+sources = libenv.Glob(LIB_FOLDER + "/*.c", source=True)
+sources += libenv.Glob(LIB_FOLDER + "/font/*.c", source=True)
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

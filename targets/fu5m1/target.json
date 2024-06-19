@@ -19,8 +19,11 @@
     "sdk_symbols": "api_symbols.csv",
     "linker_dependencies": [
         "gcc",
+        "m",
         "print",
+        "canvas",
         "flipperu5m1",
+        "assets",
         "flibc",
         "furi",
         "freertos",

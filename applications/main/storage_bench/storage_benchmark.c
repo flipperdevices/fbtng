@@ -19,26 +19,29 @@ static void storage_benchmark_tree(Storage* storage) {
     FuriString* name;
     name = furi_string_alloc();
 
+    uint32_t total_files = 0;
+    uint32_t total_dirs = 0;
+
+    BENCHMARK_PRINT("Listing /ext directory");
+
     if(dir_walk_open(dir_walk, "/ext")) {
         FileInfo fileinfo;
-        bool read_done = false;
-
         while(dir_walk_read(dir_walk, name, &fileinfo) == DirWalkOK) {
-            read_done = true;
             if(file_info_is_dir(&fileinfo)) {
-                BENCHMARK_PRINT("\t[D] %s", furi_string_get_cstr(name));
+                // BENCHMARK_PRINT("\t[D] %s", furi_string_get_cstr(name));
+                total_dirs++;
             } else {
-                BENCHMARK_PRINT(
-                    "\t[F] %s %lub", furi_string_get_cstr(name), (uint32_t)(fileinfo.size));
+                // BENCHMARK_PRINT(
+                //     "\t[F] %s %lub", furi_string_get_cstr(name), (uint32_t)(fileinfo.size));
+                total_files++;
             }
-        }
-
-        if(!read_done) {
-            printf("\tEmpty\r\n");
         }
     } else {
         storage_benchmark_print_error(dir_walk_get_error(dir_walk));
     }
+
+    BENCHMARK_PRINT("Total files: %lu", total_files);
+    BENCHMARK_PRINT("Total directories: %lu", total_dirs);
 
     furi_string_free(name);
     dir_walk_free(dir_walk);
@@ -174,27 +177,12 @@ static void do_storage_benchmark(Storage* storage) {
     }
 }
 
-static void sd_mount_callback(const void* message, void* context) {
-    const StorageEvent* storage_event = message;
-
-    if(storage_event->type == StorageEventTypeCardMount) {
-        furi_assert(context);
-        FuriEventFlag* event = context;
-        furi_event_flag_set(event, StorageBenchmarkEventMount);
-    }
-}
-
 int32_t storage_benchmark(void* p) {
     UNUSED(p);
 
     Storage* storage = furi_record_open(RECORD_STORAGE);
-    FuriEventFlag* event = furi_event_flag_alloc();
-    furi_pubsub_subscribe(storage_get_pubsub(storage), sd_mount_callback, event);
-
-    while(true) {
-        do_storage_benchmark(storage);
-        furi_event_flag_wait(event, StorageBenchmarkEventMount, FuriFlagWaitAny, FuriWaitForever);
-    }
+    do_storage_benchmark(storage);
+    furi_record_close(RECORD_STORAGE);
 
     return 0;
 }

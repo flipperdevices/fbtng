@@ -83,6 +83,8 @@ DICT_DEF2( //-V1048
 extern const void __heap_start__;
 extern const void __heap_end__;
 uint8_t* ucHeap = (uint8_t*)&__heap_start__;
+const size_t heap_start = (size_t)&__heap_start__;
+const size_t heap_end = (size_t)&__heap_end__;
 
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
@@ -524,8 +526,8 @@ void vPortFree(void* pv) {
 
                 vTaskSuspendAll();
                 {
-                    furi_assert((size_t)pv >= SRAM1_BASE_NS);
-                    furi_assert((size_t)pv < SRAM1_BASE_NS + SRAM1_SIZE);
+                    furi_assert((size_t)pv >= heap_start);
+                    furi_assert((size_t)pv < heap_end);
                     furi_assert(pxLink->xBlockSize >= xHeapStructSize);
                     furi_assert((pxLink->xBlockSize - xHeapStructSize) < SRAM1_SIZE);
 

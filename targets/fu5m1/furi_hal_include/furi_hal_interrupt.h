@@ -35,6 +35,10 @@ typedef enum {
     FuriHalInterruptIdLPDMA1Channel2,
     FuriHalInterruptIdLPDMA1Channel3,
 
+    // GPU
+    FuriHalInterruptIdGPU2D,
+    FuriHalInterruptIdGPU2DError,
+
     // USART
     FuriHalInterruptIdUsart1,
     FuriHalInterruptIdUsart2,

@@ -1,0 +1,24 @@
+Import("env")
+
+env.Append(
+    CPPPATH=[
+        "#/lib/NemaGFX/include",
+    ],
+    LIBPATH=[
+        "#/lib/NemaGFX/lib/core/cortex_m33_NemaPVG/gcc",
+    ],
+    LIBS=[
+        "nemagfx-float-abi-hard",
+    ],
+)
+
+
+libenv = env.Clone(FW_LIB_NAME="nema_gfx")
+libenv.ApplyLibFlags()
+
+
+sources = []
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

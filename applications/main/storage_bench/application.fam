@@ -1,7 +1,7 @@
 App(
     appid="storage_benchmark",
     name="StorageBenchmarkSrv",
-    apptype=FlipperAppType.SERVICE,
+    apptype=FlipperAppType.APP,
     entry_point="storage_benchmark",
     stack_size=1024 * 4,
     order=70,

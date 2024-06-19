@@ -1,6 +1,7 @@
 #pragma once
 #include "stdbool.h"
 #include <stm32u5xx_ll_gpio.h>
+#include <stm32u5xx_safe.h>
 // #include <stm32u5xx_ll_system.h>
 // #include <stm32u5xx_ll_exti.h>
 

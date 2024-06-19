@@ -5,20 +5,20 @@
 
 #define TAG "CDC test"
 
-void cdc_tx_cb(uint8_t itf, void* context) {
+static void cdc_tx_cb(uint8_t itf, void* context) {
     UNUSED(itf);
     UNUSED(context);
     // FURI_LOG_I(TAG, "tx_cb");
 }
 
-void cdc_rx_cb(uint8_t itf, void* context) {
+static void cdc_rx_cb(uint8_t itf, void* context) {
     UNUSED(itf);
     FuriThreadId thread_id = context;
     furi_thread_flags_set(thread_id, 1);
     // FURI_LOG_I(TAG, "rx_cb");
 }
 
-void cdc_ctr_line(uint8_t itf, bool dtr, bool rts, void* context) {
+static void cdc_ctr_line(uint8_t itf, bool dtr, bool rts, void* context) {
     UNUSED(itf);
     UNUSED(context);
     FURI_LOG_I(TAG, "ctr_line dtr:%u rts:%u", dtr, rts);
@@ -27,7 +27,7 @@ void cdc_ctr_line(uint8_t itf, bool dtr, bool rts, void* context) {
 static const char parity_name[] = {'N', 'O', 'E', 'M', 'S'};
 static const char* stop_name[] = {"1", "1.5", "2"};
 
-void cdc_config(uint8_t itf, CdcLineCoding* config, void* context) {
+static void cdc_config(uint8_t itf, CdcLineCoding* config, void* context) {
     UNUSED(itf);
     UNUSED(context);
     furi_assert(config->parity <= 4);

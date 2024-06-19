@@ -18,7 +18,9 @@ libs = env.BuildModules(
         "toolbox",
         "print",
         "fatfs",
+        "nema_gfx",
         "tinyusb",
+        "canvas",
     ],
 )
 

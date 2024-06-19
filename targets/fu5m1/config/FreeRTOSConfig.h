@@ -149,12 +149,10 @@ standard names. */
 /* required only for Keil but does not hurt otherwise */
 #define configOVERRIDE_DEFAULT_TICK_CONFIGURATION 1
 
-/*
 // TODO: protect stack with MPU
 #define traceTASK_SWITCHED_IN()                                     \
     extern void furi_hal_mpu_set_stack_protection(uint32_t* stack); \
     furi_hal_mpu_set_stack_protection((uint32_t*)pxCurrentTCB->pxStack)
-*/
 
 #define portCLEAN_UP_TCB(pxTCB)                                   \
     extern void furi_thread_cleanup_tcb_event(TaskHandle_t task); \

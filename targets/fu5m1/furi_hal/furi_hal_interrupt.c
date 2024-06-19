@@ -42,6 +42,9 @@ const IRQn_Type furi_hal_interrupt_irqn[FuriHalInterruptIdMax] = {
     [FuriHalInterruptIdLPDMA1Channel2] = LPDMA1_Channel2_IRQn,
     [FuriHalInterruptIdLPDMA1Channel3] = LPDMA1_Channel3_IRQn,
 
+    // GPU
+    [FuriHalInterruptIdGPU2D] = GPU2D_IRQn,
+    [FuriHalInterruptIdGPU2DError] = GPU2D_ER_IRQn,
 
     // LPUART
     [FuriHalInterruptIdLPUART1] = LPUART1_IRQn,
@@ -285,6 +288,14 @@ void RCC_IRQHandler() {
     furi_hal_interrupt_call(FuriHalInterruptIdRcc);
 }
 
+void GPU2D_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdGPU2D);
+}
+
+void GPU2D_ER_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdGPU2DError);
+}
+
 void NMI_Handler() {
     if(LL_RCC_IsActiveFlag_HSECSS()) {
         LL_RCC_ClearFlag_HSECSS();
@@ -298,28 +309,117 @@ void HardFault_Handler() {
 }
 
 void MemManage_Handler() {
+    furi_log_puts("\r\n" _FURI_LOG_CLR_E "Mem fault:\r\n");
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_MLSPERR_Pos)) {
+        furi_log_puts(" - lazy stacking for exception entry\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_MSTKERR_Pos)) {
+        furi_log_puts(" - stacking for exception entry\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_MUNSTKERR_Pos)) {
+        furi_log_puts(" - unstacking for exception return\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_DACCVIOL_Pos)) {
+        furi_log_puts(" - data access violation\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_IACCVIOL_Pos)) {
+        furi_log_puts(" - instruction access violation\r\n");
+    }
+
     if(FURI_BIT(SCB->CFSR, SCB_CFSR_MMARVALID_Pos)) {
         uint32_t memfault_address = SCB->MMFAR;
+        furi_log_puts(" -- at 0x");
+        furi_log_puthex32(memfault_address);
+        furi_log_puts("\r\n");
+
         if(memfault_address < (1024 * 1024)) {
-            // from 0x00 to 1MB, see FuriHalMpuRegionNULL
-            furi_crash("NULL pointer dereference");
+            furi_log_puts(" -- NULL pointer dereference");
         } else {
             // write or read of MPU region 1 (FuriHalMpuRegionStack)
-            furi_crash("MPU fault, possibly stack overflow");
+            furi_log_puts(" -- MPU fault, possibly stack overflow");
         }
-    } else if(FURI_BIT(SCB->CFSR, SCB_CFSR_MSTKERR_Pos)) {
-        // push to stack on MPU region 1 (FuriHalMpuRegionStack)
-        furi_crash("MemManage fault, possibly stack overflow");
     }
+    furi_log_puts(_FURI_LOG_CLR_RESET "\r\n");
 
     furi_crash("MemManage");
 }
 
 void BusFault_Handler() {
+    furi_log_puts("\r\n" _FURI_LOG_CLR_E "Bus fault:\r\n");
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_LSPERR_Pos)) {
+        furi_log_puts(" - lazy stacking for exception entry\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_STKERR_Pos)) {
+        furi_log_puts(" - stacking for exception entry\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_UNSTKERR_Pos)) {
+        furi_log_puts(" - unstacking for exception return\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_IMPRECISERR_Pos)) {
+        furi_log_puts(" - imprecise data access\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_PRECISERR_Pos)) {
+        furi_log_puts(" - precise data access\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_IBUSERR_Pos)) {
+        furi_log_puts(" - instruction\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_BFARVALID_Pos)) {
+        uint32_t busfault_address = SCB->BFAR;
+        furi_log_puts(" -- at 0x");
+        furi_log_puthex32(busfault_address);
+        furi_log_puts("\r\n");
+
+        if(busfault_address == (uint32_t)NULL) {
+            furi_log_puts(" -- NULL pointer dereference");
+        }
+    }
+    furi_log_puts(_FURI_LOG_CLR_RESET "\r\n");
+
     furi_crash("BusFault");
 }
 
 void UsageFault_Handler() {
+    furi_log_puts("\r\n" _FURI_LOG_CLR_E "Usage fault\r\n");
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_DIVBYZERO_Pos)) {
+        furi_log_puts(" - division by zero\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_UNALIGNED_Pos)) {
+        furi_log_puts(" - unaligned access\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_STKOF_Pos)) {
+        furi_log_puts(" - stack overflow\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_NOCP_Pos)) {
+        furi_log_puts(" - no coprocessor\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_INVPC_Pos)) {
+        furi_log_puts(" - invalid PC\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_INVSTATE_Pos)) {
+        furi_log_puts(" - invalid state\r\n");
+    }
+
+    if(FURI_BIT(SCB->CFSR, SCB_CFSR_UNDEFINSTR_Pos)) {
+        furi_log_puts(" - undefined instruction\r\n");
+    }
+    furi_log_puts(_FURI_LOG_CLR_RESET);
+
     furi_crash("UsageFault");
 }
 

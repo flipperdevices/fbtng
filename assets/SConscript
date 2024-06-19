@@ -54,7 +54,8 @@ assetsenv.Alias("proto_ver", proto_ver)
 
 # Gather everything into a static lib
 # assets_parts = (icons, proto, dolphin_blocking, dolphin_internal, proto_ver)
-assets_parts = []
+# TODO: why [0]?
+assets_parts = (icons[0],)
 env.Replace(FW_ASSETS_HEADERS=assets_parts)
 
 assetslib = assetsenv.Library("${FW_LIB_NAME}", assets_parts)

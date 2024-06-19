@@ -5,6 +5,11 @@ App(
     provides=[
         "blinker",
         "storage",
-        "cdc_echo",
+        # "cdc_echo",
+        "cdc_screen",
+        "gui",
+        "input",
+        "desktop",
+        "loader",
     ],
 )

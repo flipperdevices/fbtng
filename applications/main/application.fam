@@ -3,6 +3,9 @@ App(
     name="Basic applications for main menu",
     apptype=FlipperAppType.METAPACKAGE,
     provides=[
+        "storage_benchmark",
+        "keypad_test",
+        "crash_test",
     ],
 )
 
@@ -10,6 +13,5 @@ App(
     appid="main_apps_on_start",
     name="On start hooks",
     apptype=FlipperAppType.METAPACKAGE,
-    provides=[
-    ],
+    provides=[],
 )
