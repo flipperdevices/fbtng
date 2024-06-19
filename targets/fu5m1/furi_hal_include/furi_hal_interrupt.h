@@ -48,6 +48,9 @@ typedef enum {
     // RCC
     FuriHalInterruptIdRcc,
 
+    // LPUART
+    FuriHalInterruptIdLPUART1,
+
     // Service value
     FuriHalInterruptIdMax,
 } FuriHalInterruptId;

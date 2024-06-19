@@ -42,6 +42,10 @@ const IRQn_Type furi_hal_interrupt_irqn[FuriHalInterruptIdMax] = {
     [FuriHalInterruptIdLPDMA1Channel2] = LPDMA1_Channel2_IRQn,
     [FuriHalInterruptIdLPDMA1Channel3] = LPDMA1_Channel3_IRQn,
 
+
+    // LPUART
+    [FuriHalInterruptIdLPUART1] = LPUART1_IRQn,
+
     // USART
     [FuriHalInterruptIdUsart1] = USART1_IRQn,
     [FuriHalInterruptIdUsart2] = USART2_IRQn,
@@ -236,6 +240,10 @@ void LPDMA1_Channel3_IRQHandler() {
     furi_hal_interrupt_call(FuriHalInterruptIdLPDMA1Channel3);
 }
 
+void LPUART1_IRQHandler() {
+    furi_hal_interrupt_call(FuriHalInterruptIdLPUART1);
+}
+  
 void USART1_IRQHandler() {
     furi_hal_interrupt_call(FuriHalInterruptIdUsart1);
 }

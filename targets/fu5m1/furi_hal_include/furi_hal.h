@@ -11,6 +11,7 @@
 #include "furi_hal_psram.h"
 #include "furi_hal_usb.h"
 #include "furi_hal_pssi_dma.h"
+#include "furi_hal_button.h"
 
 #ifdef __cplusplus
 extern "C" {

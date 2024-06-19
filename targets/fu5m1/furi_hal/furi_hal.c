@@ -55,6 +55,7 @@ void furi_hal_init(void) {
     // furi_hal_subghz_init();
     // furi_hal_nfc_init();
     // furi_hal_rfid_init();
+    furi_hal_button_init();
 }
 
 void furi_hal_switch(void* address) {
