@@ -8,18 +8,15 @@ const GpioPin gpio_swclk = {.port = GPIOA, .pin = LL_GPIO_PIN_14};
 const GpioPin gpio_sd_card_power_switch = {.port = GPIOI, .pin = LL_GPIO_PIN_13};
 const GpioPin gpio_sd_card_detect = {.port = GPIOI, .pin = LL_GPIO_PIN_14};
 const GpioPin gpio_led = {.port = GPIOA, .pin = LL_GPIO_PIN_7};
+
 const GpioPin gpio_log_usart_tx = {.port = GPIOA, .pin = LL_GPIO_PIN_9};
+const GpioPin gpio_log_usart_rx = {.port = GPIOA, .pin = LL_GPIO_PIN_10};
 
 const GpioPin gpio_half_lpuart_tx_rx = {.port = GPIOG, .pin = LL_GPIO_PIN_7};
 const GpioPin gpio_button_trig = {.port = GPIOC, .pin = LL_GPIO_PIN_13};
 
-const GpioPin gpio_log_usart_rx = {.port = GPIOA, .pin = LL_GPIO_PIN_10};
-
 const GpioPin gpio_uart5_tx = {.port = GPIOF, .pin = LL_GPIO_PIN_3};
 const GpioPin gpio_uart5_rx = {.port = GPIOF, .pin = LL_GPIO_PIN_4};
-
-const GpioPin gpio_test_pc0 = {.port = GPIOC, .pin = LL_GPIO_PIN_0};
-const GpioPin gpio_test_pc1 = {.port = GPIOC, .pin = LL_GPIO_PIN_1};
 
 const GpioPin gpio_octospi1_psram_io0 = {.port = GPIOE, .pin = LL_GPIO_PIN_12};
 const GpioPin gpio_octospi1_psram_io1 = {.port = GPIOE, .pin = LL_GPIO_PIN_13};
@@ -62,6 +59,45 @@ const GpioPin gpio_pssi_d12 = {.port = GPIOF, .pin = LL_GPIO_PIN_6};
 const GpioPin gpio_pssi_d13 = {.port = GPIOI, .pin = LL_GPIO_PIN_0};
 const GpioPin gpio_pssi_d14 = {.port = GPIOH, .pin = LL_GPIO_PIN_4};
 const GpioPin gpio_pssi_d15 = {.port = GPIOF, .pin = LL_GPIO_PIN_9};
+
+const GpioPin gpio_ext_pc0 = {.port = GPIOC, .pin = LL_GPIO_PIN_0};
+const GpioPin gpio_ext_pc1 = {.port = GPIOC, .pin = LL_GPIO_PIN_1};
+
+const GpioPinRecord gpio_pins[] = {
+    // 5V: 1
+    {.pin = &gpio_ext_pc0,
+     .name = "PC0",
+     //.channel = FuriHalAdcChannel1,
+     .number = 2,
+     .debug = false},
+    {.pin = &gpio_ext_pc1,
+     .name = "PC1",
+     //.channel = FuriHalAdcChannel12,
+     .number = 3,
+     .debug = false},
+    {.pin = &gpio_log_usart_tx,
+     .name = "PA9",
+     //.channel = FuriHalAdcChannelNone,
+     .number = 4,
+     .debug = true},
+    {.pin = &gpio_log_usart_rx,
+     .name = "PA10",
+     //.channel = FuriHalAdcChannelNone,
+     .number = 5,
+     .debug = true},
+    {.pin = &gpio_swdio,
+     .name = "PA13",
+     //.channel = FuriHalAdcChannelNone,
+     .number = 6,
+     .debug = true},
+    {.pin = &gpio_swclk,
+     .name = "PA14",
+     //.channel = FuriHalAdcChannel4,
+     .number = 7,
+     .debug = true},
+};
+
+const size_t gpio_pins_count = COUNT_OF(gpio_pins);
 
 static inline void furi_hal_nvic_enable(IRQn_Type irqn) {
     NVIC_SetPriority(irqn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 10, 0));

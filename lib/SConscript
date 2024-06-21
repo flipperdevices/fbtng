@@ -12,7 +12,6 @@ env.Append(
 
 libs = env.BuildModules(
     [
-        "flibc",
         "freertos",
         "mlib",
         "toolbox",

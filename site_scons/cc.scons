@@ -15,10 +15,10 @@ DEFINES = [
 LINKFLAGS = [
     # "-specs=nosys.specs",
     # "-specs=nano.specs",
-    "-ffreestanding",
-    "-nostdlib",
-    "-nostartfiles",
-    "-nolibc",
+    # "-ffreestanding",
+    # "-nostdlib",
+    # "-nostartfiles",
+    # "-nolibc",
 ]
 
 ENV.AppendUnique(

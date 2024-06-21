@@ -15,6 +15,10 @@ ENV.AppendUnique(
     LINKFLAGS=[
         "-specs=nano.specs",
         "-Wl,--gc-sections",
+        "-Wl,--wrap,_malloc_r",
+        "-Wl,--wrap,_free_r",
+        "-Wl,--wrap,_calloc_r",
+        "-Wl,--wrap,_realloc_r",
         "-n",
         "-Xlinker",
         "-Map=${TARGET}.map",

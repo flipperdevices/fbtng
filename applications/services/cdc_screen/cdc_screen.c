@@ -2,22 +2,14 @@
 #include <gui/gui.h>
 #include <gui/gui_i.h>
 #include "furi_hal_usb_cdc.h"
-#include "input_i.h"
+#include <input/input.h>
 
 #define TAG "CDC screen"
-
-static Input* input = NULL;
 
 static void cdc_tx_cb(uint8_t itf, void* context) {
     UNUSED(itf);
     UNUSED(context);
     // FURI_LOG_I(TAG, "tx_cb");
-}
-
-static uint8_t key_state = 0;
-
-static bool key_state_read(uint8_t key) {
-    return key_state & (1 << key);
 }
 
 static void cdc_rx_cb(uint8_t itf, void* context) {
@@ -31,22 +23,11 @@ static void cdc_rx_cb(uint8_t itf, void* context) {
     do {
         size = furi_hal_cdc_read(0, &data, 1);
         if(size > 0) {
-            uint8_t tmp_state = key_state;
-
+            InputKey key = (data & 0b01111111);
             if(data & 0b10000000) {
-                data = data & 0b01111111;
-                tmp_state |= 1 << data;
+                input_key_press(key);
             } else {
-                data = data & 0b01111111;
-                tmp_state &= ~(1 << data);
-            }
-
-            if(tmp_state != key_state) {
-                key_state = tmp_state;
-
-                if(input) {
-                    furi_thread_flags_set(input->thread_id, INPUT_THREAD_FLAG_ISR);
-                }
+                input_key_release(key);
             }
         }
     } while(size > 0);
@@ -126,113 +107,5 @@ int32_t cdc_screen(void* p) {
     gui_remove_framebuffer_callback(gui, commit_cdc, &frame_count);
     furi_hal_usb_set_config(NULL, NULL);
     furi_record_close(RECORD_GUI);
-    return 0;
-}
-
-static void input_press_timer_callback(void* arg) {
-    InputPinState* input_pin = arg;
-    InputEvent event;
-    event.sequence_source = INPUT_SEQUENCE_SOURCE_HARDWARE;
-    event.sequence_counter = input_pin->counter;
-    event.key = input_pin->key;
-    input_pin->press_counter++;
-    if(input_pin->press_counter == INPUT_LONG_PRESS_COUNTS) {
-        event.type = InputTypeLong;
-        furi_pubsub_publish(input->event_pubsub, &event);
-    } else if(input_pin->press_counter > INPUT_LONG_PRESS_COUNTS) {
-        input_pin->press_counter--;
-        event.type = InputTypeRepeat;
-        furi_pubsub_publish(input->event_pubsub, &event);
-    }
-}
-
-int32_t input_srv(void* p) {
-    UNUSED(p);
-    input = malloc(sizeof(Input));
-    input->thread_id = furi_thread_get_current_id();
-    input->event_pubsub = furi_pubsub_alloc();
-    furi_record_create(RECORD_INPUT_EVENTS, input->event_pubsub);
-
-#if INPUT_DEBUG
-    furi_hal_gpio_init_simple(&gpio_ext_pa4, GpioModeOutputPushPull);
-#endif
-
-#ifdef SRV_CLI
-    input->cli = furi_record_open(RECORD_CLI);
-    cli_add_command(input->cli, "input", CliCommandFlagParallelSafe, input_cli, input);
-#endif
-
-    input->pin_states = malloc(InputKeyMAX * sizeof(InputPinState));
-
-    for(size_t i = 0; i < InputKeyMAX; i++) {
-        // furi_hal_gpio_add_int_callback(input_pins[i].gpio, input_isr, NULL);
-        // input->pin_states[i].pin = &input_pins[i];
-        input->pin_states[i].key = i;
-        input->pin_states[i].state = key_state_read(i);
-        input->pin_states[i].debounce = INPUT_DEBOUNCE_TICKS_HALF;
-        input->pin_states[i].press_timer = furi_timer_alloc(
-            input_press_timer_callback, FuriTimerTypePeriodic, &input->pin_states[i]);
-        input->pin_states[i].press_counter = 0;
-    }
-
-    while(1) {
-        bool is_changing = false;
-        for(size_t i = 0; i < InputKeyMAX; i++) {
-            bool state = key_state_read(i);
-            if(state) {
-                if(input->pin_states[i].debounce < INPUT_DEBOUNCE_TICKS)
-                    input->pin_states[i].debounce += 1;
-            } else {
-                if(input->pin_states[i].debounce > 0) input->pin_states[i].debounce -= 1;
-            }
-
-            if(input->pin_states[i].debounce > 0 &&
-               input->pin_states[i].debounce < INPUT_DEBOUNCE_TICKS) {
-                is_changing = true;
-            } else if(input->pin_states[i].state != state) {
-                input->pin_states[i].state = state;
-
-                // Common state info
-                InputEvent event;
-                event.sequence_source = INPUT_SEQUENCE_SOURCE_HARDWARE;
-                event.key = i;
-
-                // Short / Long / Repeat timer routine
-                if(state) {
-                    input->counter++;
-                    input->pin_states[i].counter = input->counter;
-                    event.sequence_counter = input->pin_states[i].counter;
-                    furi_timer_start(input->pin_states[i].press_timer, INPUT_PRESS_TICKS);
-                } else {
-                    event.sequence_counter = input->pin_states[i].counter;
-                    furi_timer_stop(input->pin_states[i].press_timer);
-                    while(furi_timer_is_running(input->pin_states[i].press_timer))
-                        furi_delay_tick(1);
-                    if(input->pin_states[i].press_counter < INPUT_LONG_PRESS_COUNTS) {
-                        event.type = InputTypeShort;
-                        furi_pubsub_publish(input->event_pubsub, &event);
-                    }
-                    input->pin_states[i].press_counter = 0;
-                }
-
-                // Send Press/Release event
-                event.type = input->pin_states[i].state ? InputTypePress : InputTypeRelease;
-                furi_pubsub_publish(input->event_pubsub, &event);
-            }
-        }
-
-        if(is_changing) {
-#if INPUT_DEBUG
-            furi_hal_gpio_write(&gpio_ext_pa4, 1);
-#endif
-            furi_delay_tick(1);
-        } else {
-#if INPUT_DEBUG
-            furi_hal_gpio_write(&gpio_ext_pa4, 0);
-#endif
-            furi_thread_flags_wait(INPUT_THREAD_FLAG_ISR, FuriFlagWaitAny, FuriWaitForever);
-        }
-    }
-
     return 0;
 }

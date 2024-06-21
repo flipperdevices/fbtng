@@ -24,7 +24,6 @@
         "canvas",
         "flipperu5m1",
         "assets",
-        "flibc",
         "furi",
         "freertos",
         "fatfs",

@@ -62,6 +62,20 @@ const char* input_get_key_name(InputKey key);
  */
 const char* input_get_type_name(InputType type);
 
+/**
+ * @brief Set the pressed state of a key
+ * 
+ * @param key 
+ */
+void input_key_press(InputKey key);
+
+/**
+ * @brief Set the released state of a key
+ * 
+ * @param key 
+ */
+void input_key_release(InputKey key);
+
 #ifdef __cplusplus
 }
 #endif
