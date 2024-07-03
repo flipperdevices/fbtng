@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from flipper.app import App
 from serial.tools.list_ports_common import ListPortInfo
 
-# When adding an interface, also add it to SWD_TRANSPORT in fbt/ufbt options
+# When adding an interface, also add it to DEBUG_INTERFACE in fbt/ufbt options
 
 
 class Programmer(ABC):

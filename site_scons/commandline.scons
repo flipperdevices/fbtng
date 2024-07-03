@@ -65,21 +65,10 @@ vars.AddVariables(
             "u5m1",
         ],
     ),
-    PathVariable(
-        "SVD_FILE",
-        help="Path to SVD file",
-        validator=PathVariable.PathAccept,
-        default="",
-    ),
     (
         "FBT_TOOLCHAIN_VERSIONS",
         "Whitelisted toolchain versions (leave empty for no check)",
         tuple(),
-    ),
-    (
-        "OPENOCD_OPTS",
-        "Options to pass to OpenOCD",
-        "",
     ),
     (
         "FIRMWARE_APPS",
@@ -135,16 +124,19 @@ vars.AddVariables(
         "auto",
     ),
     EnumVariable(
-        "SWD_TRANSPORT",
+        "DEBUG_INTERFACE",
         help="SWD interface adapter type",
         default="auto",
         allowed_values=[
             "auto",
             "cmsis-dap",
             "stlink",
-            "blackmagic_usb",
-            "blackmagic_wifi",
         ],
+    ),
+    (
+        "DEBUG_INTERFACE_SERIAL",
+        "SWD interface adapter serial number",
+        "auto",
     ),
     EnumVariable(
         "LANG_SERVER",

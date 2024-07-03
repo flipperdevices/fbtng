@@ -50,7 +50,7 @@ def generate(env):
                             "-o",
                             "${TARGET}",
                             "-a",
-                            "${IMAGE_BASE_ADDRESS}",
+                            "${HW_IMAGE_BASE_ADDRESS}",
                             "-l",
                             "Flipper F${TARGET_HW}",
                         ]

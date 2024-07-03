@@ -72,6 +72,7 @@ env = ENV.Clone(
     APPS=[],
     EXTRA_EXT_APPS=[],
     FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg",
+    CPPDEFINES=GetOption("extra_defines"),
 )
 
 env.PreConfigureFwEnvionment()
@@ -119,7 +120,25 @@ fwenv = env.Clone(FW_ARTIFACTS=[])
 fw_artifacts = fwenv["FW_ARTIFACTS"]
 
 # Set up additional app-specific build flags
-SConscript("site_scons/firmwareopts.scons", exports={"ENV": fwenv})
+fwenv.Append(
+    CPPDEFINES=[
+        "FURI_DEBUG" if fwenv["DEBUG"] else "FURI_NDEBUG",
+        "DEBUG" if fwenv["DEBUG"] else "NDEBUG",
+    ],
+    CCFLAGS=[
+        "-Os" if fwenv["COMPACT"] else "-Og",
+    ],
+)
+
+# fwenv.AppendUnique(
+#     LINKFLAGS=[
+#         # ????????? FIXME: emitter for .map file
+#         # "-n",
+#         "-Xlinker",
+#         "-Map=${TARGET}.map",
+#     ],
+# )
+
 
 # Set up app configuration
 if env["IS_BASE_FIRMWARE"]:
@@ -208,7 +227,7 @@ sources.extend(
 # print(fwenv.Dump())
 
 # Full firmware definition
-fwenv.Append(LIBS=fwenv["TARGET_CFG"].linker_dependencies)
+fwenv.AppendUnique(LIBS=fwenv["HW_LINKER_DEPENDENCIES"])
 fwelf = fwenv["FW_ELF"] = fwenv.Program(
     "${FIRMWARE_BUILD_CFG}",
     sources,

@@ -2,6 +2,8 @@ import json
 
 
 class HardwareTargetLoader:
+    TARGET_FILE_NAME = "target.json"
+
     def __init__(self, env, root_target_scons_dir, target_id):
         self.env = env
         self.all_targets_root_dir = root_target_scons_dir
@@ -16,6 +18,9 @@ class HardwareTargetLoader:
         self.linker_script_ram = None
         self.linker_script_app = None
         self.sdk_symbols = None
+        self.platform = None
+        self.svd_file = None
+        self.flash_address = None
         self.linker_dependencies = []
         self.included_sources = []
         self.excluded_sources = []
@@ -27,9 +32,10 @@ class HardwareTargetLoader:
         return self.all_targets_root_dir.Dir(f"f{target_id}")
 
     def _loadDescription(self, target_id):
-        target_json_file = self._getTargetDir(target_id).File("target.json")
+        target_json_file = self._getTargetDir(target_id).File(self.TARGET_FILE_NAME)
         if not target_json_file.exists():
             raise Exception(f"Target file {target_json_file} does not exist")
+
         with open(target_json_file.get_abspath(), "r") as f:
             try:
                 vals = json.load(f)
@@ -48,25 +54,32 @@ class HardwareTargetLoader:
                 target_dir.Dir(p) for p in config.get(path_list, [])
             )
 
-        self.included_sources.extend(config.get("included_sources", []))
-        self.excluded_sources.extend(config.get("excluded_sources", []))
-        self.excluded_headers.extend(config.get("excluded_headers", []))
-        self.excluded_modules.extend(config.get("excluded_modules", []))
+        for prop_name in (
+            "included_sources",
+            "excluded_sources",
+            "excluded_headers",
+            "excluded_modules",
+        ):
+            getattr(self, prop_name).extend(config.get(prop_name, []))
 
         file_attrs = (
-            # (name, use_src_node)
+            # (name, is_target_file_node)
             ("startup_script", True),
             ("linker_script_flash", True),
             ("linker_script_ram", True),
             ("linker_script_app", True),
             ("sdk_symbols", True),
+            ("platform", False),
+            ("svd_file", False),
+            ("flash_address", False),
         )
 
-        for attr_name, use_src_node in file_attrs:
+        for attr_name, is_target_file_node in file_attrs:
             if (val := config.get(attr_name)) and not getattr(self, attr_name):
-                node = target_dir.File(val)
-                if use_src_node:
-                    node = node.srcnode()
+                if is_target_file_node:
+                    node = target_dir.File(val).srcnode()
+                else:
+                    node = val
                 # print(f"Got node {node}, {node.path} for {attr_name}")
                 setattr(self, attr_name, node)
 
@@ -74,15 +87,30 @@ class HardwareTargetLoader:
             if (val := config.get(attr_name)) and not getattr(self, attr_name):
                 setattr(self, attr_name, val)
 
+        cpu_flags = config.get("cpu_flags", [])
+        flags_pairs = (
+            # (scons_env_var_name, target_json_name, append_cpu_flags)
+            ("CCFLAGS", "c_cpp_flags", True),
+            ("CXXFLAGS", "cpp_flags", False),
+            ("CFLAGS", "c_flags", False),
+            ("ASFLAGS", "asm_flags", True),
+            ("LINKFLAGS", "linker_flags", True),
+            ("CPPDEFINES", "defines", False),
+        )
+        for env_var, json_name, append_cpu_flags in flags_pairs:
+            flags = list(cpu_flags) if append_cpu_flags else []
+            flags.extend(config.get(json_name, []))
+            self.env.AppendUnique(**{env_var: flags})
+
+        self.env.AppendUnique(LINKFLAGS="-T${LINKER_SCRIPT_PATH}")
+
         if inherited_target := config.get("inherit", None):
             self._processTargetDefinitions(inherited_target)
 
     def gatherSources(self):
         sources = [self.startup_script]
         if self.included_sources:
-            sources += list(
-                self.target_dir.File(p) for p in self.included_sources
-            )
+            sources += list(self.target_dir.File(p) for p in self.included_sources)
             return list(f.get_path(self.all_targets_root_dir) for f in sources)
 
         seen_filenames = set(self.excluded_sources)
@@ -118,6 +146,12 @@ def ConfigureForTarget(env, target_id):
         TARGET_CFG=target_loader,
         SDK_DEFINITION=target_loader.sdk_symbols,
         SKIP_MODULES=target_loader.excluded_modules,
+        HW_PLATFORM=target_loader.platform,
+        HW_IMAGE_BASE_ADDRESS=target_loader.flash_address,
+        HW_SVD_FILE="${FBT_DEBUG_DIR}/" + target_loader.svd_file,
+        HW_LINKER_DEPENDENCIES=target_loader.linker_dependencies,
+        LINKER_SCRIPT_PATH=target_loader.linker_script_flash,
+        APP_LINKER_SCRIPT_PATH=target_loader.linker_script_app,
     )
 
     env.Append(

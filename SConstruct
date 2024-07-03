@@ -40,14 +40,11 @@ SConscript(
     duplicate=0,
 )
 
-SConscript("site_scons/cc.scons", exports={"ENV": coreenv})
-
 # Create a separate "dist" environment and add construction envs to it
 distenv = coreenv.Clone(
     tools=[
         "fbt_dist",
         "fbt_debugopts",
-        "openocd",
         "blackmagic",
     ],
     ENV=os.environ,
@@ -117,70 +114,67 @@ firmware_flash = distenv.AddFwFlashTarget(
 )
 distenv.Alias("flash", firmware_flash)
 
-distenv.PhonyTarget(
-    "gdb_trace_all",
-    [["${GDB}", "${GDBOPTS}", "${SOURCES}", "${GDBFLASH}"]],
-    source=firmware_env["FW_ELF"],
-    GDBOPTS="${GDBOPTS_BASE}",
-    GDBREMOTE="${OPENOCD_GDB_PIPE}",
-    GDBFLASH=[
-        "-ex",
-        "thread apply all bt",
-        "-ex",
-        "quit",
-    ],
-)
+__base_debug_opts = [
+    "--root",
+    "${FBT_DEBUG_DIR}",
+    "--serial",
+    "${DEBUG_INTERFACE_SERIAL}",
+    "-t",
+    firmware_env["HW_PLATFORM"],
+    "--init",
+    "--with-svd",
+    firmware_env["HW_SVD_FILE"],
+]
 
 # Debugging firmware
 firmware_debug = distenv.PhonyTarget(
     "debug",
-    "${GDBPYCOM}",
+    [
+        [
+            "${FBT_DEBUG_SCRIPT}",
+            *__base_debug_opts,
+            "${SOURCE}",
+            "--compare",
+            # "--with-firmware",
+            "--with-rtos",
+            ## Uncomment to enable apps debugging
+            # "--with-apps",
+            # firmware_env["FBT_FAP_DEBUG_ELF_ROOT"],
+        ],
+    ],
     source=firmware_env["FW_ELF"],
-    GDBOPTS="${GDBOPTS_BASE}",
-    GDBREMOTE="${OPENOCD_GDB_PIPE}",
 )
 distenv.Depends(firmware_debug, firmware_flash)
 
-distenv.PhonyTarget(
-    "blackmagic",
-    "${GDBPYCOM}",
-    source=firmware_env["FW_ELF"],
-    GDBOPTS="${GDBOPTS_BASE} ${GDBOPTS_BLACKMAGIC}",
-    GDBREMOTE="${BLACKMAGIC_ADDR}",
-)
-
 # Debug alien elf
-debug_other_opts = [
-    "-ex",
-    "source ${FBT_DEBUG_DIR}/PyCortexMDebug/PyCortexMDebug.py",
-    # "-ex",
-    # "source ${FBT_DEBUG_DIR}/FreeRTOS/FreeRTOS.py",
-    "-ex",
-    "source ${FBT_DEBUG_DIR}/flipperversion.py",
-    "-ex",
-    "fw-version",
-]
-
 distenv.PhonyTarget(
     "debug_other",
-    "${GDBPYCOM}",
-    GDBOPTS="${GDBOPTS_BASE}",
-    GDBREMOTE="${OPENOCD_GDB_PIPE}",
-    GDBPYOPTS=debug_other_opts,
+    [
+        [
+            "${FBT_DEBUG_SCRIPT}",
+            *__base_debug_opts,
+            # "--with-firmware",
+        ],
+    ],
 )
 
+# Backtrace all threads
 distenv.PhonyTarget(
-    "debug_other_blackmagic",
-    "${GDBPYCOM}",
-    GDBOPTS="${GDBOPTS_BASE} ${GDBOPTS_BLACKMAGIC}",
-    GDBREMOTE="${BLACKMAGIC_ADDR}",
-    GDBPYOPTS=debug_other_opts,
-)
-
-# Just start OpenOCD
-distenv.PhonyTarget(
-    "openocd",
-    [["${OPENOCDCOM}", "${ARGS}"]],
+    "gdb_trace_all",
+    [
+        [
+            "${FBT_DEBUG_SCRIPT}",
+            *__base_debug_opts,
+            "${SOURCE}",
+            "--with-rtos",
+            # "--with-firmware",
+            "-ex",
+            "thread apply all bt",
+            "-ex",
+            "quit",
+        ],
+    ],
+    source=firmware_env["FW_ELF"],
 )
 
 # Linter
@@ -290,22 +284,6 @@ distenv.PhonyTarget(
     ],
 )
 
-
-# Find blackmagic probe
-distenv.PhonyTarget(
-    "get_blackmagic",
-    "@echo $( ${BLACKMAGIC_ADDR} $)",
-)
-
-
-# Find STLink probe ids
-distenv.PhonyTarget(
-    "get_stlink",
-    distenv.Action(
-        lambda **_: distenv.GetDevices(),
-        None,
-    ),
-)
 
 # Prepare vscode environment
 VSCODE_LANG_SERVER = cmd_environment["LANG_SERVER"]

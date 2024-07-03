@@ -76,7 +76,7 @@ def generate(env):
     env.SetDefault(
         FW_FLASH_SCRIPT="${FBT_SCRIPT_DIR}/fwflash.py",
         FW_FLASH_TARGET_INTEFACE="auto",
-        SWD_TRANSPORT_SERIAL="auto",
+        DEBUG_INTERFACE_SERIAL="auto",
         FW_FLASH_EXTRA_COMMANDS="",
     )
 
@@ -88,8 +88,8 @@ def generate(env):
                         "${PYTHON3}",
                         "${FW_FLASH_SCRIPT}",
                         "-d" if env["VERBOSE"] else "",
-                        "--interface=${SWD_TRANSPORT}",
-                        "--serial=${SWD_TRANSPORT_SERIAL}",
+                        "--interface=${DEBUG_INTERFACE}",
+                        "--serial=${DEBUG_INTERFACE_SERIAL}",
                         "--target=${FW_FLASH_TARGET_INTEFACE}",
                         '--extra-commands="${FW_FLASH_EXTRA_COMMANDS}"',
                         "${SOURCE}",

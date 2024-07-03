@@ -22,18 +22,6 @@ DIST_SUFFIX = "local"
 # Also specify in scripts/ufbt/SConstruct
 FBT_TOOLCHAIN_VERSIONS = (" 12.3.", " 13.2.")
 
-OPENOCD_OPTS = [
-    "-f",
-    "interface/cmsis-dap.cfg",
-    # "-c",
-    # "transport select hla_swd",
-    "-f",
-    "${FBT_DEBUG_DIR}/stm32u5x.cfg",
-    "-c",
-    "stm32u5x.cpu configure -rtos auto",
-]
-
-SVD_FILE = "${FBT_DEBUG_DIR}/STM32WB55_CM4.svd"
 
 # Look for blackmagic probe on serial ports and local network
 BLACKMAGIC = "auto"
