@@ -39,6 +39,7 @@
 #include "check.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stm32wb55_linker.h>
 #include <core/log.h>
 #include <core/common_defines.h>
 
@@ -69,10 +70,6 @@ DICT_DEF2( //-V1048
 #error This feature is broken, logging transport must be replaced with RTT
 #endif
 
-#if(configSUPPORT_DYNAMIC_ALLOCATION == 0)
-#error This file must not be used if configSUPPORT_DYNAMIC_ALLOCATION is 0
-#endif
-
 /* Block sizes must not get too small. */
 #define heapMINIMUM_BLOCK_SIZE ((size_t)(xHeapStructSize << 1))
 
@@ -80,8 +77,6 @@ DICT_DEF2( //-V1048
 #define heapBITS_PER_BYTE ((size_t)8)
 
 /* Heap start end symbols provided by linker */
-extern const void __heap_start__;
-extern const void __heap_end__;
 uint8_t* ucHeap = (uint8_t*)&__heap_start__;
 const size_t heap_start = (size_t)&__heap_start__;
 const size_t heap_end = (size_t)&__heap_end__;
@@ -245,7 +240,7 @@ size_t memmgr_heap_get_max_free_block(void) {
 
 void memmgr_heap_printf_free_blocks(void) {
     BlockLink_t* pxBlock;
-    //TODO enable when we can do printf with a locked scheduler
+    //can be enabled once we can do printf with a locked scheduler
     //vTaskSuspendAll();
 
     pxBlock = xStart.pxNextFreeBlock;
@@ -488,7 +483,7 @@ void* pvPortMalloc(size_t xWantedSize) {
 
     configASSERT((((size_t)pvReturn) & (size_t)portBYTE_ALIGNMENT_MASK) == 0);
 
-    furi_check(pvReturn);
+    furi_check(pvReturn, xWantedSize ? "out of memory" : "malloc(0)");
     pvReturn = memset(pvReturn, 0, to_wipe);
     return pvReturn;
 }
@@ -535,7 +530,7 @@ void vPortFree(void* pv) {
                     xFreeBytesRemaining += pxLink->xBlockSize;
                     traceFREE(pv, pxLink->xBlockSize);
                     memset(pv, 0, pxLink->xBlockSize - xHeapStructSize);
-                    prvInsertBlockIntoFreeList(((BlockLink_t*)pxLink));
+                    prvInsertBlockIntoFreeList((BlockLink_t*)pxLink);
                 }
                 (void)xTaskResumeAll();
             } else {

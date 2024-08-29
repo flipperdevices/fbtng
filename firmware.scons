@@ -20,6 +20,7 @@ env = ENV.Clone(
         "fbt_resources",
     ],
     COMPILATIONDB_USE_ABSPATH=False,
+    COMPILATIONDB_USE_BINARY_ABSPATH=True,
     BUILD_DIR=fw_build_meta["build_dir"],
     IS_BASE_FIRMWARE=fw_build_meta["type"] == "firmware",
     FW_FLAVOR=fw_build_meta["flavor"],
@@ -71,6 +72,7 @@ env = ENV.Clone(
     _APP_ICONS=None,
     APPS=[],
     EXTRA_EXT_APPS=[],
+    F_TARGET_HW="f${TARGET_HW}",
     FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg",
     CPPDEFINES=GetOption("extra_defines"),
 )
@@ -92,7 +94,7 @@ else:
     )
 env.AppendUnique(CPPDEFINES=["FW_CFG_${FIRMWARE_APP_SET}"])
 
-env.ConfigureForTarget(env.subst("${TARGET_HW}"))
+env.ConfigureForTarget()
 
 Export("env")
 

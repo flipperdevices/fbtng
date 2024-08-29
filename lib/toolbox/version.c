@@ -18,11 +18,13 @@ struct Version {
     const char* build_date;
     const char* version;
     // Payload bits and pieces
-    const char* target;
+    const uint8_t target;
     const bool build_is_dirty;
     // v 1.1
     const char* firmware_origin;
     const char* git_origin;
+    // // v 1.2
+    // const char* target_name;
 };
 
 /* version of current running firmware (bootloader/flipper) */
@@ -69,7 +71,7 @@ const char* version_get_version(const Version* v) {
     return v ? v->version : version.version;
 }
 
-const char* version_get_target(const Version* v) {
+uint8_t version_get_target(const Version* v) {
     return v ? v->target : version.target;
 }
 

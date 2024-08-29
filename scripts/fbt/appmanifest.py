@@ -94,8 +94,23 @@ class FlipperApplication:
     def embeds_plugins(self):
         return any(plugin.fal_embedded for plugin in self._plugins)
 
+    @property
+    def unsupported_targets(self):
+        return tuple(target[1:] for target in self.targets if target.startswith("!"))
+
+    @property
+    def supported_targets(self):
+        filtered_targets = tuple(
+            target for target in self.targets if not target.startswith("!")
+        )
+        if len(filtered_targets) == 0:
+            return ("all",)
+        return filtered_targets
+
     def supports_hardware_target(self, target: str):
-        return target in self.targets or "all" in self.targets
+        return target not in self.unsupported_targets and (
+            target in self.targets or "all" in self.supported_targets
+        )
 
     @property
     def is_default_deployable(self):
@@ -172,7 +187,12 @@ class AppManager:
                         f"App {kw.get('appid')} of type {apptype} must not have '{app_property}' in manifest"
                     )
 
-    def load_manifest(self, app_manifest_path: str, app_dir_node: object):
+    def load_manifest(
+        self,
+        app_manifest_path: str,
+        app_dir_node: object,
+        target_hw: Optional[str] = None,
+    ):
         if not os.path.exists(app_manifest_path):
             raise FlipperManifestException(
                 f"App manifest not found at path {app_manifest_path}"
@@ -215,6 +235,11 @@ class AppManager:
 
         # print("Built", app_manifests)
         for app in app_manifests:
+            if target_hw and not app.supports_hardware_target(target_hw):
+                print(
+                    f"Skipping {app.appid} due to target mismatch (building for {target_hw}, app supports {app.targets})"
+                )
+                continue
             self._add_known_app(app)
 
     def _add_known_app(self, app: FlipperApplication):
@@ -351,10 +376,10 @@ class AppBuildset:
             ).append(app)
 
     def get_ext_apps(self):
-        return self.extapps
+        return list(self.extapps)
 
     def get_incompatible_ext_apps(self):
-        return self.incompatible_extapps
+        return list(self.incompatible_extapps)
 
     def _check_conflicts(self):
         conflicts = []
@@ -399,14 +424,30 @@ class AppBuildset:
     def _group_plugins(self):
         known_extensions = self.get_apps_of_type(FlipperAppType.PLUGIN, all_known=True)
         for extension_app in known_extensions:
+            keep_app = False
             for parent_app_id in extension_app.requires:
                 try:
                     parent_app = self.appmgr.get(parent_app_id)
                     parent_app._plugins.append(extension_app)
+
+                    if (
+                        parent_app.apptype in self.BUILTIN_APP_TYPES
+                        and parent_app_id in self.appnames
+                    ) or parent_app.apptype not in self.BUILTIN_APP_TYPES:
+                        keep_app |= True
+
                 except FlipperManifestException:
                     self._writer(
                         f"Module {extension_app.appid} has unknown parent {parent_app_id}"
                     )
+                    keep_app = True
+            # Debug output for plugin parentage
+            # print(
+            #     f"Module {extension_app.appid} has parents {extension_app.requires} keep={keep_app}"
+            # )
+            if not keep_app and extension_app in self.extapps:
+                # print(f"Excluding plugin {extension_app.appid}")
+                self.extapps.remove(extension_app)
 
     def get_apps_cdefs(self):
         cdefs = set()
@@ -432,9 +473,11 @@ class AppBuildset:
         return sorted(
             filter(
                 lambda app: app.apptype == apptype,
-                self.appmgr.known_apps.values()
-                if all_known
-                else map(self.appmgr.get, self.appnames),
+                (
+                    self.appmgr.known_apps.values()
+                    if all_known
+                    else map(self.appmgr.get, self.appnames)
+                ),
             ),
             key=lambda app: app.order,
         )

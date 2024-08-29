@@ -10,7 +10,25 @@ App(
         "cli",
         "gui",
         "input",
+        "desktop_simple",
+        "loader_simple",
+    ],
+    targets=["f50"],
+)
+
+App(
+    appid="basic_services",
+    name="Basic services",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[
+        "crypto_start",
+        "rpc_start",
+        "expansion_start",
+        "bt",
         "desktop",
         "loader",
+        "power",
+        "notification",
     ],
+    targets=["!f50"],
 )

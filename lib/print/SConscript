@@ -98,7 +98,7 @@ for wrapped_fn in wrapped_fn_list:
 
 env.Append(
     SDK_HEADERS=[
-        # File("wrappers.h"),
+        File("wrappers.h"),
     ],
     LINT_SOURCES=[
         Dir("."),
@@ -107,6 +107,9 @@ env.Append(
 
 libenv = env.Clone(FW_LIB_NAME="print")
 libenv.ApplyLibFlags()
+if env["RAM_EXEC"]:
+    libenv.AppendUnique(CPPDEFINES=["PRINTF_DISABLE_SUPPORT_FLOAT"])
+
 libenv.Append(CCFLAGS=["-Wno-double-promotion"])
 
 sources = libenv.GlobRecursive("*.c*", ".")

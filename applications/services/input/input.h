@@ -5,25 +5,15 @@
 
 #pragma once
 #include <stdint.h>
-// #include <furi_hal_resources.h>
+#include <furi_hal_resources.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define RECORD_INPUT_EVENTS "input_events"
+#define RECORD_INPUT_EVENTS            "input_events"
 #define INPUT_SEQUENCE_SOURCE_HARDWARE (0u)
 #define INPUT_SEQUENCE_SOURCE_SOFTWARE (1u)
-
-typedef enum {
-    InputKeyUp,
-    InputKeyDown,
-    InputKeyRight,
-    InputKeyLeft,
-    InputKeyOk,
-    InputKeyBack,
-    InputKeyMAX, /**< Special value, don't use it */
-} InputKey;
 
 /** Input Types
  * Some of them are physical events and some logical
@@ -42,7 +32,7 @@ typedef struct {
     union {
         uint32_t sequence;
         struct {
-            uint8_t sequence_source : 2;
+            uint8_t sequence_source   : 2;
             uint32_t sequence_counter : 30;
         };
     };

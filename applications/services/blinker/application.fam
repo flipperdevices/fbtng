@@ -5,4 +5,5 @@ App(
     entry_point="blinker",
     stack_size=1024,
     order=70,
+    targets=["f50"],
 )

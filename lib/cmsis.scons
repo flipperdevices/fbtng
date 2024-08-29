@@ -1,0 +1,9 @@
+Import("env")
+
+env.Append(
+    CPPPATH=[
+        "#/lib/cmsis_core/device",
+        "#/lib/cmsis_core/include",
+    ]
+)
+

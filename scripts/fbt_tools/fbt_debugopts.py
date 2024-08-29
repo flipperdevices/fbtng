@@ -3,7 +3,7 @@ from SCons.Errors import UserError
 
 def generate(env, **kw):
     env.SetDefault(
-        FBT_DEBUG_DIR="${FBT_SCRIPT_DIR}/debug",
+        FBT_DEBUG_DIR="${POSIXPATH('$FBT_SCRIPT_DIR')}/debug",
         FBT_DEBUG_SCRIPT="${FBT_SCRIPT_DIR}/fwdebug.py",
     )
 

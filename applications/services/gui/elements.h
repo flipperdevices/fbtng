@@ -10,15 +10,15 @@
 
 #include <stdint.h>
 #include <furi.h>
-#include "canvas.h"
+#include <canvas/canvas.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define ELEMENTS_MAX_LINES_NUM (7)
-#define ELEMENTS_BOLD_MARKER '#'
-#define ELEMENTS_MONO_MARKER '*'
+#define ELEMENTS_MAX_LINES_NUM  (7)
+#define ELEMENTS_BOLD_MARKER    '#'
+#define ELEMENTS_MONO_MARKER    '*'
 #define ELEMENTS_INVERSE_MARKER '!'
 
 /** Draw progress bar.

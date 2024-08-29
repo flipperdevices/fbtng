@@ -96,7 +96,7 @@ class Main(App):
         self.parser_generate.add_argument(
             "-t",
             dest="target",
-            type=str,
+            type=int,
             help="hardware target",
             required=True,
         )

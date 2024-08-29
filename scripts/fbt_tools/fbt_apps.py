@@ -124,7 +124,9 @@ def LoadAppManifest(env, entry):
             )
 
         app_manifest_file_path = manifest_glob[0].rfile().abspath
-        env["APPMGR"].load_manifest(app_manifest_file_path, entry)
+        env["APPMGR"].load_manifest(
+            app_manifest_file_path, entry, target_hw=env.subst("${F_TARGET_HW}")
+        )
     except FlipperManifestException as e:
         if not GetOption("silent"):
             warn(WarningOnByDefault, str(e))
@@ -135,7 +137,7 @@ def PrepareApplicationsBuild(env):
         appbuild = env["APPBUILD"] = env["APPMGR"].filter_apps(
             applist=env["APPS"],
             ext_applist=env["EXTRA_EXT_APPS"],
-            hw_target=env.subst("f${TARGET_HW}"),
+            hw_target=env.subst("${F_TARGET_HW}"),
         )
     except Exception as e:
         raise StopError(e)

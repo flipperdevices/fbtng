@@ -5,6 +5,7 @@ env.Append(
         "#/lib/tinyusb/src",
         "#/lib/tinyusb/src/common",
         "#/lib/tinyusb/src/device",
+        # "#/lib/tinyusb/hw/bsp/stm32u5", # TODO
         # "#/lib/tinyusb/src/osal",
     ],
 )

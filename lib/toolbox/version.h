@@ -69,9 +69,11 @@ const char* version_get_version(const Version* v);
  * @param      v     pointer to Version data. NULL for currently running
  *                   software.
  *
- * @return     build date
+ * @return     TODO
  */
-const char* version_get_target(const Version* v);
+uint8_t version_get_target(const Version* v);
+
+
 
 /** Get flag indicating if this build is "dirty" (source code had uncommited changes)
  *

@@ -14,9 +14,7 @@ void cli_command_gpio_print_usage(void) {
 }
 
 static bool pin_name_to_int(FuriString* pin_name, size_t* result) {
-    //ToDo add implementation
-    //bool is_debug_mode = furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug);
-    bool is_debug_mode = false;
+    bool is_debug_mode = furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug);
     for(size_t i = 0; i < gpio_pins_count; i++) {
         if(furi_string_equal(pin_name, gpio_pins[i].name)) {
             if(!gpio_pins[i].debug || is_debug_mode) {
@@ -31,9 +29,7 @@ static bool pin_name_to_int(FuriString* pin_name, size_t* result) {
 
 static void gpio_print_pins(void) {
     printf("Wrong pin name. Available pins: ");
-    //ToDo add implementation
-    //bool is_debug_mode = furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug);
-    bool is_debug_mode = false;
+    bool is_debug_mode = furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug);
     for(size_t i = 0; i < gpio_pins_count; i++) {
         if(!gpio_pins[i].debug || is_debug_mode) {
             printf("%s ", gpio_pins[i].name);

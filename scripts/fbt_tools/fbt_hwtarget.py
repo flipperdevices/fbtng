@@ -21,6 +21,7 @@ class HardwareTargetLoader:
         self.platform = None
         self.svd_file = None
         self.flash_address = None
+        self.rtos_flavor = None
         self.linker_dependencies = []
         self.included_sources = []
         self.excluded_sources = []
@@ -29,7 +30,7 @@ class HardwareTargetLoader:
         self._processTargetDefinitions(target_id)
 
     def _getTargetDir(self, target_id):
-        return self.all_targets_root_dir.Dir(f"f{target_id}")
+        return self.all_targets_root_dir.Dir(f"{target_id}")
 
     def _loadDescription(self, target_id):
         target_json_file = self._getTargetDir(target_id).File(self.TARGET_FILE_NAME)
@@ -72,6 +73,7 @@ class HardwareTargetLoader:
             ("platform", False),
             ("svd_file", False),
             ("flash_address", False),
+            ("rtos_flavor", False),
         )
 
         for attr_name, is_target_file_node in file_attrs:
@@ -108,7 +110,9 @@ class HardwareTargetLoader:
             self._processTargetDefinitions(inherited_target)
 
     def gatherSources(self):
-        sources = [self.startup_script]
+        sources = []
+        if self.startup_script:
+            sources.append(self.startup_script)
         if self.included_sources:
             sources += list(self.target_dir.File(p) for p in self.included_sources)
             return list(f.get_path(self.all_targets_root_dir) for f in sources)
@@ -140,7 +144,8 @@ class HardwareTargetLoader:
         return sdk_headers
 
 
-def ConfigureForTarget(env, target_id):
+def ConfigureForTarget(env):
+    target_id = env.subst("${F_TARGET_HW}")
     target_loader = HardwareTargetLoader(env, env["TARGETS_ROOT"], target_id)
     env.Replace(
         TARGET_CFG=target_loader,
@@ -152,6 +157,7 @@ def ConfigureForTarget(env, target_id):
         HW_LINKER_DEPENDENCIES=target_loader.linker_dependencies,
         LINKER_SCRIPT_PATH=target_loader.linker_script_flash,
         APP_LINKER_SCRIPT_PATH=target_loader.linker_script_app,
+        HW_RTOS_FLAVOR=target_loader.rtos_flavor,
     )
 
     env.Append(

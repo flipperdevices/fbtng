@@ -12,6 +12,9 @@ compile_commands.json
 # JetBrains IDEs
 .idea/
 
+# Sublime Text
+.sublime-project.sublime-workspace
+
 # Python VirtEnvironments
 .env
 .venv
@@ -41,9 +44,6 @@ Brewfile.lock.json
 .sconsign.dblite
 
 
-# Visual Studio Code
-/.vscode
-
 # bundle output
 /dist
 
@@ -66,5 +66,5 @@ PVS-Studio.log
 /fbt_options_local.py
 
 # TODO: remove
-targets/fu5m1_cube
-targets/fu5m1_psram
+targets/f50_cube
+targets/f50_psram

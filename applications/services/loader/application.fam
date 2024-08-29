@@ -5,10 +5,21 @@ App(
     entry_point="loader_srv",
     cdefines=["SRV_LOADER"],
     requires=["gui"],
+    provides=["loader_start"],
     stack_size=2 * 1024,
     order=90,
+    targets=["!f50"],
     sdk_headers=[
-        # "loader.h",
-        # "firmware_api/firmware_api.h",
+        "loader.h",
+        "firmware_api/firmware_api.h",
     ],
+)
+
+App(
+    appid="loader_start",
+    apptype=FlipperAppType.STARTUP,
+    entry_point="loader_on_system_start",
+    requires=["loader"],
+    order=90,
+    targets=["!f50"],
 )

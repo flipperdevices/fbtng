@@ -7,10 +7,6 @@
 #include <furi/core/common_defines.h>
 #include "printf_tiny.h"
 
-void abort(void) {
-    furi_crash("abort() called");
-}
-
 void _putchar(char character) {
     furi_thread_stdout_write(&character, 1);
 }

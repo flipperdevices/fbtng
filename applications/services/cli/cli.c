@@ -1,10 +1,8 @@
 #include "cli_i.h"
 #include "cli_commands.h"
 #include "cli_vcp.h"
-#include <toolbox/version.h>
+#include <furi_hal_version.h>
 #include <loader/loader.h>
-
-#include <furi.h>
 
 #define TAG "CliSrv"
 
@@ -77,7 +75,7 @@ size_t cli_read_timeout(Cli* cli, uint8_t* buffer, size_t size, uint32_t timeout
 bool cli_is_connected(Cli* cli) {
     furi_check(cli);
     if(cli->session != NULL) {
-        return (cli->session->is_connected());
+        return cli->session->is_connected();
     }
     return false;
 }
@@ -120,12 +118,12 @@ void cli_motd(void) {
            "| _| | |__  | | |  _/|  _/| _| |   /  | (__ | |__  | |\r\n"
            "|_|  |____||___||_|  |_|  |___||_|_\\   \\___||____||___|\r\n"
            "\r\n"
-           "Welcome to Flipper One Command Line Interface!\r\n"
+           "Welcome to Flipper Zero Command Line Interface!\r\n"
            "Read the manual: https://docs.flipper.net/development/cli\r\n"
            "Run `help` or `?` to list available commands\r\n"
            "\r\n");
 
-    const Version* firmware_version = version_get();
+    const Version* firmware_version = furi_hal_version_get_firmware_version();
     if(firmware_version) {
         printf(
             "Firmware version: %s %s (%s%s built on %s)\r\n",
@@ -177,11 +175,9 @@ static void cli_normalize_line(Cli* cli) {
 }
 
 static void cli_execute_command(Cli* cli, CliCommand* command, FuriString* args) {
-
-    //TODO: Implement furi_hal_power_insomnia_enter
-    // if(!(command->flags & CliCommandFlagInsomniaSafe)) {
-    //     furi_hal_power_insomnia_enter();
-    // }
+    if(!(command->flags & CliCommandFlagInsomniaSafe)) {
+        furi_hal_power_insomnia_enter();
+    }
 
     // Ensure that we running alone
     if(!(command->flags & CliCommandFlagParallelSafe)) {
@@ -200,10 +196,9 @@ static void cli_execute_command(Cli* cli, CliCommand* command, FuriString* args)
         command->callback(cli, args, command->context);
     }
 
-    //TODO: Implement furi_hal_power_insomnia_enter
-    // if(!(command->flags & CliCommandFlagInsomniaSafe)) {
-    //     furi_hal_power_insomnia_exit();
-    // }
+    if(!(command->flags & CliCommandFlagInsomniaSafe)) {
+        furi_hal_power_insomnia_exit();
+    }
 }
 
 static void cli_handle_enter(Cli* cli) {
@@ -458,9 +453,6 @@ void cli_session_close(Cli* cli) {
 
 int32_t cli_srv(void* p) {
     UNUSED(p);
-
-    FURI_LOG_I(TAG, "Started");
-
     Cli* cli = cli_alloc();
 
     // Init basic cli commands
@@ -474,14 +466,11 @@ int32_t cli_srv(void* p) {
         furi_thread_set_stdout_callback(NULL);
     }
 
-    cli_session_open(cli, &cli_vcp);
-
-    //TODO: Implement furi_hal_rtc_get_boot_mode
-    // if(furi_hal_rtc_get_boot_mode() == FuriHalRtcBootModeNormal) {
-    //     cli_session_open(cli, &cli_vcp);
-    // } else {
-    //     FURI_LOG_W(TAG, "Skipping start in special boot mode");
-    // }
+    if(furi_hal_rtc_get_boot_mode() == FuriHalRtcBootModeNormal) {
+        cli_session_open(cli, &cli_vcp);
+    } else {
+        FURI_LOG_W(TAG, "Skipping start in special boot mode");
+    }
 
     while(1) {
         if(cli->session != NULL) {

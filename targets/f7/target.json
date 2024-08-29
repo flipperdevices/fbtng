@@ -1,0 +1,116 @@
+{
+    "cpu_flags": [
+        "-mcpu=cortex-m4",
+        "-mthumb",
+        "-mfloat-abi=hard",
+        "-mfpu=fpv4-sp-d16"
+    ],
+    "c_cpp_flags": [
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wundef",
+        "-Wno-error=deprecated-declarations",
+        "-Wno-address-of-packed-member",
+        "-Wredundant-decls",
+        "-Wdouble-promotion",
+        "-fdata-sections",
+        "-ffunction-sections",
+        "-fsingle-precision-constant",
+        "-fno-math-errno"
+    ],
+    "c_flags": [
+        "-std=gnu2x",
+        "-Wstrict-prototypes"
+    ],
+    "cpp_flags": [
+        "-std=c++20",
+        "-fno-rtti",
+        "-fno-use-cxa-atexit",
+        "-fno-exceptions",
+        "-fno-threadsafe-statics",
+        "-ftemplate-depth=4096"
+    ],
+    "asm_flags": [
+        "-x",
+        "assembler-with-cpp",
+        "-c"
+    ],
+    "linker_flags": [
+        "-specs=nano.specs",
+        "-mlittle-endian",
+        "-Wl,--gc-sections",
+        "-Wl,--no-warn-rwx-segment",
+        "-Wl,--wrap,_malloc_r",
+        "-Wl,--wrap,_free_r",
+        "-Wl,--wrap,_calloc_r",
+        "-Wl,--wrap,_realloc_r"
+    ],
+    "defines": [
+        "_GNU_SOURCE"
+    ],
+    "include_paths": [
+        "../../lib/stm32wb_copro/wpan/interface/patterns/ble_thread/tl",
+        "ble_glue",
+        "fatfs",
+        "furi_hal",
+        "inc"
+    ],
+    "sdk_header_paths": [
+        "../furi_hal_include",
+        "furi_hal",
+        "platform_specific",
+        "ble_glue/furi_ble",
+        "ble_glue/services",
+        "ble_glue/profiles"
+    ],
+    "linker_script_flash": "stm32wb55xx_flash.ld",
+    "linker_script_ram": "stm32wb55xx_ram_fw.ld",
+    "linker_script_app": "application_ext.ld",
+    "sdk_symbols": "api_symbols.csv",
+    "rtos_flavor": "freertos-cm4",
+    "excluded_modules": [
+        "nema_gfx",
+        "canvas_nema",
+        "tinyusb"
+    ],
+    "linker_dependencies": [
+        "print",
+        "flipper7",
+        "furi",
+        "freertos",
+        "stm32wb",
+        "hwdrivers",
+        "fatfs",
+        "subghz",
+        "toolbox",
+        "nfc",
+        "digital_signal",
+        "pulse_reader",
+        "signal_reader",
+        "microtar",
+        "usb_stm32",
+        "infrared",
+        "assets",
+        "one_wire",
+        "ibutton",
+        "music_worker",
+        "mjs",
+        "mbedtls",
+        "lfrfid",
+        "flipper_application",
+        "u8g2",
+        "nanopb",
+        "update_util",
+        "heatshrink",
+        "flipperformat",
+        "canvas_u8g2",
+        "bit_lib",
+        "toolbox",
+        "datetime"
+    ],
+    "platform": "stm32wb",
+    "svd_file": "STM3WB55_CM4.svd",
+    "flash_address": "0x08000000"
+}

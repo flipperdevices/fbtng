@@ -7,11 +7,40 @@ App(
         "keypad_test",
         "crash_test",
     ],
+    targets=["f50"],
+)
+
+
+App(
+    appid="main_apps",
+    name="Basic applications for main menu",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[
+        "gpio",
+        "ibutton",
+        "infrared",
+        "lfrfid",
+        "nfc",
+        "subghz",
+        "bad_usb",
+        "u2f",
+        "archive",
+        "main_apps_on_start",
+    ],
+    targets=["!f50"],
 )
 
 App(
     appid="main_apps_on_start",
     name="On start hooks",
     apptype=FlipperAppType.METAPACKAGE,
-    provides=[],
+    provides=[
+        "ibutton_start",
+        "onewire_start",
+        "subghz_start",
+        "infrared_start",
+        "lfrfid_start",
+        "nfc_start",
+    ],
+    targets=["!f50"],
 )
