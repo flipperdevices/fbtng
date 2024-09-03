@@ -5,7 +5,7 @@
 #include <furi_hal.h>
 #include <assets_icons.h>
 
-#define TAG "Loader"
+#define TAG                       "Loader"
 #define LOADER_MAGIC_THREAD_VALUE 0xDEADBEEF
 
 // internal
@@ -142,14 +142,13 @@ static const FlipperInternalApplication* loader_find_application_by_name(const c
 }
 
 static void loader_start_app_thread(Loader* loader, FlipperInternalApplicationFlag flags) {
-    // TODO: RTC
     // setup heap trace
-    // FuriHalRtcHeapTrackMode mode = furi_hal_rtc_get_heap_track_mode();
-    // if(mode > FuriHalRtcHeapTrackModeNone) {
-    //     furi_thread_enable_heap_trace(loader->app.thread);
-    // } else {
-    //     furi_thread_disable_heap_trace(loader->app.thread);
-    // }
+    FuriHalMemoryHeapTrackMode mode = furi_hal_memory_get_heap_track_mode();
+    if(mode > FuriHalMemoryHeapTrackModeNone) {
+        furi_thread_enable_heap_trace(loader->app.thread);
+    } else {
+        furi_thread_disable_heap_trace(loader->app.thread);
+    }
 
     // setup insomnia
     if(!(flags & FlipperInternalApplicationFlagInsomniaSafe)) {

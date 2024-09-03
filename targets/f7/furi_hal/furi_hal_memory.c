@@ -2,6 +2,8 @@
 #include <furi_hal_memory.h>
 #include <furi_hal_rtc.h>
 
+#include <stm32wb55_linker.h>
+
 #define TAG "FuriHalMemory"
 
 typedef enum {
@@ -13,17 +15,13 @@ typedef enum {
 typedef struct {
     void* start;
     uint32_t size;
-} FuriHalMemoryRegion;
+} FuriHalSRAM2MemoryRegion;
 
 typedef struct {
-    FuriHalMemoryRegion region[SRAM_MAX];
+    FuriHalSRAM2MemoryRegion region[SRAM_MAX];
 } FuriHalMemory;
 
 static FuriHalMemory* furi_hal_memory = NULL;
-
-extern const void __sram2a_start__;
-extern const void __sram2a_free__;
-extern const void __sram2b_start__;
 
 void furi_hal_memory_init(void) {
     if(furi_hal_rtc_get_boot_mode() != FuriHalRtcBootModeNormal) {
@@ -126,4 +124,32 @@ size_t furi_hal_memory_max_pool_block(void) {
         }
     }
     return max;
+}
+
+static FuriHalMemoryRegion memory_regions[] = {
+    {
+        .start = (void*)&__heap_start__,
+        .size_bytes = 0,
+    },
+};
+
+void furi_hal_memory_init_early(void) {
+    memory_regions[0].size_bytes = __heap_size__;
+}
+
+size_t furi_hal_memory_regions_count(void) {
+    return COUNT_OF(memory_regions);
+}
+
+const FuriHalMemoryRegion* furi_hal_memory_regions_get(size_t index) {
+    furi_check(index < COUNT_OF(memory_regions));
+    return &memory_regions[index];
+}
+
+void furi_hal_memory_set_heap_track_mode(FuriHalMemoryHeapTrackMode mode) {
+    furi_hal_rtc_set_heap_track_mode((FuriHalRtcHeapTrackMode)mode);
+}
+
+FuriHalMemoryHeapTrackMode furi_hal_memory_get_heap_track_mode(void) {
+    return (FuriHalMemoryHeapTrackMode)furi_hal_rtc_get_heap_track_mode();
 }

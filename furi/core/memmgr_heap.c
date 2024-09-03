@@ -39,7 +39,8 @@
 #include "check.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <stm32wb55_linker.h>
+
+#include <furi_hal_memory.h>
 #include <core/log.h>
 #include <core/common_defines.h>
 
@@ -76,10 +77,9 @@ DICT_DEF2( //-V1048
 /* Assumes 8bit bytes! */
 #define heapBITS_PER_BYTE ((size_t)8)
 
-/* Heap start end symbols provided by linker */
-uint8_t* ucHeap = (uint8_t*)&__heap_start__;
-const size_t heap_start = (size_t)&__heap_start__;
-const size_t heap_end = (size_t)&__heap_end__;
+/* Heap start and size provided by HAL 
+ * Initialized after fetching info from furi_hal_memory_init_early() */
+static FuriHalMemoryRegion* heap_region = NULL;
 
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
@@ -130,7 +130,7 @@ static MemmgrHeapThreadDict_t memmgr_heap_thread_dict = {0};
 static volatile uint32_t memmgr_heap_thread_trace_depth = 0;
 
 /* Initialize tracing storage on start */
-void memmgr_heap_init(void) {
+static void memmgr_heap_init_trace(void) {
     MemmgrHeapThreadDict_init(memmgr_heap_thread_dict);
 }
 
@@ -281,6 +281,8 @@ char* ultoa(unsigned long num, char* str, int radix) {
 }
 
 static void print_heap_init(void) {
+    furi_check(heap_region);
+
     char tmp_str[33];
     size_t heap_start = (size_t)&__heap_start__;
     size_t heap_end = (size_t)&__heap_end__;
@@ -298,6 +300,8 @@ static void print_heap_init(void) {
 }
 
 static void print_heap_malloc(void* ptr, size_t size) {
+    furi_check(heap_region);
+
     char tmp_str[33];
     const char* name = furi_thread_get_name(furi_thread_get_current_id());
     if(!name) {
@@ -360,8 +364,9 @@ void* pvPortMalloc(size_t xWantedSize) {
 
         vTaskSuspendAll();
         {
+            furi_hal_memory_init_early();
             prvHeapInit();
-            memmgr_heap_init();
+            memmgr_heap_init_trace();
         }
         (void)xTaskResumeAll();
     } else {
@@ -521,10 +526,10 @@ void vPortFree(void* pv) {
 
                 vTaskSuspendAll();
                 {
-                    furi_assert((size_t)pv >= heap_start);
-                    furi_assert((size_t)pv < heap_end);
+                    furi_assert(pv >= heap_region->start);
+                    furi_assert(pv < heap_region->start + heap_region->size_bytes);
                     furi_assert(pxLink->xBlockSize >= xHeapStructSize);
-                    furi_assert((pxLink->xBlockSize - xHeapStructSize) < SRAM1_SIZE);
+                    furi_assert((pxLink->xBlockSize - xHeapStructSize) < heap_region->size_bytes);
 
                     /* Add this block to the list of free blocks. */
                     xFreeBytesRemaining += pxLink->xBlockSize;
@@ -548,7 +553,8 @@ void vPortFree(void* pv) {
 /*-----------------------------------------------------------*/
 
 size_t xPortGetTotalHeapSize(void) {
-    return (size_t)&__heap_end__ - (size_t)&__heap_start__;
+    furi_assert(heap_region);
+    return heap_region->size_bytes;
 }
 /*-----------------------------------------------------------*/
 
@@ -568,18 +574,20 @@ void vPortInitialiseBlocks(void) {
 /*-----------------------------------------------------------*/
 
 static void prvHeapInit(void) {
+    furi_check(heap_region);
+
     BlockLink_t* pxFirstFreeBlock;
     uint8_t* pucAlignedHeap;
     size_t uxAddress;
-    size_t xTotalHeapSize = (size_t)&__heap_end__ - (size_t)&__heap_start__;
+    size_t xTotalHeapSize = xPortGetTotalHeapSize();
 
     /* Ensure the heap starts on a correctly aligned boundary. */
-    uxAddress = (size_t)ucHeap;
+    uxAddress = (size_t)heap_region->start;
 
     if((uxAddress & portBYTE_ALIGNMENT_MASK) != 0) {
         uxAddress += (portBYTE_ALIGNMENT - 1);
         uxAddress &= ~((size_t)portBYTE_ALIGNMENT_MASK);
-        xTotalHeapSize -= uxAddress - (size_t)ucHeap;
+        xTotalHeapSize -= uxAddress - (size_t)heap_region->start;
     }
 
     pucAlignedHeap = (uint8_t*)uxAddress;

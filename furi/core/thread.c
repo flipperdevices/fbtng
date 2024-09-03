@@ -8,7 +8,7 @@
 #include "string.h"
 
 #include "log.h"
-// #include <furi_hal_rtc.h>
+#include <furi_hal_memory.h>
 
 #include <FreeRTOS.h>
 #include <stdint.h>
@@ -145,14 +145,14 @@ static void furi_thread_init_common(FuriThread* thread) {
         furi_thread_set_appid(thread, "driver");
     }
 
-    // FuriHalRtcHeapTrackMode mode = furi_hal_rtc_get_heap_track_mode();
-    // if(mode == FuriHalRtcHeapTrackModeAll) {
-    //     thread->heap_trace_enabled = true;
-    // } else if(mode == FuriHalRtcHeapTrackModeTree && furi_thread_get_current_id()) {
-    //     if(parent) thread->heap_trace_enabled = parent->heap_trace_enabled;
-    // } else {
-    //     thread->heap_trace_enabled = false;
-    // }
+    FuriHalMemoryHeapTrackMode mode = furi_hal_memory_get_heap_track_mode();
+    if(mode == FuriHalMemoryHeapTrackModeAll) {
+        thread->heap_trace_enabled = true;
+    } else if(mode == FuriHalMemoryHeapTrackModeTree && furi_thread_get_current_id()) {
+        if(parent) thread->heap_trace_enabled = parent->heap_trace_enabled;
+    } else {
+        thread->heap_trace_enabled = false;
+    }
 }
 
 FuriThread* furi_thread_alloc(void) {

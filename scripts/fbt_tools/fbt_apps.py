@@ -123,10 +123,11 @@ def LoadAppManifest(env, entry):
                 f"App folder '{disk_node.abspath}': missing manifest ({FlipperApplication.APP_MANIFEST_DEFAULT_NAME})"
             )
 
-        app_manifest_file_path = manifest_glob[0].rfile().abspath
-        env["APPMGR"].load_manifest(
-            app_manifest_file_path, entry, target_hw=env.subst("${F_TARGET_HW}")
-        )
+        for manifest in manifest_glob:
+            app_manifest_file_path = manifest.rfile().abspath
+            env["APPMGR"].load_manifest(
+                app_manifest_file_path, entry, target_hw=env.subst("${F_TARGET_HW}")
+            )
     except FlipperManifestException as e:
         if not GetOption("silent"):
             warn(WarningOnByDefault, str(e))

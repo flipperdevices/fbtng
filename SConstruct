@@ -48,7 +48,6 @@ distenv = coreenv.Clone(
         "blackmagic",
         "doxygen",
         "textfile",
-
     ],
     ENV=os.environ,
     UPDATE_BUNDLE_DIR="dist/${DIST_DIR}/f${TARGET_HW}-update-${DIST_SUFFIX}",
@@ -113,7 +112,7 @@ fap_deploy = distenv.PhonyTarget(
 Depends(fap_deploy, firmware_env["FW_RESOURCES_MANIFEST"])
 
 firmware_flash = distenv.AddFwFlashTarget(
-    firmware_env, FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg"
+    firmware_env, FW_FLASH_TARGET_INTEFACE="target/stm32wbx.cfg"
 )
 distenv.Alias("flash", firmware_flash)
 

@@ -4,6 +4,9 @@
 
 #include <furi_hal_debug.h>
 #include <furi_hal_interrupt.h>
+#include <furi_hal_rtc.h>
+#include <furi_hal_power.h>
+
 #include <stdio.h>
 
 #include <FreeRTOS.h>
@@ -11,8 +14,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char* __furi_check_message = NULL;
-uint32_t __furi_check_registers[13] = {0};
+static const char* __furi_check_message = NULL;
+static uint32_t __furi_check_registers[13] = {0};
+
+static struct {
+    FuriCrashCallback callback;
+    void* context;
+} registered_crash_handler = {0};
 
 /** Load r12 value to __furi_check_message and store registers to __furi_check_registers */
 #define GET_MESSAGE_AND_STORE_REGISTERS()               \
@@ -63,6 +71,18 @@ static void __furi_put_uint32_as_hex(uint32_t data) {
     char tmp_str[] = "0xFFFFFFFF";
     itoa(data, tmp_str, 16);
     furi_log_puts(tmp_str);
+}
+
+static const FuriCrashLogInterface crash_log_interface = {
+    .puts = furi_log_puts,
+    .print_uint32_as_hex = __furi_put_uint32_as_hex,
+    .print_uint32_as_dec = __furi_put_uint32_as_text,
+};
+
+void furi_crash_handler_add(FuriCrashCallback callback, void* context) {
+    furi_check(registered_crash_handler.callback == NULL);
+    registered_crash_handler.callback = callback;
+    registered_crash_handler.context = context;
 }
 
 static void __furi_print_register_info(void) {
@@ -139,6 +159,10 @@ FURI_NORETURN void __furi_crash_implementation(void) {
     }
     __furi_print_heap_info();
 
+    if(registered_crash_handler.callback) {
+        registered_crash_handler.callback(registered_crash_handler.context, &crash_log_interface);
+    }
+
     // Check if debug enabled by DAP
     // https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/Debug-register-support-in-the-SCS/Debug-Halting-Control-and-Status-Register--DHCSR?lang=en
     bool debug = CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk;
@@ -156,10 +180,10 @@ FURI_NORETURN void __furi_crash_implementation(void) {
         if(ptr < FLASH_BASE || ptr > (FLASH_BASE + FLASH_SIZE)) {
             ptr = (uint32_t) "Check serial logs";
         }
-        // furi_hal_rtc_set_fault_data(ptr); // TODO
+        furi_hal_rtc_set_fault_data(ptr);
         furi_log_puts("\r\nRebooting system.\r\n");
         furi_log_puts("\033[0m\r\n");
-        // furi_hal_power_reset(); // TODO
+        furi_hal_power_reset();
     }
 #endif
     __builtin_unreachable();

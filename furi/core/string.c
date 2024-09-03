@@ -228,7 +228,7 @@ bool furi_string_end_with_str(const FuriString* v, const char str[]) {
 }
 
 bool furi_string_end_withi_str(const FuriString* v, const char str[]) {
-    // M_STR1NG_CONTRACT(v);
+    M_STR1NG_CONTRACT(v->string);
     M_ASSERT(str != NULL);
 
     const size_t str_len = strlen(str);

@@ -2,7 +2,8 @@
 #include <applications.h>
 #include <furi.h>
 #include <toolbox/version.h>
-// #include <furi_hal_rtc.h>
+#include <furi_hal_version.h>
+#include <furi_hal_rtc.h>
 
 #include <FreeRTOS.h>
 
@@ -29,10 +30,9 @@ static void flipper_print_version(const char* target, const Version* version) {
 }
 
 void flipper_init(void) {
-    // TODO: get version from HAL?
-    flipper_print_version("Firmware", version_get());
+    flipper_print_version("Firmware", furi_hal_version_get_firmware_version());
 
-    // FURI_LOG_I(TAG, "Boot mode %d", furi_hal_rtc_get_boot_mode());
+    FURI_LOG_I(TAG, "Boot mode %d", furi_hal_rtc_get_boot_mode());
     FURI_LOG_I(TAG, "Starting %d services", FLIPPER_SERVICES_COUNT);
 
     for(size_t i = 0; i < FLIPPER_SERVICES_COUNT; i++) {

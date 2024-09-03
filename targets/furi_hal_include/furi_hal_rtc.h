@@ -9,6 +9,7 @@
 #include <stdbool.h>
 
 #include <datetime/datetime.h>
+#include <core/common_defines.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -190,13 +191,13 @@ FuriHalRtcBootMode furi_hal_rtc_get_boot_mode(void);
  *
  * @param[in]  mode  The mode to set
  */
-void furi_hal_rtc_set_heap_track_mode(FuriHalRtcHeapTrackMode mode);
+FURI_DEPRECATED void furi_hal_rtc_set_heap_track_mode(FuriHalRtcHeapTrackMode mode);
 
 /** Get RTC Heap Track mode
  *
  * @return     The RTC heap track mode.
  */
-FuriHalRtcHeapTrackMode furi_hal_rtc_get_heap_track_mode(void);
+FURI_DEPRECATED FuriHalRtcHeapTrackMode furi_hal_rtc_get_heap_track_mode(void);
 
 /** Set locale units
  *

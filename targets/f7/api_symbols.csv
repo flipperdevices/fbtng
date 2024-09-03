@@ -1,5 +1,5 @@
 entry,status,name,type,params
-Version,+,72.2,,
+Version,+,72.4,,
 Header,+,applications/drivers/subghz/cc1101_ext/cc1101_ext_interconnect.h,,
 Header,+,applications/services/bt/bt_service/bt.h,,
 Header,+,applications/services/bt/bt_service/bt_keys_storage.h,,
@@ -270,7 +270,6 @@ Header,+,targets/f7/furi_hal/furi_hal_idle_timer.h,,
 Header,+,targets/f7/furi_hal/furi_hal_infrared.h,,
 Header,+,targets/f7/furi_hal/furi_hal_interrupt.h,,
 Header,+,targets/f7/furi_hal/furi_hal_light.h,,
-Header,+,targets/f7/furi_hal/furi_hal_memory.h,,
 Header,+,targets/f7/furi_hal/furi_hal_mpu.h,,
 Header,+,targets/f7/furi_hal/furi_hal_nfc.h,,
 Header,+,targets/f7/furi_hal/furi_hal_os.h,,
@@ -303,6 +302,7 @@ Header,+,targets/f7/platform_specific/math_wrapper.h,,
 Header,+,targets/furi_hal_include/furi_hal.h,,
 Header,+,targets/furi_hal_include/furi_hal_flash.h,,
 Header,+,targets/furi_hal_include/furi_hal_info.h,,
+Header,+,targets/furi_hal_include/furi_hal_memory.h,,
 Header,+,targets/furi_hal_include/furi_hal_rtc.h,,
 Header,+,targets/furi_hal_include/furi_hal_version.h,,
 Function,-,LL_ADC_CommonDeInit,ErrorStatus,ADC_Common_TypeDef*
@@ -1203,6 +1203,7 @@ Function,-,ftello,off_t,FILE*
 Function,-,ftrylockfile,int,FILE*
 Function,-,funlockfile,void,FILE*
 Function,-,funopen,FILE*,"const void*, int (*)(void*, char*, int), int (*)(void*, const char*, int), fpos_t (*)(void*, fpos_t, int), int (*)(void*)"
+Function,+,furi_crash_handler_add,void,"FuriCrashCallback, void*"
 Function,+,furi_delay_ms,void,uint32_t
 Function,+,furi_delay_tick,void,uint32_t
 Function,+,furi_delay_until_tick,FuriStatus,uint32_t
@@ -1428,8 +1429,13 @@ Function,+,furi_hal_light_sequence,void,const char*
 Function,+,furi_hal_light_set,void,"Light, uint8_t"
 Function,+,furi_hal_memory_alloc,void*,size_t
 Function,+,furi_hal_memory_get_free,size_t,
+Function,+,furi_hal_memory_get_heap_track_mode,FuriHalMemoryHeapTrackMode,
 Function,+,furi_hal_memory_init,void,
+Function,-,furi_hal_memory_init_early,void,
 Function,+,furi_hal_memory_max_pool_block,size_t,
+Function,+,furi_hal_memory_regions_count,size_t,
+Function,+,furi_hal_memory_regions_get,const FuriHalMemoryRegion*,size_t
+Function,+,furi_hal_memory_set_heap_track_mode,void,FuriHalMemoryHeapTrackMode
 Function,+,furi_hal_mpu_disable,void,
 Function,+,furi_hal_mpu_enable,void,
 Function,-,furi_hal_mpu_init,void,

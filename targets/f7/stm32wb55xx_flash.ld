@@ -107,6 +107,7 @@ SECTIONS {
         __heap_start__ = .;
         . = ORIGIN(RAM1) + LENGTH(RAM1) - _stack_size;
         __heap_end__ = .;
+        __heap_size__ = __heap_end__ - __heap_start__;
         . = . + _stack_size;
         . = ALIGN(8);
     } >RAM1

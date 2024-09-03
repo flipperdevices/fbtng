@@ -47,23 +47,21 @@ assetsenv.Alias("dolphin_blocking", dolphin_blocking)
 # Protobuf version meta
 proto_ver = assetsenv.ProtoVerBuilder(
     "${ASSETS_WORK_DIR}/protobuf_version.h",
-    assetsenv["ASSETS_SRC_DIR"].File("protobuf_tmp/Changelog"),
+    assetsenv["ASSETS_SRC_DIR"].File("protobuf/Changelog"),
 )
 assetsenv.Depends(proto_ver, proto)
 assetsenv.Alias("proto_ver", proto_ver)
 
 # Gather everything into a static lib
-assets_parts = (icons, proto, dolphin_blocking, dolphin_internal, proto_ver)
-# TODO: why [0]?
-# assets_parts = (icons[0],)
-assets_headers = list(filter(lambda fn: fn.name.endswith(".h"), Flatten(assets_parts)))
-assets_sources = list(
-    filter(lambda fn: not fn.name.endswith(".h"), Flatten(assets_parts))
-)
-env.Replace(FW_ASSETS_HEADERS=assets_headers)
+assets_parts = Flatten((icons, proto, dolphin_blocking, dolphin_internal, proto_ver))
+
+assets_headers = list(filter(lambda fn: fn.name.endswith(".h"), assets_parts))
+assets_sources = list(filter(lambda fn: not fn.name.endswith(".h"), assets_parts))
 
 assetslib = assetsenv.Library("${FW_LIB_NAME}", assets_sources)
 assetsenv.Install("${LIB_DIST_DIR}", assetslib)
+
+env.Replace(FW_ASSETS_HEADERS=assets_headers)
 
 
 # Resources for SD card

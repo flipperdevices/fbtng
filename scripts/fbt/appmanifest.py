@@ -34,7 +34,7 @@ class FlipperAppType(Enum):
 class FlipperApplication:
     APP_ID_REGEX: ClassVar[re.Pattern] = re.compile(r"^[a-z0-9_]+$")
     PRIVATE_FIELD_PREFIX: ClassVar[str] = "_"
-    APP_MANIFEST_DEFAULT_NAME: ClassVar[str] = "application.fam"
+    APP_MANIFEST_DEFAULT_NAME: ClassVar[str] = "*.fam"
 
     @dataclass
     class ExternallyBuiltFile:

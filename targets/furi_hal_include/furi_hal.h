@@ -14,6 +14,7 @@ struct STOP_EXTERNING_ME {};
 #include <furi_hal_flash.h>
 #include <furi_hal_version.h>
 #include <furi_hal_target.h>
+#include <furi_hal_memory.h>
 
 #ifdef __cplusplus
 extern "C" {
