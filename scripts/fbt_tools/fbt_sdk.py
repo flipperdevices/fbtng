@@ -96,7 +96,7 @@ class SdkTreeBuilder:
         self.header_depends = []
         self.header_dirs = []
 
-        self.target_sdk_dir_name = env.subst("f${TARGET_HW}_sdk")
+        self.target_sdk_dir_name = env.subst("${F_TARGET_HW}_sdk")
         self.sdk_root_dir = target[0].Dir(".")
         self.sdk_deploy_dir = self.sdk_root_dir.Dir(self.target_sdk_dir_name)
 

@@ -80,15 +80,18 @@ vars.AddVariables(
         help="Optimize for size",
         default=False,
     ),
-    EnumVariable(
+    # EnumVariable(
+    # help="Hardware target",
+    # default="50",
+    (
         "TARGET_HW",
-        help="Hardware target",
-        default="50",
-        allowed_values=[
-            "7",
-            "18",
-            "50",
-        ],
+        "Hardware target",
+        "50",
+        # allowed_values=[
+        #     "7",
+        #     "18",
+        #     "50",
+        # ],
     ),
     (
         "DIST_SUFFIX",
@@ -99,54 +102,6 @@ vars.AddVariables(
         "UPDATE_VERSION_STRING",
         "Version string for updater package",
         "${DIST_SUFFIX}",
-    ),
-    (
-        "COPRO_CUBE_VERSION",
-        "Cube version",
-        "",
-    ),
-    (
-        "COPRO_STACK_ADDR",
-        "Core2 Firmware address",
-        "0",
-    ),
-    (
-        "COPRO_STACK_BIN",
-        "Core2 Firmware file name",
-        "",
-    ),
-    (
-        "COPRO_DISCLAIMER",
-        "Value to pass to bundling script to confirm dangerous operations",
-        "",
-    ),
-    PathVariable(
-        "COPRO_OB_DATA",
-        help="Path to OB reference data",
-        validator=PathVariable.PathIsFile,
-        default="",
-    ),
-    PathVariable(
-        "COPRO_STACK_BIN_DIR",
-        help="Path to ST-provided stacks",
-        validator=PathVariable.PathIsDir,
-        default="",
-    ),
-    PathVariable(
-        "COPRO_CUBE_DIR",
-        help="Path to Cube root",
-        validator=PathVariable.PathIsDir,
-        default="",
-    ),
-    EnumVariable(
-        "COPRO_STACK_TYPE",
-        help="Core2 stack type",
-        default="ble_light",
-        allowed_values=[
-            "ble_full",
-            "ble_light",
-            "ble_basic",
-        ],
     ),
     PathVariable(
         "SVD_FILE",

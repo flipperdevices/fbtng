@@ -24,6 +24,27 @@ cmd_environment = Environment(
     variables=fbt_variables,
 )
 
+target_bootstrap_env = cmd_environment.Clone(
+    tools=[
+        "sconsrecursiveglob",
+        "fbt_hwtarget",
+    ],
+    F_TARGET_HW="f${TARGET_HW}",
+    TARGETS_ROOT=Dir("#/targets"),
+)
+target_bootstrap_env.ConfigureForTarget(lightweight=True)
+fbt_variables = target_bootstrap_env.ConfigureVariables(fbt_variables)
+
+fbt_variables.Update(target_bootstrap_env)
+if fbt_variables.UnknownVariables():
+    print("Unrecognized command-line variables:")
+    print(fbt_variables.UnknownVariables())
+
+# print(fbt_variables)
+# print()
+# print(target_bootstrap_env.Dump())
+
+
 # Building basic environment - tools, utility methods, cross-compilation
 # settings, gcc flags for Cortex-M4, basic builders and more
 coreenv = SConscript(
@@ -50,8 +71,7 @@ distenv = coreenv.Clone(
         "textfile",
     ],
     ENV=os.environ,
-    UPDATE_BUNDLE_DIR="dist/${DIST_DIR}/f${TARGET_HW}-update-${DIST_SUFFIX}",
-    VSCODE_LANG_SERVER=ARGUMENTS.get("LANG_SERVER", "cpptools"),
+    UPDATE_BUNDLE_DIR="dist/${DIST_DIR}/${F_TARGET_HW}-update-${DIST_SUFFIX}",
 )
 
 firmware_env = distenv.AddFwProject(
@@ -90,224 +110,8 @@ Depends(
 )
 Alias("fap_dist", fap_dist)
 
-# Copy all faps to device
-fap_deploy = distenv.PhonyTarget(
-    "fap_deploy",
-    Action(
-        [
-            [
-                "${PYTHON3}",
-                "${FBT_SCRIPT_DIR}/storage.py",
-                "-p",
-                "${FLIP_PORT}",
-                "send",
-                "${SOURCE}",
-                "/ext/apps",
-                "${ARGS}",
-            ]
-        ]
-    ),
-    source=firmware_env.Dir(("${RESOURCES_ROOT}/apps")),
-)
-Depends(fap_deploy, firmware_env["FW_RESOURCES_MANIFEST"])
+firmware_env.ConfigureDistTargets(distenv)
 
-firmware_flash = distenv.AddFwFlashTarget(
-    firmware_env, FW_FLASH_TARGET_INTEFACE="target/stm32wbx.cfg"
-)
-distenv.Alias("flash", firmware_flash)
-
-__base_debug_opts = [
-    "--root",
-    "${FBT_DEBUG_DIR}",
-    "--serial",
-    "${DEBUG_INTERFACE_SERIAL}",
-    "-t",
-    firmware_env["HW_PLATFORM"],
-    "--init",
-    "--with-svd",
-    firmware_env["HW_SVD_FILE"],
-]
-
-# Debugging firmware
-firmware_debug = distenv.PhonyTarget(
-    "debug",
-    [
-        [
-            "${FBT_DEBUG_SCRIPT}",
-            *__base_debug_opts,
-            "${SOURCE}",
-            "--compare",
-            # "--with-firmware",
-            "--with-rtos",
-            ## Uncomment to enable apps debugging
-            # "--with-apps",
-            # firmware_env["FBT_FAP_DEBUG_ELF_ROOT"],
-        ],
-    ],
-    source=firmware_env["FW_ELF"],
-)
-distenv.Depends(firmware_debug, firmware_flash)
-
-# Debug alien elf
-distenv.PhonyTarget(
-    "debug_other",
-    [
-        [
-            "${FBT_DEBUG_SCRIPT}",
-            *__base_debug_opts,
-            # "--with-firmware",
-        ],
-    ],
-)
-
-# Backtrace all threads
-distenv.PhonyTarget(
-    "gdb_trace_all",
-    [
-        [
-            "${FBT_DEBUG_SCRIPT}",
-            *__base_debug_opts,
-            "${SOURCE}",
-            "--with-rtos",
-            # "--with-firmware",
-            "-ex",
-            "thread apply all bt",
-            "-ex",
-            "quit",
-        ],
-    ],
-    source=firmware_env["FW_ELF"],
-)
-
-# Linter
-distenv.PhonyTarget(
-    "lint",
-    [
-        [
-            "${PYTHON3}",
-            "${FBT_SCRIPT_DIR}/lint.py",
-            "check",
-            "${LINT_SOURCES}",
-            "${ARGS}",
-        ]
-    ],
-    LINT_SOURCES=[n.srcnode() for n in firmware_env["LINT_SOURCES"]],
-)
-
-distenv.PhonyTarget(
-    "format",
-    [
-        [
-            "${PYTHON3}",
-            "${FBT_SCRIPT_DIR}/lint.py",
-            "format",
-            "${LINT_SOURCES}",
-            "${ARGS}",
-        ]
-    ],
-    LINT_SOURCES=[n.srcnode() for n in firmware_env["LINT_SOURCES"]],
-)
-
-# PY_LINT_SOURCES contains recursively-built modules' SConscript files
-# Here we add additional Python files residing in repo root
-firmware_env.Append(
-    PY_LINT_SOURCES=[
-        # Py code folders
-        "site_scons",
-        "scripts",
-        "applications",
-        "applications_user",
-        "assets",
-        "targets",
-        # Extra files
-        "SConstruct",
-        "firmware.scons",
-        "fbt_options.py",
-    ]
-)
-
-
-black_commandline = [
-    [
-        "@${PYTHON3}",
-        "-m",
-        "black",
-        "${PY_BLACK_ARGS}",
-        "${PY_LINT_SOURCES}",
-        "${ARGS}",
-    ]
-]
-black_base_args = [
-    "--include",
-    '"(\\.scons|\\.py|SConscript|SConstruct|\\.fam)$"',
-]
-
-distenv.PhonyTarget(
-    "lint_py",
-    black_commandline,
-    PY_BLACK_ARGS=[
-        "--check",
-        "--diff",
-        *black_base_args,
-    ],
-    PY_LINT_SOURCES=firmware_env["PY_LINT_SOURCES"],
-)
-
-distenv.PhonyTarget(
-    "format_py",
-    black_commandline,
-    PY_BLACK_ARGS=black_base_args,
-    PY_LINT_SOURCES=firmware_env["PY_LINT_SOURCES"],
-)
-
-# Start Flipper CLI via PySerial's miniterm
-distenv.PhonyTarget(
-    "cli",
-    [
-        [
-            "${PYTHON3}",
-            "${FBT_SCRIPT_DIR}/serial_cli.py",
-            "-p",
-            "${FLIP_PORT}",
-            "${ARGS}",
-        ]
-    ],
-)
-
-# Update WiFi devboard firmware with release channel
-distenv.PhonyTarget(
-    "devboard_flash",
-    [
-        [
-            "${PYTHON3}",
-            "${FBT_SCRIPT_DIR}/wifi_board.py",
-            "${ARGS}",
-        ]
-    ],
-)
-
-
-# Prepare vscode environment
-vscode_dist = distenv.Install(
-    "#.vscode",
-    [
-        distenv.Glob("#.vscode/example/*.json", exclude="*.tmpl"),
-        distenv.Glob("#.vscode/example/${LANG_SERVER}/*.json"),
-    ],
-)
-for template_file in distenv.Glob("#.vscode/example/*.tmpl"):
-    vscode_dist.append(
-        distenv.Substfile(
-            distenv.Dir("#.vscode").File(template_file.name.replace(".tmpl", "")),
-            template_file,
-            SUBST_DICT={
-                "@FBT_PLATFORM_EXECUTABLE_EXT@": ".exe" if os.name == "nt" else ""
-            },
-        )
-    )
-distenv.Precious(vscode_dist)
-distenv.NoClean(vscode_dist)
-distenv.Alias("vscode_dist", (vscode_dist, firmware_env["FW_CDB"]))
 
 # Configure shell with build tools
 distenv.PhonyTarget(

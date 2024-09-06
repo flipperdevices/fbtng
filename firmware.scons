@@ -70,8 +70,8 @@ env = ENV.Clone(
     },
     FW_API_TABLE=None,
     _APP_ICONS=None,
-    APPS=[],
-    EXTRA_EXT_APPS=[],
+    APPS=_.split(",") if (_ := GetOption("extra_int_apps")) else [],
+    EXTRA_EXT_APPS=_.split(",") if (_ := GetOption("extra_ext_apps")) else [],
     F_TARGET_HW="f${TARGET_HW}",
     FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg",
     CPPDEFINES=GetOption("extra_defines"),
@@ -267,7 +267,7 @@ fw_artifacts.extend(
         fwhex,
         fwbin,
         fwdfu,
-        # fwenv["FW_VERSION_JSON"],
+        fwenv["FW_VERSION_JSON"],
     ]
 )
 
@@ -284,16 +284,15 @@ Precious(fwcdb)
 NoClean(fwcdb)
 Alias(fwenv["FIRMWARE_BUILD_CFG"] + "_cdb", fwcdb)
 
+fwenv["STATIC_ANALYSIS_DEPENDS"] = [
+    fwenv["FW_VERSION_JSON"],
+    fwenv["FW_ASSETS_HEADERS"],
+    fwenv["FW_API_TABLE"],
+    fwenv["_APP_ICONS"],
+]
+
 pvscheck = fwenv.PVSCheck("pvsreport.log", fwcdb)
-Depends(
-    pvscheck,
-    [
-        # fwenv["FW_VERSION_JSON"],
-        fwenv["FW_ASSETS_HEADERS"],
-        fwenv["FW_API_TABLE"],
-        fwenv["_APP_ICONS"],
-    ],
-)
+Depends(pvscheck, fwenv["STATIC_ANALYSIS_DEPENDS"])
 Alias(fwenv["FIRMWARE_BUILD_CFG"] + "_pvscheck", pvscheck)
 AlwaysBuild(pvscheck)
 Precious(pvscheck)

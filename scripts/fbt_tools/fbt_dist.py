@@ -4,7 +4,7 @@ from SCons.Defaults import Touch
 
 
 def GetProjetDirName(env, project=None):
-    parts = [f"f{env['TARGET_HW']}"]
+    parts = [env.subst("f${TARGET_HW}")]
     if project:
         parts.append(project)
 

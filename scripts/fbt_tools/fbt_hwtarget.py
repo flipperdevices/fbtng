@@ -27,6 +27,10 @@ class HardwareTargetLoader:
         self.excluded_sources = []
         self.excluded_headers = []
         self.excluded_modules = []
+        self.variables_sconscript = None
+        self.target_sconscript = None
+        self.dist_sconscript = None
+        # self.script_dir , tool_dir?
         self._processTargetDefinitions(target_id)
 
     def _getTargetDir(self, target_id):
@@ -74,6 +78,9 @@ class HardwareTargetLoader:
             ("svd_file", False),
             ("flash_address", False),
             ("rtos_flavor", False),
+            ("variables_sconscript", True),
+            ("target_sconscript", True),
+            ("dist_sconscript", True),
         )
 
         for attr_name, is_target_file_node in file_attrs:
@@ -144,7 +151,7 @@ class HardwareTargetLoader:
         return sdk_headers
 
 
-def ConfigureForTarget(env):
+def ConfigureForTarget(env, lightweight=False):
     target_id = env.subst("${F_TARGET_HW}")
     target_loader = HardwareTargetLoader(env, env["TARGETS_ROOT"], target_id)
     env.Replace(
@@ -159,6 +166,9 @@ def ConfigureForTarget(env):
         APP_LINKER_SCRIPT_PATH=target_loader.linker_script_app,
         HW_RTOS_FLAVOR=target_loader.rtos_flavor,
     )
+
+    if lightweight:
+        return
 
     env.Append(
         CPPPATH=target_loader.include_paths,
@@ -175,9 +185,44 @@ def ApplyLibFlags(env):
     env.MergeFlags(flags_to_apply)
 
 
+def ConfigureVariables(env, variables):
+    loader = env["TARGET_CFG"]
+    if loader.variables_sconscript:
+        variables = env.SConscript(
+            loader.variables_sconscript,
+            exports={
+                "ENV": env,
+                "VARS": variables,
+            },
+        )
+    return variables
+
+
+def ConfigureDistTargets(env, distenv):
+    if dist_sconscript := env["TARGET_CFG"].dist_sconscript:
+        # env.SConscript(dist_sconscript)
+        print("Dist sconscript: ", dist_sconscript)
+        env.SConscript(
+            dist_sconscript,
+            exports={
+                "DIST_ENV": distenv,
+                "FW_ENV": env,
+            },
+        )
+
+
+def ConfigureFwTargets(env):
+    if target_sconscript := env["TARGET_CFG"].target_sconscript:
+        # env.SConscript(target_sconscript)
+        print("Target sconscript: ", target_sconscript)
+
+
 def generate(env):
     env.AddMethod(ConfigureForTarget)
     env.AddMethod(ApplyLibFlags)
+    env.AddMethod(ConfigureVariables)
+    env.AddMethod(ConfigureDistTargets)
+    env.AddMethod(ConfigureFwTargets)
 
 
 def exists(env):
