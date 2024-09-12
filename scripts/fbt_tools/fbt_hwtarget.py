@@ -22,11 +22,10 @@ class HardwareTargetLoader:
         self.svd_file = None
         self.flash_address = None
         self.rtos_flavor = None
-        self.linker_dependencies = []
         self.included_sources = []
         self.excluded_sources = []
         self.excluded_headers = []
-        self.excluded_modules = []
+        self.env_modules = []
         self.variables_sconscript = None
         self.target_sconscript = None
         self.dist_sconscript = None
@@ -63,7 +62,8 @@ class HardwareTargetLoader:
             "included_sources",
             "excluded_sources",
             "excluded_headers",
-            "excluded_modules",
+            # "excluded_modules",
+            "env_modules",
         ):
             getattr(self, prop_name).extend(config.get(prop_name, []))
 
@@ -92,9 +92,9 @@ class HardwareTargetLoader:
                 # print(f"Got node {node}, {node.path} for {attr_name}")
                 setattr(self, attr_name, node)
 
-        for attr_name in ("linker_dependencies",):
-            if (val := config.get(attr_name)) and not getattr(self, attr_name):
-                setattr(self, attr_name, val)
+        # for attr_name in ("linker_dependencies",):
+        #     if (val := config.get(attr_name)) and not getattr(self, attr_name):
+        #         setattr(self, attr_name, val)
 
         cpu_flags = config.get("cpu_flags", [])
         flags_pairs = (
@@ -157,11 +157,9 @@ def ConfigureForTarget(env, lightweight=False):
     env.Replace(
         TARGET_CFG=target_loader,
         SDK_DEFINITION=target_loader.sdk_symbols,
-        SKIP_MODULES=target_loader.excluded_modules,
         HW_PLATFORM=target_loader.platform,
         HW_IMAGE_BASE_ADDRESS=target_loader.flash_address,
         HW_SVD_FILE="${FBT_DEBUG_DIR}/" + target_loader.svd_file,
-        HW_LINKER_DEPENDENCIES=target_loader.linker_dependencies,
         LINKER_SCRIPT_PATH=target_loader.linker_script_flash,
         APP_LINKER_SCRIPT_PATH=target_loader.linker_script_app,
         HW_RTOS_FLAVOR=target_loader.rtos_flavor,
@@ -211,6 +209,27 @@ def ConfigureDistTargets(env, distenv):
         )
 
 
+def ConfigureFwLibraries(env):
+    print("ConfigureFwLibraries")
+    static_libs = []
+    for dep_lib in env["TARGET_CFG"].env_modules:
+        print("Dep lib: ", dep_lib)
+        component_script = env.GetComponent(f"fwlib_{dep_lib}")
+        script_eval_res = env.SConscript(
+            component_script,
+            variant_dir=env.Dir("$BUILD_DIR/" + dep_lib),
+            duplicate=0,
+        )
+
+        if script_eval_res:
+            static_libs.append(script_eval_res)
+        # static_libs.append(env.
+        # env.Depends(env["FW_LIB_NAME"], dep_lib)
+
+    print("Static libs: ", static_libs)
+    env.AppendUnique(LIBS=static_libs)
+
+
 def ConfigureFwTargets(env):
     if target_sconscript := env["TARGET_CFG"].target_sconscript:
         # env.SConscript(target_sconscript)
@@ -223,6 +242,7 @@ def generate(env):
     env.AddMethod(ConfigureVariables)
     env.AddMethod(ConfigureDistTargets)
     env.AddMethod(ConfigureFwTargets)
+    env.AddMethod(ConfigureFwLibraries)
 
 
 def exists(env):

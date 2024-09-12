@@ -45,8 +45,6 @@ def BuildModule(env, module):
 def BuildModules(env, modules):
     result = []
     for module in modules:
-        if module in env.get("SKIP_MODULES", []):
-            continue
         build_res = env.BuildModule(module)
         # print("module ", module, build_res)
         if build_res is None:
@@ -70,6 +68,7 @@ def ChangeFileExtension(env, fnode, ext):
 
 
 def RegisterComponent(env, component_name, node_or_path):
+    print(f"RegisterComponent: {component_name} -> {node_or_path}")
     env["FBT_SCRIPT_LIB"][component_name] = node_or_path
 
 
@@ -77,6 +76,7 @@ def GetComponent(env, component_name):
     script = env["FBT_SCRIPT_LIB"].get(component_name)
     if not script:
         raise StopError(f"Script lookup failed: {component_name}")
+    print(f"GetComponent: {component_name} -> {script}")
     return script
 
 
