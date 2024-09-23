@@ -17,15 +17,18 @@ env.Append(
         f"{MCU_INCDIR}/drivers/cmsis_driver",
         f"{MCU_INCDIR}/drivers/cmsis_driver/CMSIS/Driver/Include",
     ],
+)
+
+libenv = env.Clone(FW_LIB_NAME="wiseconnect")
+libenv.ApplyLibFlags()
+
+libenv.AppendUnique(
     CCFLAGS=[
         "-Wno-redundant-decls",
         "-Wno-strict-prototypes",
         "-Wno-undef",
     ],
 )
-
-libenv = env.Clone(FW_LIB_NAME="wiseconnect")
-libenv.ApplyLibFlags()
 
 sources = [
     f"{MCU_DIR}/core/chip/src/system_si91x.c",
