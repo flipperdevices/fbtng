@@ -87,28 +87,31 @@ distenv.Default(firmware_env["FW_ARTIFACTS"])
 
 dist_dir_name = distenv.GetProjetDirName()
 dist_dir = distenv.Dir(f"#/dist/{dist_dir_name}")
-external_apps_artifacts = firmware_env["FW_EXTAPPS"]
-external_app_list = external_apps_artifacts.application_map.values()
 
-fap_dist = [
-    distenv.Install(
-        dist_dir.Dir("debug_elf"),
-        list(app_artifact.debug for app_artifact in external_app_list),
-    ),
-    *(
-        distenv.Install(
-            dist_dir.File(dist_entry[1]).dir,
-            app_artifact.compact,
-        )
-        for app_artifact in external_app_list
-        for dist_entry in app_artifact.dist_entries
-    ),
-]
-Depends(
-    fap_dist,
-    list(app_artifact.validator for app_artifact in external_app_list),
-)
-Alias("fap_dist", fap_dist)
+# FIXME External app support should be optional
+
+# external_apps_artifacts = firmware_env["FW_EXTAPPS"]
+# external_app_list = external_apps_artifacts.application_map.values()
+#
+# fap_dist = [
+#     distenv.Install(
+#         dist_dir.Dir("debug_elf"),
+#         list(app_artifact.debug for app_artifact in external_app_list),
+#     ),
+#     *(
+#         distenv.Install(
+#             dist_dir.File(dist_entry[1]).dir,
+#             app_artifact.compact,
+#         )
+#         for app_artifact in external_app_list
+#         for dist_entry in app_artifact.dist_entries
+#     ),
+# ]
+# Depends(
+#     fap_dist,
+#     list(app_artifact.validator for app_artifact in external_app_list),
+# )
+# Alias("fap_dist", fap_dist)
 
 firmware_env.ConfigureDistTargets(distenv)
 

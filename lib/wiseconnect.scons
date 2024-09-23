@@ -1,0 +1,39 @@
+from fbt.util import GLOB_FILE_EXCLUSION
+
+Import("env")
+
+WISECONNECT_DIR = "wiseconnect/components"
+DEVICE_DIR = f"{WISECONNECT_DIR}/device/silabs/si91x"
+MCU_DIR = f"{DEVICE_DIR}/mcu"
+MCU_INCDIR = f"#/lib/{MCU_DIR}"
+
+env.Append(
+    CPPPATH=[
+        f"{MCU_INCDIR}/core/config",
+        f"{MCU_INCDIR}/core/chip/inc",
+        f"{MCU_INCDIR}/drivers/rom_driver/inc",
+        f"{MCU_INCDIR}/drivers/systemlevel/inc",
+        f"{MCU_INCDIR}/drivers/peripheral_drivers/inc",
+        f"{MCU_INCDIR}/drivers/cmsis_driver",
+        f"{MCU_INCDIR}/drivers/cmsis_driver/CMSIS/Driver/Include",
+    ],
+    CCFLAGS=[
+        "-Wno-redundant-decls",
+        "-Wno-strict-prototypes",
+        "-Wno-undef",
+    ],
+)
+
+libenv = env.Clone(FW_LIB_NAME="wiseconnect")
+libenv.ApplyLibFlags()
+
+sources = [
+    f"{MCU_DIR}/core/chip/src/system_si91x.c",
+    f"{MCU_DIR}/core/chip/src/startup_si91x.c",
+    f"{MCU_DIR}/core/chip/src/rsi_ps_ram_func.c",
+    f"{MCU_DIR}/core/chip/src/rsi_deepsleep_soc.c",
+]
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

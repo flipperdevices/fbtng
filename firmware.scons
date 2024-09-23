@@ -75,6 +75,9 @@ env = ENV.Clone(
     F_TARGET_HW="f${TARGET_HW}",
     FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg",
     CPPDEFINES=GetOption("extra_defines"),
+    # TODO Remove placeholders
+    FW_ASSETS_HEADERS=[],
+    DOLPHIN_EXTERNAL_OUT_DIR=Dir("."),
 )
 
 env.PreConfigureFwEnvionment()
@@ -168,65 +171,68 @@ for app_dir, _ in fwenv["APPDIRS"]:
 
 fwenv.PrepareApplicationsBuild()
 
+# FIXME External app support should be optional
 
 # Build external apps + configure SDK
-if env["IS_BASE_FIRMWARE"]:
-    # Ensure all libs are built - even if they are not used in firmware
-    fw_artifacts.append(fwenv["LIB_DIST_DIR"].glob("*.a"))
-
-    fwenv.SetDefault(FBT_FAP_DEBUG_ELF_ROOT=fwenv["BUILD_DIR"].Dir(".extapps"))
-    fw_extapps = fwenv["FW_EXTAPPS"] = SConscript(
-        "site_scons/extapps.scons",
-        exports={"ENV": fwenv},
-    )
-    fw_artifacts.append(fw_extapps.sdk_tree)
-
-    # Resources & manifest for SD card
-    manifest = fwenv.ManifestBuilder(
-        "${RESOURCES_ROOT}/Manifest",
-        GIT_UNIX_TIMESTAMP=get_git_commit_unix_timestamp(),
-        _EXTRA_DIST=[fwenv["DOLPHIN_EXTERNAL_OUT_DIR"]],
-    )
-    fwenv.Replace(FW_RESOURCES_MANIFEST=manifest)
-    fwenv.Alias("resources", manifest)
-
-    # API getter
-    fwenv.Append(FBT_API_VERSION=LazySdkVersionLoader(fwenv.subst("$SDK_DEFINITION")))
-    fwenv.PhonyTarget(
-        "get_apiversion",
-        "@echo $( ${FBT_API_VERSION} $)",
-    )
+# if env["IS_BASE_FIRMWARE"]:
+#     # Ensure all libs are built - even if they are not used in firmware
+#     fw_artifacts.append(fwenv["LIB_DIST_DIR"].glob("*.a"))
+#
+#     fwenv.SetDefault(FBT_FAP_DEBUG_ELF_ROOT=fwenv["BUILD_DIR"].Dir(".extapps"))
+#     fw_extapps = fwenv["FW_EXTAPPS"] = SConscript(
+#         "site_scons/extapps.scons",
+#         exports={"ENV": fwenv},
+#     )
+#     fw_artifacts.append(fw_extapps.sdk_tree)
+#
+#     # Resources & manifest for SD card
+#     manifest = fwenv.ManifestBuilder(
+#         "${RESOURCES_ROOT}/Manifest",
+#         GIT_UNIX_TIMESTAMP=get_git_commit_unix_timestamp(),
+#         _EXTRA_DIST=[fwenv["DOLPHIN_EXTERNAL_OUT_DIR"]],
+#     )
+#     fwenv.Replace(FW_RESOURCES_MANIFEST=manifest)
+#     fwenv.Alias("resources", manifest)
+#
+#     # API getter
+#     fwenv.Append(FBT_API_VERSION=LazySdkVersionLoader(fwenv.subst("$SDK_DEFINITION")))
+#     fwenv.PhonyTarget(
+#         "get_apiversion",
+#         "@echo $( ${FBT_API_VERSION} $)",
+#     )
 
 # Add preprocessor definitions for current set of apps
 fwenv.Append(
     CPPDEFINES=fwenv["APPBUILD"].get_apps_cdefs(),
 )
 
+# FIXME External app support should be optional
+
 # Build applications.c for selected services & apps
 # Depends on virtual value-only node, so it only gets rebuilt when set of apps changes
-apps_c = fwenv.ApplicationsC(
-    "applications/applications.c",
-    [Value(fwenv["APPS"])],
-)
+# apps_c = fwenv.ApplicationsC(
+#     "applications/applications.c",
+#     [Value(fwenv["APPS"])],
+# )
 
 # Adding dependency on manifest files so apps.c is rebuilt when any manifest is changed
-for app_dir, _ in env["APPDIRS"]:
-    app_dir_node = env.Dir("#").Dir(app_dir)
-    fwenv.Depends(apps_c, app_dir_node.glob("*/application.fam"))
+# for app_dir, _ in env["APPDIRS"]:
+#     app_dir_node = env.Dir("#").Dir(app_dir)
+#     fwenv.Depends(apps_c, app_dir_node.glob("*/application.fam"))
 
 # Sanity check - certain external apps are using features that are not available in base firmware
-if advanced_faps := list(
-    filter(
-        lambda app: app.fap_extbuild or app.fap_private_libs or app.fap_icon_assets,
-        fwenv["APPBUILD"].get_builtin_apps(),
-    )
-):
-    raise UserError(
-        "An Application that is using fap-specific features cannot be built into base firmware."
-        f" Offending app(s): {', '.join(app.appid for app in advanced_faps)}"
-    )
+# if advanced_faps := list(
+#     filter(
+#         lambda app: app.fap_extbuild or app.fap_private_libs or app.fap_icon_assets,
+#         fwenv["APPBUILD"].get_builtin_apps(),
+#     )
+# ):
+#     raise UserError(
+#         "An Application that is using fap-specific features cannot be built into base firmware."
+#         f" Offending app(s): {', '.join(app.appid for app in advanced_faps)}"
+#     )
 
-sources = [apps_c]
+sources = []
 # Gather sources only from app folders in current configuration
 sources.extend(
     itertools.chain.from_iterable(
@@ -276,7 +282,7 @@ fw_artifacts.extend(
         fwhex,
         fwbin,
         fwdfu,
-        fwenv["FW_VERSION_JSON"],
+        # fwenv["FW_VERSION_JSON"],
     ]
 )
 
@@ -294,7 +300,7 @@ NoClean(fwcdb)
 Alias(fwenv["FIRMWARE_BUILD_CFG"] + "_cdb", fwcdb)
 
 fwenv["STATIC_ANALYSIS_DEPENDS"] = [
-    fwenv["FW_VERSION_JSON"],
+    # fwenv["FW_VERSION_JSON"],
     fwenv["FW_ASSETS_HEADERS"],
     fwenv["FW_API_TABLE"],
     fwenv["_APP_ICONS"],

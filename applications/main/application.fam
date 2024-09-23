@@ -14,7 +14,7 @@ App(
         "archive",
         "main_apps_on_start",
     ],
-    targets=["!f50"],
+    targets=["f7", "f18"],
 )
 
 App(
@@ -29,5 +29,5 @@ App(
         "lfrfid_start",
         "nfc_start",
     ],
-    targets=["!f50"],
+    targets=["f7", "f18"],
 )

@@ -46,6 +46,7 @@ for libname in [
     "ble_profile",
     "bit_lib",
     "datetime",
+    "wiseconnect",
 ]:
     lib_script = env.FindModuleSconscript(libname)
     env.RegisterComponent(f"fwlib_{libname}", lib_script)

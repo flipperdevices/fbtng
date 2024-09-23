@@ -1,0 +1,7 @@
+App(
+    appid="main_apps",
+    name="Basic applications for main menu",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[],
+    targets=["f64"],
+)

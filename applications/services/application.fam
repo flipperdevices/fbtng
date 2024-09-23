@@ -12,5 +12,5 @@ App(
         "power",
         "notification",
     ],
-    targets=["!f50"],
+    targets=["f7", "f18"],
 )
