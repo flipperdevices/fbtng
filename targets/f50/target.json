@@ -73,11 +73,14 @@
     "sdk_symbols": "api_symbols.csv",
     "rtos_flavor": "freertos-cm33-ntz",
     "env_modules": [
+        "fw_updater_opts",
+        "lib_base",
         "mlib",
         "cmsis",
         "freertos",
         "microtar",
         "mbedtls",
+        "icon_assets",
         "toolbox",
         "tinyusb",
         "print",
@@ -91,9 +94,22 @@
         "heatshrink",
         "bit_lib",
         "datetime",
-        "assets",
         "targets",
-        "furi"
+        "furi",
+        "ext_applications",
+        "applications"
+    ],
+    "fw_modules": [
+        "fw_elf",
+        "fw_artifacts",
+        "fw_cdb",
+        "link_builddir"
+    ],
+    "dist_modules": [
+        "elf_flash",
+        "debug",
+        "vscode_env",
+        "cli"
     ],
     "platform": "stm32u5",
     "svd_file": "STM32U5Gx.svd",

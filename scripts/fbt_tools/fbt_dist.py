@@ -1,4 +1,3 @@
-from SCons.Action import Action
 from SCons.Builder import Builder
 from SCons.Defaults import Touch
 
@@ -19,26 +18,33 @@ def GetProjetDirName(env, project=None):
     return "-".join(parts)
 
 
-def create_fw_build_targets(env, configuration_name):
+def create_fw_build_targets(env, configuration_name, extra_params):
     flavor = GetProjetDirName(env, configuration_name)
-    build_dir = env.Dir("build").Dir(flavor)
+    build_dir = env.Dir("#build").Dir(flavor)
+    fw_build_meta = dict(extra_params or {})
+    fw_build_meta.update(
+        {
+            "type": configuration_name,
+            "flavor": flavor,
+            "build_dir": build_dir,
+        }
+    )
+
     return env.SConscript(
-        "firmware.scons",
-        variant_dir=build_dir,
+        "#firmware.scons",
+        variant_dir=build_dir,  # FIXME
         duplicate=0,
         exports={
             "ENV": env,
-            "fw_build_meta": {
-                "type": configuration_name,
-                "flavor": flavor,
-                "build_dir": build_dir,
-            },
+            "fw_build_meta": fw_build_meta,
         },
     )
 
 
-def AddFwProject(env, base_env, fw_type, fw_env_key):
-    project_env = env[fw_env_key] = create_fw_build_targets(base_env, fw_type)
+def AddFwProject(env, base_env, fw_type, fw_env_key, extra_params=None):
+    project_env = env[fw_env_key] = create_fw_build_targets(
+        base_env, fw_type, extra_params
+    )
     env.Append(
         DIST_PROJECTS=[
             project_env["FW_FLAVOR"],
@@ -48,20 +54,13 @@ def AddFwProject(env, base_env, fw_type, fw_env_key):
         ],
     )
 
-    env.Replace(DIST_DIR=env.GetProjetDirName())
-    return project_env
-
-
-def AddFwFlashTarget(env, targetenv, **kw):
-    fwflash_target = env.FwFlash(
-        "#build/${FIRMWARE_BUILD_CFG}_flash.flag",
-        targetenv["FW_ELF"],
-        **kw,
+    env.SetDefault(
+        F_TARGET_HW=project_env["F_TARGET_HW"],
+        DIST_DIR=env.GetProjetDirName(),
+        UPDATE_BUNDLE_DIR="dist/${DIST_DIR}/${F_TARGET_HW}-update-${DIST_SUFFIX}",
     )
-    env.Alias(targetenv.subst("${FIRMWARE_BUILD_CFG}_flash"), fwflash_target)
-    if env["FORCE"]:
-        env.AlwaysBuild(fwflash_target)
-    return fwflash_target
+
+    return project_env
 
 
 def generate(env):
@@ -70,36 +69,7 @@ def generate(env):
             DISTCOMSTR="\tDIST\t${TARGET}",
         )
     env.AddMethod(AddFwProject)
-    env.AddMethod(AddFwFlashTarget)
     env.AddMethod(GetProjetDirName)
-
-    env.SetDefault(
-        FW_FLASH_SCRIPT="${FBT_SCRIPT_DIR}/fwflash.py",
-        FW_FLASH_TARGET_INTEFACE="auto",
-        DEBUG_INTERFACE_SERIAL="auto",
-        FW_FLASH_EXTRA_COMMANDS="",
-    )
-
-    env.Append(
-        BUILDERS={
-            "FwFlash": Builder(
-                action=[
-                    [
-                        "${PYTHON3}",
-                        "${FW_FLASH_SCRIPT}",
-                        "-d" if env["VERBOSE"] else "",
-                        "--interface=${DEBUG_INTERFACE}",
-                        "--serial=${DEBUG_INTERFACE_SERIAL}",
-                        "--target=${FW_FLASH_TARGET_INTEFACE}",
-                        '--extra-commands="${FW_FLASH_EXTRA_COMMANDS}"',
-                        "${SOURCE}",
-                        "${ARGS}",
-                    ],
-                    Touch("${TARGET}"),
-                ]
-            ),
-        }
-    )
 
 
 def exists(env):

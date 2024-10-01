@@ -1,0 +1,30 @@
+from fbt.sdk.cache import LazySdkVersionLoader
+
+from dataclasses import dataclass, field
+
+from SCons.Node import NodeList
+from SCons.Warnings import warn, WarningOnByDefault
+
+
+Import("FW_ENV")
+fwenv = FW_ENV
+
+# Build external apps + configure SDK
+if fwenv["IS_BASE_FIRMWARE"]:
+    fw_artifacts = fwenv["FW_ARTIFACTS"]
+    # Ensure all libs are built - even if they are not used in firmware
+    fw_artifacts.append(fwenv["LIB_DIST_DIR"].glob("*.a"))
+
+    # API version getter
+    fwenv.Append(FBT_API_VERSION=LazySdkVersionLoader(fwenv.subst("$SDK_DEFINITION")))
+    fwenv.PhonyTarget(
+        "get_apiversion",
+        "@echo $( ${FBT_API_VERSION} $)",
+    )
+
+    fw_extapps = fwenv["FW_EXTAPPS"] = SConscript(
+        "#/site_scons/extapps.scons",  # FIXME
+        duplicate=0,
+        exports={"ENV": fwenv},
+    )
+    fw_artifacts.append(fw_extapps.sdk_tree)

@@ -8,7 +8,7 @@ env.Append(
 
 
 libenv = env.Clone(FW_LIB_NAME="microtar")
-libenv.ApplyLibFlags()
+libenv.ApplyLibFlags("applications")
 
 libenv.Append(
     CPPDEFINES=["MICROTAR_DISABLE_API_CHECKS"],

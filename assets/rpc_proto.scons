@@ -1,0 +1,46 @@
+Import("env")
+
+assetsenv = env.Clone(
+    tools=["fbt_assets"],
+    FW_LIB_NAME="rpc_proto",
+    ASSETS_WORK_DIR=env.Dir("."),
+    ASSETS_SRC_DIR=env.Dir("#/assets"),
+)
+assetsenv.ApplyLibFlags()
+
+# Protobuf .proto -> .c + .h
+proto_src = assetsenv.Glob("protobuf/*.proto", source=True)
+proto_options = assetsenv.Glob("protobuf/*.options", source=True)
+proto = assetsenv.ProtoBuilder(assetsenv["ASSETS_WORK_DIR"], proto_src)
+assetsenv.Depends(proto, proto_options)
+# Precious(proto)
+assetsenv.Alias("proto", proto)
+
+
+# Protobuf version meta
+proto_ver = assetsenv.ProtoVerBuilder(
+    "${ASSETS_WORK_DIR}/protobuf_version.h",
+    assetsenv["ASSETS_SRC_DIR"].File("protobuf/Changelog"),
+)
+assetsenv.Depends(proto_ver, proto)
+assetsenv.Alias("proto_ver", proto_ver)
+
+env.AppendUnique(
+    CPPPATH=[
+        assetsenv["ASSETS_WORK_DIR"],
+        assetsenv["ASSETS_WORK_DIR"].Dir("compiled"),
+    ]
+)
+
+
+headers = list(filter(lambda fn: fn.name.endswith(".h"), Flatten((proto, proto_ver))))
+sources = list(
+    filter(lambda fn: not fn.name.endswith(".h"), Flatten((proto, proto_ver)))
+)
+
+env.AppendUnique(FW_ASSETS_HEADERS=headers)
+
+
+lib = assetsenv.StaticLibrary("${FW_LIB_NAME}", sources)
+assetsenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

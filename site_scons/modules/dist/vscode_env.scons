@@ -1,0 +1,28 @@
+import os
+
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+vscode_distenv = distenv.Clone(tools=["textfile"])
+
+# Prepare vscode environment
+vscode_dist = vscode_distenv.Install(
+    "#.vscode",
+    [
+        vscode_distenv.Glob("#.vscode/example/*.json", exclude="*.tmpl"),
+        vscode_distenv.Glob("#.vscode/example/${LANG_SERVER}/*.json"),
+    ],
+)
+for template_file in vscode_distenv.Glob("#.vscode/example/*.tmpl"):
+    vscode_dist.append(
+        vscode_distenv.Substfile(
+            vscode_distenv.Dir("#.vscode").File(template_file.name.replace(".tmpl", "")),
+            template_file,
+            SUBST_DICT={
+                "@FBT_PLATFORM_EXECUTABLE_EXT@": ".exe" if os.name == "nt" else ""
+            },
+        )
+    )
+vscode_distenv.Precious(vscode_dist)
+vscode_distenv.NoClean(vscode_dist)
+vscode_distenv.Alias("vscode_dist", (vscode_dist, firmware_env["FW_CDB"]))

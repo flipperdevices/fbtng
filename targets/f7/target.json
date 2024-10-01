@@ -38,8 +38,8 @@
         "-c"
     ],
     "linker_flags": [
-        "-specs=nano.specs",
         "-mlittle-endian",
+        "-specs=nano.specs",
         "-Wl,--gc-sections",
         "-Wl,--no-warn-rwx-segment",
         "-Wl,--wrap,_malloc_r",
@@ -71,6 +71,8 @@
     "sdk_symbols": "api_symbols.csv",
     "rtos_flavor": "freertos-cm4",
     "env_modules": [
+        "fw_updater_opts",
+        "lib_base",
         "mlib",
         "cmsis",
         "stm32wb",
@@ -79,6 +81,7 @@
         "drivers",
         "microtar",
         "mbedtls",
+        "icon_assets",
         "toolbox",
         "print",
         "fatfs",
@@ -103,13 +106,39 @@
         "ble_profile",
         "bit_lib",
         "datetime",
-        "assets",
+        "dolphin",
+        "rpc_proto",
+        "ext_resources",
         "targets",
-        "furi"
+        "furi",
+        "ext_applications",
+        "applications",
+        "elf_mapfile_gen"
+    ],
+    "fw_modules": [
+        "app_check",
+        "fw_elf",
+        "fw_artifacts",
+        "sdk_extapps",
+        "fw_cdb",
+        "static_analysis",
+        "resources",
+        "link_builddir"
+    ],
+    "dist_modules": [
+        "elf_flash",
+        "debug",
+        "fap_deploy",
+        "wb55_dist",
+        "lint",
+        "devboard",
+        "doxygen",
+        "vscode_env",
+        "cli"
     ],
     "platform": "stm32wb",
     "svd_file": "STM3WB55_CM4.svd",
     "flash_address": "0x08000000",
     "variables_sconscript": "scons/stm32wb_vars.scons",
-    "dist_sconscript": "scons/stm32wb_dist.scons"
+    "firmware_sconscript": "scons/stm32wb_firmware.scons"
 }

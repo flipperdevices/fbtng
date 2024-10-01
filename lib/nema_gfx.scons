@@ -1,13 +1,13 @@
 Import("env")
 
-env.Append(
+env.AppendUnique(
     CPPPATH=[
         "#/lib/NemaGFX/include",
     ],
     LIBPATH=[
         "#/lib/NemaGFX/lib/core/cortex_m33_NemaPVG/gcc",
     ],
-    LIBS=[
+    FW_LIBS=[
         "nemagfx-float-abi-hard",
     ],
 )
@@ -15,7 +15,6 @@ env.Append(
 
 libenv = env.Clone(FW_LIB_NAME="nema_gfx")
 libenv.ApplyLibFlags()
-
 
 sources = []
 

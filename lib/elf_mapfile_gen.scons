@@ -1,0 +1,9 @@
+Import("env")
+
+
+env.AppendUnique(
+    LINKFLAGS=[
+        "-Xlinker",
+        "-Map=${TARGET}.map",
+    ],
+)

@@ -1,0 +1,90 @@
+import itertools
+
+from fbt.appmanifest import FlipperApplication
+from SCons.Node import FS
+
+Import("env")
+
+# Set up app configuration
+fwenv = env
+
+fw_build_configuration = env["FW_BUILD_META"]["type"]
+
+if fw_build_configuration == "firmware":
+    fwenv.Append(APPS=fwenv["FIRMWARE_APPS"].get(fwenv.subst("$FIRMWARE_APP_SET")))
+elif fw_build_configuration == "updater":
+    fwenv.Append(APPS=["updater"])
+else:
+    raise ValueError(f"Unknown firmware type: {fw_build_configuration}")
+
+
+for app_dir, _ in fwenv["APPDIRS"]:
+    app_dir_node = env.Dir("#").Dir(app_dir)
+
+    for entry in app_dir_node.glob("*"):
+        if isinstance(entry, FS.Dir) and not str(entry).startswith("."):
+            fwenv.LoadAppManifest(entry)
+
+fwenv.PrepareApplicationsBuild()
+
+# # Set up additional app-specific build flags
+# fwenv.AppendUnique(
+#     CPPDEFINES=[
+#         "FURI_DEBUG" if fwenv["DEBUG"] else "FURI_NDEBUG",
+#         "DEBUG" if fwenv["DEBUG"] else "NDEBUG",
+#     ],
+#     CCFLAGS=[
+#         "-Os" if fwenv["COMPACT"] else "-Og",
+#     ],
+# )
+
+fwenv.AppendUnique(
+    # Add preprocessor definitions for current set of apps
+    CPPDEFINES=fwenv["APPBUILD"].get_apps_cdefs(),
+)
+
+
+libenv = env.Clone(FW_LIB_NAME="applications")
+libenv.ApplyLibFlags()
+
+
+# This will be the variant dir for the library
+lib_build_dir = libenv.Dir(".")
+# And this will map the root of the project to the variant dir
+libenv.VariantDir(lib_build_dir, "#", duplicate=0)
+
+# Build applications.c for selected services & apps
+# Depends on virtual value-only node, so it only gets rebuilt when set of apps changes
+apps_c = libenv.ApplicationsC(
+    "applications.c",
+    [Value(fwenv["APPS"])],
+)
+
+# Adding dependency on manifest files so apps.c is rebuilt when any manifest is changed
+for app_dir, _ in env["APPDIRS"]:
+    app_dir_node = env.Dir("#").Dir(app_dir)
+    fwenv.Depends(
+        apps_c, app_dir_node.glob("*/" + FlipperApplication.APP_MANIFEST_DEFAULT_NAME)
+    )
+
+sources = list(apps_c)
+# Gather sources only from app folders in current configuration
+sources.extend(
+    map(
+        # This is a bit of a hack. We need to get the node from current dir, where
+        # root of the project had been mapped to. But GatherSources returns original nodes
+        lambda node: lib_build_dir.File(node.relpath),
+        itertools.chain.from_iterable(
+            # fwenv.GatherSources([source_type, "!lib"], appdir.relpath)
+            fwenv.GatherSources([source_type, "!lib"], appdir)
+            for appdir, source_type in fwenv["APPBUILD"].get_builtin_app_folders()
+        ),
+    )
+)
+
+# print("sources: ", list(map(lambda x: x.relpath, sources)))  # FIXME
+
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

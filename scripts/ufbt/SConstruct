@@ -80,7 +80,7 @@ env = core_env.Clone(
         "fwbin",
         "python3",
         "sconsrecursiveglob",
-        "sconsmodular",
+        "fbt_modular",
         "ccache",
         "fbt_apps",
         "fbt_extapps",

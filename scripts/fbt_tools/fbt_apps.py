@@ -143,9 +143,11 @@ def PrepareApplicationsBuild(env):
     except Exception as e:
         raise StopError(e)
 
-    env.Append(
-        SDK_HEADERS=appbuild.get_sdk_headers(),
-    )
+    # At this point, the app env owns the SDK header list (it cloned from fwenv before)
+    if env.get("APPENV"):
+        env["APPENV"].Append(
+            SDK_HEADERS=appbuild.get_sdk_headers(),
+        )
 
 
 def DumpApplicationConfig(target, source, env):

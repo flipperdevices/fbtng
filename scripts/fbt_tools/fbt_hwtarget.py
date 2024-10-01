@@ -26,9 +26,10 @@ class HardwareTargetLoader:
         self.excluded_sources = []
         self.excluded_headers = []
         self.env_modules = []
+        self.fw_modules = []
         self.variables_sconscript = None
         self.target_sconscript = None
-        self.dist_sconscript = None
+        self.dist_modules = []
         # self.script_dir , tool_dir?
         self._processTargetDefinitions(target_id)
 
@@ -64,6 +65,8 @@ class HardwareTargetLoader:
             "excluded_headers",
             # "excluded_modules",
             "env_modules",
+            "dist_modules",
+            "fw_modules",
         ):
             getattr(self, prop_name).extend(config.get(prop_name, []))
 
@@ -80,7 +83,6 @@ class HardwareTargetLoader:
             ("rtos_flavor", False),
             ("variables_sconscript", True),
             ("target_sconscript", True),
-            ("dist_sconscript", True),
         )
 
         for attr_name, is_target_file_node in file_attrs:
@@ -152,8 +154,12 @@ class HardwareTargetLoader:
 
 
 def ConfigureForTarget(env, lightweight=False):
-    target_id = env.subst("${F_TARGET_HW}")
-    target_loader = HardwareTargetLoader(env, env["TARGETS_ROOT"], target_id)
+    env.SetDefault(
+        F_TARGET_HW="f${TARGET_HW}",
+    )
+    target_loader = HardwareTargetLoader(
+        env, env["TARGETS_ROOT"], env.subst("${F_TARGET_HW}")
+    )
     env.Replace(
         TARGET_CFG=target_loader,
         SDK_DEFINITION=target_loader.sdk_symbols,
@@ -174,11 +180,10 @@ def ConfigureForTarget(env, lightweight=False):
     )
 
 
-def ApplyLibFlags(env):
-    flags_to_apply = env["FW_LIB_OPTS"].get(
-        env.get("FW_LIB_NAME"),
-        env["FW_LIB_OPTS"]["Default"],
-    )
+def ApplyLibFlags(env, lib_name=None):
+    if not lib_name:
+        lib_name = env["FW_LIB_NAME"]
+    flags_to_apply = env["FW_LIB_OPTS"].get(lib_name, env["FW_LIB_OPTS"]["Default"])
     # print("Flags for ", env.get("FW_LIB_NAME", "Default"), flags_to_apply)
     env.MergeFlags(flags_to_apply)
 
@@ -197,11 +202,13 @@ def ConfigureVariables(env, variables):
 
 
 def ConfigureDistTargets(env, distenv):
-    if dist_sconscript := env["TARGET_CFG"].dist_sconscript:
-        # env.SConscript(dist_sconscript)
-        print("Dist sconscript: ", dist_sconscript)
+    # print("ConfigureDistTargets", env["TARGET_CFG"].dist_modules)
+    for dist_module in env["TARGET_CFG"].dist_modules:
+        dist_script = env.GetComponent(f"dist_{dist_module}")
+        # print("Dist script: ", dist_script)
         env.SConscript(
-            dist_sconscript,
+            dist_script,
+            # duplicate=0,
             exports={
                 "DIST_ENV": distenv,
                 "FW_ENV": env,
@@ -209,15 +216,17 @@ def ConfigureDistTargets(env, distenv):
         )
 
 
-def ConfigureFwLibraries(env):
-    print("ConfigureFwLibraries")
+def ConfigureFwEnvWithLibraries(env):
+    # print("ConfigureFwEnvWithLibraries")
     static_libs = []
     for dep_lib in env["TARGET_CFG"].env_modules:
-        print("Dep lib: ", dep_lib)
+        # print("Dep lib: ", dep_lib)
         component_script = env.GetComponent(f"fwlib_{dep_lib}")
         script_eval_res = env.SConscript(
             component_script,
-            variant_dir=env.Dir("$BUILD_DIR/" + dep_lib),
+            # variant_dir=env.Dir("${BUILD_DIR}/" + dep_lib),
+            variant_dir=env["BUILD_DIR"].Dir(dep_lib),
+            src_dir=env.Dir("#"),
             duplicate=0,
         )
 
@@ -226,14 +235,33 @@ def ConfigureFwLibraries(env):
         # static_libs.append(env.
         # env.Depends(env["FW_LIB_NAME"], dep_lib)
 
-    print("Static libs: ", static_libs)
-    env.AppendUnique(LIBS=static_libs)
+    # print("Static libs: ", static_libs)
+    env.AppendUnique(FW_LIBS=static_libs)
 
 
-def ConfigureFwTargets(env):
-    if target_sconscript := env["TARGET_CFG"].target_sconscript:
-        # env.SConscript(target_sconscript)
-        print("Target sconscript: ", target_sconscript)
+def ConfigureFwEnvComponents(env):
+    for fw_module in env["TARGET_CFG"].fw_modules:
+        fw_script = env.GetComponent(f"fwenv_{fw_module}")
+        # print("Fw script: ", fw_script, "->", fw_script.abspath)
+        env.SConscript(
+            fw_script,
+            # fw_script.abspath,
+            exports={
+                "FW_ENV": env,
+            },
+            variant_dir=env["BUILD_DIR"].Dir(fw_module),
+            duplicate=0,
+        )
+
+
+def GetComponentDiscoveryDirs(env):
+    return [
+        env.Dir("#/lib"),
+        env.Dir("#/targets"),
+        env.Dir("#/furi"),
+        env.Dir("#/site_scons/modules"),
+        env.Dir("#/assets"),
+    ]
 
 
 def generate(env):
@@ -241,8 +269,9 @@ def generate(env):
     env.AddMethod(ApplyLibFlags)
     env.AddMethod(ConfigureVariables)
     env.AddMethod(ConfigureDistTargets)
-    env.AddMethod(ConfigureFwTargets)
-    env.AddMethod(ConfigureFwLibraries)
+    env.AddMethod(ConfigureFwEnvWithLibraries)
+    env.AddMethod(ConfigureFwEnvComponents)
+    env.AddMethod(GetComponentDiscoveryDirs)
 
 
 def exists(env):

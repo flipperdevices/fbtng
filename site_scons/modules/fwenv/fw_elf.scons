@@ -1,0 +1,26 @@
+Import("FW_ENV")
+fwenv = FW_ENV
+
+
+fw_elf_env = fwenv.Clone(tools=["fwbin"])
+
+fwelf_src = fwenv["FW_ELF"] = fw_elf_env.Program(
+    "${FIRMWARE_BUILD_CFG}",
+    [],  # sources - empty, because firmware is built from libraries only
+    LIBS=fwenv["FW_LIBS"],
+)
+fwelf = fwenv["FW_ELF"] = fwenv.Install("${BUILD_DIR}", fwelf_src)
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_elf"), fwelf)
+fwenv["FW_ARTIFACTS"].append(fwelf)
+
+# Output extra details after building firmware
+if "APPBUILD_DUMP" in fwenv:
+    AddPostAction(fwelf, fwenv["APPBUILD_DUMP"])
+
+fw_elf_env.AddPostAction(
+    fwelf_src,
+    Action(
+        [["${PYTHON3}", "${BIN_SIZE_SCRIPT}", "elf", "${TARGET}"]],
+        # "Firmware size",
+    ),
+)

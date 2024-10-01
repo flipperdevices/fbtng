@@ -55,9 +55,9 @@ FIRMWARE_APPS = {
         "basic_services",
         # Apps
         "main_apps",
-        # "system_apps",
+        "system_apps",
         # Settings
-        # "settings_apps",
+        "settings_apps",
     ],
     "unit_tests": [
         "basic_services",

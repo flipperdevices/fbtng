@@ -134,7 +134,7 @@ static FuriHalMemoryRegion memory_regions[] = {
 };
 
 void furi_hal_memory_init_early(void) {
-    memory_regions[0].size_bytes = __heap_size__;
+    memory_regions[0].size_bytes = (void*)&__heap_end__ - (void*)&__heap_start__;
 }
 
 size_t furi_hal_memory_regions_count(void) {

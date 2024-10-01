@@ -1,0 +1,38 @@
+Import("FW_ENV")
+fwenv = FW_ENV
+
+# Produce extra firmware files
+fw_extra_env = fwenv.Clone(tools=["fwbin"])
+
+fwelf = fwenv["FW_ELF"]
+
+fwhex_src = fw_extra_env.HEXBuilder("${FIRMWARE_BUILD_CFG}", fwelf)
+fwhex = fwenv["FW_HEX"] = fwenv.Install("${BUILD_DIR}", fwhex_src)
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_hex"), fwhex)
+
+fwbin_src = fw_extra_env.BINBuilder("${FIRMWARE_BUILD_CFG}", fwelf)
+AddPostAction(
+    fwbin_src,
+    Action([["@${PYTHON3}", "${BIN_SIZE_SCRIPT}", "bin", "${TARGET}"]]),
+)
+fwbin = fwenv["FW_BIN"] = fwenv.Install("${BUILD_DIR}", fwbin_src)
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_bin"), fwbin)
+
+fwdfu_src = fw_extra_env.DFUBuilder("${FIRMWARE_BUILD_CFG}", fwbin_src)
+fwdfu = fwenv["FW_DFU"] = fwenv.Install("${BUILD_DIR}", fwdfu_src)
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_dfu"), fwdfu)
+
+fwdump = fwenv.ObjDump("${FIRMWARE_BUILD_CFG}", fwelf)
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_list"), fwdump)
+
+fw_artifacts = fwenv["FW_ARTIFACTS"]
+fw_artifacts.extend(
+    [
+        fwhex,
+        fwbin,
+        fwdfu,
+        fwenv["FW_VERSION_JSON"],  # FIXME: toolbox!!!
+    ]
+)
+
+# fwenv.Default(fw_artifacts)

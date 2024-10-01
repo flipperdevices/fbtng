@@ -10,7 +10,7 @@ from fbt.util import (
 )
 from SCons.Platform import TempFileMunge
 
-Import("VAR_ENV")
+Import("VAR_ENV", "COMPONENT_DIRS")
 
 forward_os_env = {
     # Import PATH from OS env - scons doesn't do that by default
@@ -37,10 +37,11 @@ coreenv = VAR_ENV.Clone(
             },
         ),
         "python3",
-        "sconsmodular",
+        "fbt_modular",
         "sconsrecursiveglob",
         "ccache",
     ],
+    FBT_COMPONENT_DIRS=COMPONENT_DIRS,
     TEMPFILE=TempFileMunge,
     POSIXPATH=PosixPathWrapper,
     MAXLINELENGTH=2048,

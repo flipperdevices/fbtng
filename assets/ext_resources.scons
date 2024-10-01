@@ -1,0 +1,24 @@
+Import("env")
+
+
+assetsenv = env.Clone(
+    tools=["fbt_assets"],
+    ASSETS_WORK_DIR=env.Dir("ext_resources"),
+    ASSETS_SRC_DIR=env.Dir("#/assets"),
+)
+
+# Resources for SD card
+if assetsenv["IS_BASE_FIRMWARE"]:
+    dolphin_external_out_dir = assetsenv["ASSETS_WORK_DIR"].Dir("dolphin")
+    # External dolphin animations
+    dolphin_external = assetsenv.DolphinExtBuilder(
+        dolphin_external_out_dir,
+        assetsenv["ASSETS_SRC_DIR"].Dir("dolphin"),
+        DOLPHIN_RES_TYPE="external",
+    )
+    if assetsenv["FORCE"]:
+        assetsenv.AlwaysBuild(dolphin_external)
+    assetsenv.Alias("dolphin_ext", dolphin_external)
+    assetsenv.Clean(dolphin_external, dolphin_external_out_dir)
+
+    env.Replace(DOLPHIN_EXTERNAL_OUT_DIR=dolphin_external_out_dir)

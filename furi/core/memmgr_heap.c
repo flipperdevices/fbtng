@@ -79,7 +79,7 @@ DICT_DEF2( //-V1048
 
 /* Heap start and size provided by HAL 
  * Initialized after fetching info from furi_hal_memory_init_early() */
-static FuriHalMemoryRegion* heap_region = NULL;
+static const FuriHalMemoryRegion* heap_region = NULL;
 
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
@@ -365,6 +365,7 @@ void* pvPortMalloc(size_t xWantedSize) {
         vTaskSuspendAll();
         {
             furi_hal_memory_init_early();
+            heap_region = furi_hal_memory_regions_get(0);
             prvHeapInit();
             memmgr_heap_init_trace();
         }

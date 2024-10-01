@@ -1,0 +1,67 @@
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+debug_env = distenv.Clone(tools=["fbt_debugopts"])
+
+__base_debug_opts = [
+    "--root",
+    "${FBT_DEBUG_DIR}",
+    "--serial",
+    "${DEBUG_INTERFACE_SERIAL}",
+    "-t",
+    firmware_env["HW_PLATFORM"],
+    "--init",
+    "--with-svd",
+    firmware_env["HW_SVD_FILE"],
+]
+
+# Debugging firmware
+firmware_debug = debug_env.PhonyTarget(
+    "debug",
+    [
+        [
+            "${FBT_DEBUG_SCRIPT}",
+            *__base_debug_opts,
+            "${SOURCE}",
+            "--compare",
+            # "--with-firmware",
+            "--with-rtos",
+            ## Uncomment to enable apps debugging
+            # "--with-apps",
+            # firmware_env["FBT_FAP_DEBUG_ELF_ROOT"],
+        ],
+    ],
+    source=firmware_env["FW_ELF"],
+)
+# debug_env.Depends(firmware_debug, firmware_flash) # FIXME: firmware_flash is not defined
+
+# Debug alien elf
+debug_env.PhonyTarget(
+    "debug_other",
+    [
+        [
+            "${FBT_DEBUG_SCRIPT}",
+            *__base_debug_opts,
+            # "--with-firmware",
+        ],
+    ],
+)
+
+# Backtrace all threads
+debug_env.PhonyTarget(
+    "gdb_trace_all",
+    [
+        [
+            "${FBT_DEBUG_SCRIPT}",
+            *__base_debug_opts,
+            "${SOURCE}",
+            "--with-rtos",
+            # "--with-firmware",
+            "-ex",
+            "thread apply all bt",
+            "-ex",
+            "quit",
+        ],
+    ],
+    source=firmware_env["FW_ELF"],
+)

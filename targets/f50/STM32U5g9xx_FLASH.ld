@@ -153,7 +153,6 @@ SECTIONS
     __heap_start__ = .;
     . = ORIGIN(RAM) + LENGTH(RAM) - _Min_Stack_Size;
     __heap_end__ = .;
-    __heap_size__ = __heap_end__ - __heap_start__;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM

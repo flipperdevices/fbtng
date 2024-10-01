@@ -1,0 +1,99 @@
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+# print('BUILD_TARGETS', BUILD_TARGETS)
+
+distenv.SetDefault(
+    UPDATE_BUNDLE_DIR="#dist/${DIST_DIR}/${F_TARGET_HW}-update-${DIST_SUFFIX}",
+)
+
+# If enabled, initialize updater-related targets
+if GetOption("fullenv") or any(
+    filter(
+        lambda target: isinstance(target, str)
+        and ("updater" in target or "flash_usb" in target),
+        BUILD_TARGETS,
+    )
+):
+    updater_env = distenv.AddFwProject(
+        base_env=distenv["CORE_ENV"],
+        fw_type="updater",
+        fw_env_key="UPD_ENV",
+    )
+
+    # Target for self-update package
+    dist_basic_arguments = [
+        "${ARGS}",
+        "--bundlever",
+        "${UPDATE_VERSION_STRING}",
+    ]
+    dist_radio_arguments = [
+        "--radio",
+        "${ROOT_DIR.abspath}/${COPRO_STACK_BIN_DIR}/${COPRO_STACK_BIN}",
+        "--radiotype",
+        "${COPRO_STACK_TYPE}",
+        "${COPRO_DISCLAIMER}",
+        "--obdata",
+        "${ROOT_DIR.abspath}/${COPRO_OB_DATA}",
+        "--stackversion",
+        "${COPRO_CUBE_VERSION}",
+    ]
+    dist_resource_arguments = [
+        "-r",
+        firmware_env.subst("${RESOURCES_ROOT}"),
+    ]
+    dist_splash_arguments = (
+        [
+            "--splash",
+            distenv.subst("assets/slideshow/$UPDATE_SPLASH"),
+        ]
+        if distenv["UPDATE_SPLASH"]
+        else []
+    )
+
+    wb_dist_env = distenv.Clone(tools=["fbt_wbcopro", "jflash"])
+
+    selfupdate_dist = wb_dist_env.DistCommand(
+        "updater_package",
+        (distenv["DIST_DEPENDS"], firmware_env["FW_RESOURCES_MANIFEST"]),
+        DIST_EXTRA=[
+            *dist_basic_arguments,
+            *dist_radio_arguments,
+            *dist_resource_arguments,
+            *dist_splash_arguments,
+        ],
+    )
+
+    selfupdate_min_dist = wb_dist_env.DistCommand(
+        "updater_minpackage",
+        distenv["DIST_DEPENDS"],
+        DIST_EXTRA=dist_basic_arguments,
+    )
+
+    # Updater debug
+    distenv.PhonyTarget(
+        "updater_debug",
+        "${GDBPYCOM}",
+        source=updater_env["FW_ELF"],
+        GDBREMOTE="${OPENOCD_GDB_PIPE}",
+    )
+
+    distenv.PhonyTarget(
+        "updater_blackmagic",
+        "${GDBPYCOM}",
+        source=updater_env["FW_ELF"],
+        GDBOPTS=distenv.subst("$GDBOPTS_BLACKMAGIC"),
+        GDBREMOTE="${BLACKMAGIC_ADDR}",
+    )
+
+    # Installation over USB & CLI
+    usb_update_package = wb_dist_env.AddUsbFlashTarget(
+        "#build/usbinstall.flag",
+        (firmware_env["FW_RESOURCES_MANIFEST"], selfupdate_dist),
+    )
+    wb_dist_env.Alias("flash_usb_full", usb_update_package)
+
+    usb_minupdate_package = wb_dist_env.AddUsbFlashTarget(
+        "#build/minusbinstall.flag", (selfupdate_min_dist,)
+    )
+    wb_dist_env.Alias("flash_usb", usb_minupdate_package)

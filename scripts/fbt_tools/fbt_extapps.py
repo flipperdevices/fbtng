@@ -53,6 +53,7 @@ class AppBuilder:
 
     def _setup_app_env(self):
         self.app_env = self.fw_env.Clone(
+            tools=["fwbin"],
             FAP_SRC_DIR=self.app._appdir,
             FAP_WORK_DIR=self.app_work_dir,
         )
@@ -144,7 +145,7 @@ class AppBuilder:
             self.app._assets_dirs = [self.app._appdir.Dir(self.app.fap_file_assets)]
 
         self.app_env.Append(
-            LIBS=[*self.app.fap_libs, *self.private_libs, *self.app.fap_libs],
+            LIBS=[*self.app.fap_libs, *self.private_libs],
             CPPPATH=[self.app_env.Dir(self.app_work_dir), self.app._appdir],
         )
 

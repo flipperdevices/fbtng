@@ -1,0 +1,18 @@
+from fbt.version import get_git_commit_unix_timestamp
+
+
+Import("FW_ENV")
+fwenv = FW_ENV
+
+
+# Build external apps + configure SDK
+if fwenv["IS_BASE_FIRMWARE"]:
+    resources_env = fwenv.Clone(tools=["fbt_resources"])
+    # Resources & manifest for SD card
+    manifest = resources_env.ManifestBuilder(
+        "${RESOURCES_ROOT}/Manifest",
+        GIT_UNIX_TIMESTAMP=get_git_commit_unix_timestamp(),
+        _EXTRA_DIST=[fwenv["DOLPHIN_EXTERNAL_OUT_DIR"]],
+    )
+    fwenv.Replace(FW_RESOURCES_MANIFEST=manifest)
+    Alias("resources", manifest)
