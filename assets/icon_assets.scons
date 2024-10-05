@@ -20,6 +20,7 @@ sources = list(filter(lambda fn: not fn.name.endswith(".h"), Flatten(icons)))
 
 env.AppendUnique(
     FW_ASSETS_HEADERS=headers,
+    FW_STATIC_ANALYSIS_DEPS=icons,
     CPPPATH=[Dir(".")],
 )
 

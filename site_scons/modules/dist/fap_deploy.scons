@@ -1,3 +1,5 @@
+# Depends: fwenv.resources; dist.wb55_dist
+
 Import("FW_ENV", "DIST_ENV")
 distenv, firmware_env = DIST_ENV, FW_ENV
 

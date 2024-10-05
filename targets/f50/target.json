@@ -66,6 +66,9 @@
         "st_abomination"
     ],
     "sdk_header_paths": [],
+    "target_sources_paths": [
+        "."
+    ],
     "startup_script": "startup_stm32u5g9xx.s",
     "linker_script_flash": "STM32U5g9xx_FLASH.ld",
     "linker_script_ram": "STM32U5g9xx_FLASH.ld",
@@ -97,12 +100,13 @@
         "targets",
         "furi",
         "ext_applications",
-        "applications"
+        "firmware_applications"
     ],
     "fw_modules": [
         "fw_elf",
         "fw_artifacts",
         "fw_cdb",
+        "sdk_extapps",
         "link_builddir"
     ],
     "dist_modules": [

@@ -37,10 +37,11 @@ for libname in [
     "ble_profile",
     "bit_lib",
     "datetime",
-    "applications",
+    "firmware_applications",
     "ext_applications",
     "fw_updater_opts",
     "elf_mapfile_gen",
+    "wb55_lib_config",
 ]:
     env.RegisterComponent(f"fwlib_{libname}", env.FindModuleSconscript(libname))
 

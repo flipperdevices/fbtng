@@ -65,6 +65,9 @@
         "ble_glue/services",
         "ble_glue/profiles"
     ],
+    "target_sources_paths": [
+        "."
+    ],
     "linker_script_flash": "stm32wb55xx_flash.ld",
     "linker_script_ram": "stm32wb55xx_ram_fw.ld",
     "linker_script_app": "application_ext.ld",
@@ -73,6 +76,7 @@
     "env_modules": [
         "fw_updater_opts",
         "lib_base",
+        "wb55_lib_config",
         "mlib",
         "cmsis",
         "stm32wb",
@@ -112,7 +116,7 @@
         "targets",
         "furi",
         "ext_applications",
-        "applications",
+        "firmware_applications",
         "elf_mapfile_gen"
     ],
     "fw_modules": [
@@ -120,9 +124,9 @@
         "fw_elf",
         "fw_artifacts",
         "sdk_extapps",
+        "resources",
         "fw_cdb",
         "static_analysis",
-        "resources",
         "link_builddir"
     ],
     "dist_modules": [
@@ -139,6 +143,5 @@
     "platform": "stm32wb",
     "svd_file": "STM3WB55_CM4.svd",
     "flash_address": "0x08000000",
-    "variables_sconscript": "scons/stm32wb_vars.scons",
-    "firmware_sconscript": "scons/stm32wb_firmware.scons"
+    "variables_sconscript": "scons/stm32wb_vars.scons"
 }

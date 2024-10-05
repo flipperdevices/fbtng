@@ -1,18 +1,15 @@
 Import("FW_ENV")
 fwenv = FW_ENV
 
+fwenv.SetDefault(FW_STATIC_ANALYSIS_DEPS=[])
 
-_static_analysis_depends = [
-    fwenv["FW_VERSION_JSON"],
-    fwenv["FW_ASSETS_HEADERS"],
-    fwenv["FW_API_TABLE"],
-    fwenv["_APP_ICONS"],
-]
+_static_analysis_depends = fwenv["FW_STATIC_ANALYSIS_DEPS"]
+
 
 pvs_env = fwenv.Clone(tools=["pvsstudio"])
 
 fwcdb = fwenv["FW_CDB"]
-pvscheck = pvs_env.PVSCheck("pvsreport.log", fwcdb) # FIXME: fwcdb is not defined
+pvscheck = pvs_env.PVSCheck("pvsreport.log", fwcdb)  # FIXME: fwcdb is not defined
 Depends(pvscheck, _static_analysis_depends)
 Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_pvscheck"), pvscheck)
 AlwaysBuild(pvscheck)

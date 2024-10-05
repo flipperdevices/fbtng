@@ -38,7 +38,10 @@ sources = list(
     filter(lambda fn: not fn.name.endswith(".h"), Flatten((proto, proto_ver)))
 )
 
-env.AppendUnique(FW_ASSETS_HEADERS=headers)
+env.AppendUnique(
+    FW_ASSETS_HEADERS=headers,
+    FW_STATIC_ANALYSIS_DEPS=[proto, proto_ver],
+)
 
 
 lib = assetsenv.StaticLibrary("${FW_LIB_NAME}", sources)

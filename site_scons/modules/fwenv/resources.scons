@@ -7,6 +7,8 @@ fwenv = FW_ENV
 
 # Build external apps + configure SDK
 if fwenv["IS_BASE_FIRMWARE"]:
+    fwenv.SetDefault(RESOURCES_ROOT="${BUILD_DIR}/resources")
+
     resources_env = fwenv.Clone(tools=["fbt_resources"])
     # Resources & manifest for SD card
     manifest = resources_env.ManifestBuilder(

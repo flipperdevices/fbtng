@@ -1,10 +1,8 @@
 #
-# Main Flipper Build System entry point
+# Main Flipper Build Tool entry point
 #
 # This file is evaluated by scons (the build system) every time fbt is invoked.
-# Scons constructs all referenced environments & their targets' dependency
-# trees on startup. So, to keep startup time as low as possible, we're hiding
-# construction of certain targets behind command-line options.
+#
 
 import os
 from SCons.Errors import StopError
@@ -38,7 +36,7 @@ fbt_variables.Update(cmd_environment)
 
 
 # Building basic environment - tools, utility methods, cross-compilation settings,
-# basic builders and more
+# basic builders, discover and register components, and more
 coreenv = SConscript(
     "site_scons/environ.scons",
     exports={
@@ -50,9 +48,7 @@ coreenv = SConscript(
 
 # Create a separate "dist" environment and add construction envs to it
 distenv = coreenv.Clone(
-    tools=[
-        "fbt_dist",
-    ],
+    tools=["fbt_dist"],
     ENV=os.environ,
     CORE_ENV=coreenv,
 )

@@ -8,12 +8,22 @@ Import("env")
 # Set up app configuration
 fwenv = env
 
+
 fw_build_configuration = env["FW_BUILD_META"]["type"]
 
+
+extra_int_apps_list = []
+if extra_int_apps := GetOption("extra_int_apps"):
+    extra_int_apps_list = extra_int_apps.split(",")
+
+fwenv.SetDefault(APPS=extra_int_apps)
+
 if fw_build_configuration == "firmware":
-    fwenv.Append(APPS=fwenv["FIRMWARE_APPS"].get(fwenv.subst("$FIRMWARE_APP_SET")))
+    fwenv.AppendUnique(
+        APPS=fwenv["FIRMWARE_APPS"].get(fwenv.subst("$FIRMWARE_APP_SET"))
+    )
 elif fw_build_configuration == "updater":
-    fwenv.Append(APPS=["updater"])
+    fwenv.AppendUnique(APPS=["updater"])
 else:
     raise ValueError(f"Unknown firmware type: {fw_build_configuration}")
 
@@ -25,28 +35,18 @@ for app_dir, _ in fwenv["APPDIRS"]:
         if isinstance(entry, FS.Dir) and not str(entry).startswith("."):
             fwenv.LoadAppManifest(entry)
 
+# Here we load all the app manifests and process them according to the current configuration
 fwenv.PrepareApplicationsBuild()
 
-# # Set up additional app-specific build flags
-# fwenv.AppendUnique(
-#     CPPDEFINES=[
-#         "FURI_DEBUG" if fwenv["DEBUG"] else "FURI_NDEBUG",
-#         "DEBUG" if fwenv["DEBUG"] else "NDEBUG",
-#     ],
-#     CCFLAGS=[
-#         "-Os" if fwenv["COMPACT"] else "-Og",
-#     ],
-# )
-
 fwenv.AppendUnique(
-    # Add preprocessor definitions for current set of apps
+    # Add preprocessor definitions for current set of apps to global list, available to all modules
     CPPDEFINES=fwenv["APPBUILD"].get_apps_cdefs(),
+    LINT_SOURCES=[Dir("#applications")],
 )
 
 
 libenv = env.Clone(FW_LIB_NAME="applications")
 libenv.ApplyLibFlags()
-
 
 # This will be the variant dir for the library
 lib_build_dir = libenv.Dir(".")

@@ -1,6 +1,10 @@
 import json
 
 
+class TargetLoaderError(Exception):
+    pass
+
+
 class HardwareTargetLoader:
     TARGET_FILE_NAME = "target.json"
 
@@ -30,6 +34,7 @@ class HardwareTargetLoader:
         self.variables_sconscript = None
         self.target_sconscript = None
         self.dist_modules = []
+        self.target_sources_paths = []
         # self.script_dir , tool_dir?
         self._processTargetDefinitions(target_id)
 
@@ -39,31 +44,41 @@ class HardwareTargetLoader:
     def _loadDescription(self, target_id):
         target_json_file = self._getTargetDir(target_id).File(self.TARGET_FILE_NAME)
         if not target_json_file.exists():
-            raise Exception(f"Target file {target_json_file} does not exist")
+            raise TargetLoaderError(
+                f"Target specification file {target_json_file} does not exist"
+            )
 
         with open(target_json_file.get_abspath(), "r") as f:
             try:
-                vals = json.load(f)
-                return vals
+                return json.load(f)
             except json.JSONDecodeError as e:
-                raise Exception(f"Failed to parse target file {target_json_file}: {e}")
+                raise TargetLoaderError(
+                    f"Failed to parse target file {target_json_file}: {e}"
+                )
 
     def _processTargetDefinitions(self, target_id):
         target_dir = self._getTargetDir(target_id)
-        self.layered_target_dirs.append(target_dir)
 
         config = self._loadDescription(target_id)
 
-        for path_list in ("include_paths", "sdk_header_paths"):
+        for path_list in (
+            "include_paths",
+            "sdk_header_paths",
+            "target_sources_paths",
+        ):
             getattr(self, path_list).extend(
                 target_dir.Dir(p) for p in config.get(path_list, [])
             )
+
+        for dirpath in self.target_sources_paths:
+            if not dirpath.exists():
+                raise TargetLoaderError(f"Target sources path {dirpath} does not exist")
+            self.layered_target_dirs.append(dirpath)
 
         for prop_name in (
             "included_sources",
             "excluded_sources",
             "excluded_headers",
-            # "excluded_modules",
             "env_modules",
             "dist_modules",
             "fw_modules",
@@ -184,7 +199,8 @@ def ApplyLibFlags(env, lib_name=None):
     if not lib_name:
         lib_name = env["FW_LIB_NAME"]
     flags_to_apply = env["FW_LIB_OPTS"].get(lib_name, env["FW_LIB_OPTS"]["Default"])
-    # print("Flags for ", env.get("FW_LIB_NAME", "Default"), flags_to_apply)
+    if env["VERBOSE"]:
+        print(f"Flags for {lib_name}: {flags_to_apply}")
     env.MergeFlags(flags_to_apply)
 
 

@@ -8,90 +8,51 @@ env = ENV.Clone(
         "fbt_envhooks",
         ("compilation_db", {"COMPILATIONDB_COMSTR": "\tCDB\t${TARGET}"}),
     ],
+    # Core tool options
+    TARGETS_ROOT=Dir("#/targets"),
+    F_TARGET_HW="f${TARGET_HW}",
     FW_BUILD_META=fw_build_meta,
+    # CDB options
     COMPILATIONDB_USE_ABSPATH=False,
     COMPILATIONDB_USE_BINARY_ABSPATH=True,
+    # Basic paths and directories
     BUILD_DIR=fw_build_meta["build_dir"],
     FW_FLAVOR=fw_build_meta["flavor"],
     LIB_DIST_DIR=fw_build_meta["build_dir"].Dir("lib"),
-    RESOURCES_ROOT=fw_build_meta["build_dir"].Dir("resources"),
-    TARGETS_ROOT=Dir("#/targets"),
-    LINT_SOURCES=[
-        Dir("applications"),
-    ],
     LIBPATH=[
         "${LIB_DIST_DIR}",
     ],
-    CPPPATH=[
-        "#/furi",
-        *(f"#/{app_dir[0]}" for app_dir in ENV["APPDIRS"] if app_dir[1]),
-        "#/targets/furi_hal_include",
-    ],
-    # Specific flags for building libraries - always do optimized builds
+    # Default optimization and debug settings. You can override them with a module in `env_modules`.
+    CPPDEF_FURI_DEBUG="FURI_DEBUG" if ENV["DEBUG"] else "FURI_NDEBUG",
+    CPPDEF_DEBUG="DEBUG" if ENV["DEBUG"] else "NDEBUG",
+    OPTIMIZATION="-Os" if ENV["COMPACT"] else "-Og",
+    # Per-library options. These are the defaults.
     FW_LIB_OPTS={
+        # You can add other entries named after libraries.
+        # If they are present, they have precedence over Default.
+        # Note that you must specify both CCFLAGS and CPPDEFINES, even if they are same as Default.
         "Default": {
             "CCFLAGS": [
-                "-Og" if ENV["LIB_DEBUG"] else "-Os",
+                "${OPTIMIZATION}",
             ],
             "CPPDEFINES": [
-                "FURI_DEBUG" if ENV["LIB_DEBUG"] else "FURI_NDEBUG",
-                # "DEBUG" if ENV["DEBUG"] else "NDEBUG",
-                "NDEBUG",  # FIXME
+                "${CPPDEF_DEBUG}",
+                "${CPPDEF_FURI_DEBUG}",
             ],
-            # You can add other entries named after libraries
-            # If they are present, they have precedence over Default
-        },
-        # for furi_check to respect build type
-        "furi": {
-            "CCFLAGS": [
-                "-Os",
-            ],
-            "CPPDEFINES": [
-                "FURI_DEBUG" if ENV["DEBUG"] else "",
-                # "DEBUG" if ENV["DEBUG"] else "NDEBUG",
-                "NDEBUG",  # FIXME
-            ],
-        },
-        "flipper_application": {
-            "CCFLAGS": [
-                "-Og",
-            ],
-            "CPPDEFINES": [
-                "FURI_DEBUG" if ENV["DEBUG"] else "",
-                # "DEBUG" if ENV["DEBUG"] else "NDEBUG",
-                "NDEBUG",  # FIXME
-            ],
-        },
-        "applications": {
-            "CPPDEFINES": [
-                "FURI_DEBUG" if ENV["DEBUG"] else "FURI_NDEBUG",
-                # "DEBUG" if ENV["DEBUG"] else "NDEBUG",
-                "NDEBUG",  # FIXME
-            ],
-            "CCFLAGS": [
-                "-Os" if ENV["COMPACT"] else "-Og",
-            ],
-        },
+        }
     },
-    FW_API_TABLE=None,
-    _APP_ICONS=None,
-    APPS=_.split(",") if (_ := GetOption("extra_int_apps")) else [],
-    EXTRA_EXT_APPS=_.split(",") if (_ := GetOption("extra_ext_apps")) else [],
-    F_TARGET_HW="f${TARGET_HW}",
-    FW_FLASH_TARGET_INTEFACE="target/stm32u5x.cfg",
     CPPDEFINES=GetOption("extra_defines"),
+    # Firmware environment must return its own list of artifacts for the
+    # dist environment via this variable
     FW_ARTIFACTS=[],
-    FW_ASSETS_HEADERS=[],  # FIXME
 )
-Export("env")
 
+Export("env")
 
 env.PreConfigureFwEnvionment()
 
 env.ConfigureForTarget()
-
 env.ConfigureFwEnvWithLibraries()
-
 env.ConfigureFwEnvComponents()
 
 env.PostConfigureFwEnvionment()

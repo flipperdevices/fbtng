@@ -123,8 +123,10 @@ firmware_apitable = appenv.ApiSymbolTable(
     "${API_HEADER_DIR}/firmware_api_table.h", appenv["SDK_DEFINITION"]
 )
 Alias("api_table", firmware_apitable)
-ENV.Replace(
-    FW_API_TABLE=firmware_apitable,
+
+ENV.Replace(FW_API_TABLE=firmware_apitable)
+ENV.AppendUnique(
+    FW_STATIC_ANALYSIS_DEPS=[firmware_apitable],
     _APP_ICONS=appenv["_APP_ICONS"],
 )
 

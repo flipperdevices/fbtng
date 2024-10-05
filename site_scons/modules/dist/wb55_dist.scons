@@ -1,6 +1,8 @@
 Import("FW_ENV", "DIST_ENV")
 distenv, firmware_env = DIST_ENV, FW_ENV
 
+# Depends: fwenv.resources
+
 # print('BUILD_TARGETS', BUILD_TARGETS)
 
 distenv.SetDefault(

@@ -39,7 +39,11 @@ sources = list(
     )
 )
 
-env.AppendUnique(FW_ASSETS_HEADERS=headers, CPPPATH=[assetsenv["ASSETS_WORK_DIR"]])
+env.AppendUnique(
+    FW_ASSETS_HEADERS=headers,
+    FW_STATIC_ANALYSIS_DEPS=[dolphin_internal, dolphin_blocking],
+    CPPPATH=[assetsenv["ASSETS_WORK_DIR"]],
+)
 
 lib = assetsenv.StaticLibrary("${FW_LIB_NAME}", sources)
 assetsenv.Install("${LIB_DIST_DIR}", lib)

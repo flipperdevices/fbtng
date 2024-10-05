@@ -139,8 +139,9 @@ class FlipperApplication:
 
 
 class AppManager:
-    def __init__(self):
+    def __init__(self, verbose: bool = False):
         self.known_apps = {}
+        self.verbose = verbose
 
     def get(self, appname: str):
         try:
@@ -236,9 +237,10 @@ class AppManager:
         # print("Built", app_manifests)
         for app in app_manifests:
             if target_hw and not app.supports_hardware_target(target_hw):
-                print(
-                    f"Skipping {app.appid} due to target mismatch (building for {target_hw}, app supports {app.targets})"
-                )
+                if self.verbose:
+                    print(
+                        f"Skipping {app.appid} due to target mismatch (building for {target_hw}, app supports {app.targets})"
+                    )
                 continue
             self._add_known_app(app)
 

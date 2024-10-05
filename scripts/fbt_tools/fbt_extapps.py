@@ -93,7 +93,8 @@ class AppBuilder:
             icon_bundle_name=f"{self.app.fap_icon_assets_symbol or self.app.appid }_icons",
         )
         self.app_env.Alias("_fap_icons", fap_icons)
-        self.fw_env.Append(_APP_ICONS=[fap_icons])
+        self.fw_env.AppendUnique(_APP_ICONS=[fap_icons])
+        self.fw_env.AppendUnique(FW_STATIC_ANALYSIS_DEPS=[fap_icons])
         self.icons_src = next(filter(lambda n: n.path.endswith(".c"), fap_icons))
 
     def _build_private_libs(self):

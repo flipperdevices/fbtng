@@ -135,9 +135,12 @@ def LoadAppManifest(env, entry):
 
 def PrepareApplicationsBuild(env):
     try:
+        extra_apps_list = []
+        if extra_ext_apps := GetOption("extra_ext_apps"):
+            extra_apps_list = extra_ext_apps.split(",")
         appbuild = env["APPBUILD"] = env["APPMGR"].filter_apps(
             applist=env["APPS"],
-            ext_applist=env["EXTRA_EXT_APPS"],
+            ext_applist=extra_apps_list,
             hw_target=env.subst("${F_TARGET_HW}"),
         )
     except Exception as e:
@@ -179,7 +182,7 @@ def generate(env):
     env.AddMethod(LoadAppManifest)
     env.AddMethod(PrepareApplicationsBuild)
     env.SetDefault(
-        APPMGR=AppManager(),
+        APPMGR=AppManager(bool(GetOption("silent"))),
         APPBUILD_DUMP=env.Action(
             DumpApplicationConfig,
             "\tINFO\t",

@@ -31,7 +31,6 @@ fw_artifacts.extend(
         fwhex,
         fwbin,
         fwdfu,
-        fwenv["FW_VERSION_JSON"],  # FIXME: toolbox!!!
     ]
 )
 
