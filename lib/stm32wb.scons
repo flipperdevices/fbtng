@@ -20,7 +20,7 @@ env.Append(
     ),
 )
 
-if env["RAM_EXEC"]:
+if env.get("RAM_EXEC", False):
     env.Append(
         CPPDEFINES=[
             "VECT_TAB_SRAM",

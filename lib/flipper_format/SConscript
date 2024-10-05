@@ -18,7 +18,7 @@ env.Append(
 libenv = env.Clone(FW_LIB_NAME="flipperformat")
 libenv.ApplyLibFlags()
 
-if "RAM_EXEC" in libenv and libenv["RAM_EXEC"]:
+if libenv.get("RAM_EXEC", False):
     libenv.Append(
         CPPDEFINES=[
             "FLIPPER_STREAM_LITE",
