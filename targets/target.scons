@@ -4,9 +4,6 @@ env.Append(
     LINT_SOURCES=[Dir(".")],
 )
 
-env.Prepend(_LIBFLAGS="-Wl,--whole-archive ")
-env.Append(_LIBFLAGS=" -Wl,--no-whole-archive")
-
 libenv = env.Clone(FW_LIB_NAME="flipper${TARGET_HW}")
 libenv.ApplyLibFlags()
 

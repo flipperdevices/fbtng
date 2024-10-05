@@ -9,6 +9,12 @@ fwelf_src = fwenv["FW_ELF"] = fw_elf_env.Program(
     [],  # sources - empty, because firmware is built from libraries only
     LIBS=fwenv["FW_LIBS"],
 )
+
+# Add whole-archive flags to the firmware ELF
+# - note that this is required to avoid multi-pass linking with libraries
+fw_elf_env.Prepend(_LIBFLAGS="-Wl,--whole-archive ")
+fw_elf_env.Append(_LIBFLAGS=" -Wl,--no-whole-archive")
+
 fwelf = fwenv["FW_ELF"] = fwenv.Install("${BUILD_DIR}", fwelf_src)
 Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_elf"), fwelf)
 fwenv["FW_ARTIFACTS"].append(fwelf)

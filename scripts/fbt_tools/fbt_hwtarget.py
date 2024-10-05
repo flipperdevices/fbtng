@@ -199,8 +199,8 @@ def ApplyLibFlags(env, lib_name=None):
     if not lib_name:
         lib_name = env["FW_LIB_NAME"]
     flags_to_apply = env["FW_LIB_OPTS"].get(lib_name, env["FW_LIB_OPTS"]["Default"])
-    if env["VERBOSE"]:
-        print(f"Flags for {lib_name}: {flags_to_apply}")
+    # if env["VERBOSE"]:
+    #     print(f"Flags for {lib_name}: {flags_to_apply}")
     env.MergeFlags(flags_to_apply)
 
 

@@ -47,10 +47,10 @@ appenv.AppendUnique(
         "-specs=nano.specs",
     ],
     LIBS=[
-        # "m",
-        # "gcc",
-        # "stdc++",
-        # "supc++",
+        "m",
+        "gcc",
+        "stdc++",
+        "supc++",
     ],
     CFLAGS=[
         "-Wno-strict-prototypes",
