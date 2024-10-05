@@ -155,6 +155,9 @@ def PrepareApplicationsBuild(env):
 
 def DumpApplicationConfig(target, source, env):
     print(f"Loaded {len(env['APPMGR'].known_apps)} app definitions.")
+    if "APPBUILD" not in env:
+        print(fg.red("No apps selected for the build."))
+        return
     print(fg.boldgreen("Firmware modules configuration:"))
     for apptype in FlipperAppType:
         app_sublist = env["APPBUILD"].get_apps_of_type(apptype)
