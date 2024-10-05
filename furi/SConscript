@@ -1,17 +1,3 @@
 Import("env")
 
-env.Append(
-    LINT_SOURCES=[
-        Dir("."),
-    ]
-)
-
-
-libenv = env.Clone(FW_LIB_NAME="furi")
-libenv.ApplyLibFlags()
-
-sources = libenv.GlobRecursive("*.c")
-
-lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
-libenv.Install("${LIB_DIST_DIR}", lib)
-Return("lib")
+env.RegisterComponent("fwlib_furi", env.File("furi.scons"))

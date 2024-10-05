@@ -60,7 +60,9 @@
     "include_paths": [
         "config"
     ],
-    "sdk_header_paths": [
+    "sdk_header_paths": [],
+    "target_sources_paths": [
+        "."
     ],
     "linker_script_flash": "SiWG917M111_flash.ld",
     "rtos_flavor": "freertos-cm4",
@@ -68,6 +70,17 @@
         "cmsis",
         "wiseconnect",
         "targets"
+    ],
+    "fw_modules": [
+        "fw_elf",
+        "fw_artifacts",
+        "fw_cdb",
+        "link_builddir"
+    ],
+    "dist_modules": [
+        "elf_flash",
+        "debug",
+        "vscode_env"
     ],
     "platform": "si917",
     "svd_file": "SiWG917_CM4.svd",

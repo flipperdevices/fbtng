@@ -1,0 +1,29 @@
+Import("env")
+
+
+env.AppendUnique(
+    CPPDEFINES=[
+        "FW_CFG_${FIRMWARE_APP_SET}",
+        "FW_ORIGIN_${FIRMWARE_ORIGIN}",
+    ]
+)
+
+
+env.SetDefault(IS_BASE_FIRMWARE=(env["FW_BUILD_META"]["type"] == "firmware"))
+
+if env["IS_BASE_FIRMWARE"]:
+    env.Append(
+        FIRMWARE_BUILD_CFG="firmware",
+        RAM_EXEC=False,
+    )
+else:
+    env.Append(
+        FIRMWARE_BUILD_CFG="updater",
+        RAM_EXEC=True,
+        CPPDEFINES=[
+            "FURI_RAM_EXEC",
+        ],
+    )
+    env.Replace(
+        LINKER_SCRIPT_PATH=env["TARGET_CFG"].linker_script_ram,
+    )

@@ -6,6 +6,7 @@ App(
     requires=[
         "gui",
         "storage",
+        "notification",
     ],
     conflicts=["desktop"],
     entry_point="updater_srv",

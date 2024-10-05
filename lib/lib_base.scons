@@ -1,0 +1,11 @@
+Import("env")
+
+env.AppendUnique(
+    CPPPATH=[
+        "#/",
+        "#/lib",
+        "#/furi",
+        "#/targets/furi_hal_include",
+        *(f"#/{app_dir[0]}" for app_dir in env.get("APPDIRS", []) if app_dir[1]),
+    ],
+)

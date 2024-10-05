@@ -1,0 +1,13 @@
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+
+fwflash_env = distenv.Clone(tools=["fbt_fwflash"])
+fwflash_env.SetDefault(
+    FW_FLASH_TARGET_ID=firmware_env["TARGET_CFG"].platform,
+)
+
+firmware_flash = fwflash_env.AddFwFlashTarget(
+    firmware_env, FW_FLASH_TARGET_INTEFACE="target/${FW_FLASH_TARGET_ID}x.cfg"
+)
+fwflash_env.Alias("flash", firmware_flash)

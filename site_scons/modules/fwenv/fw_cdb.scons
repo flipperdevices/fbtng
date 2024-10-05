@@ -1,0 +1,15 @@
+Import("FW_ENV")
+fwenv = FW_ENV
+
+
+fwcdb_src = fwenv.CompilationDatabase()
+# without filtering, both updater & firmware commands would be generated in same file
+fwenv.Replace(
+    COMPILATIONDB_PATH_FILTER=fwenv.subst("*${FW_FLAVOR}*"),
+    COMPILATIONDB_SRCPATH_FILTER="*.c*",
+)
+fwcdb = fwenv["FW_CDB"] = fwenv.Install(fwenv.Dir("${BUILD_DIR}"), fwcdb_src)
+AlwaysBuild(fwcdb)
+Precious(fwcdb)
+NoClean(fwcdb)
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_cdb"), fwcdb)

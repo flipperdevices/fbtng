@@ -1,16 +1,7 @@
 Import("env")
 
-env.Append(
-    CPPPATH=[
-        "#/",
-        "#/lib",
-        # Ugly hack
-        Dir("../assets/compiled"),
-    ],
-)
-
-
 for libname in [
+    "lib_base",
     "mlib",
     "cmsis",
     "stm32wb",
@@ -46,9 +37,13 @@ for libname in [
     "ble_profile",
     "bit_lib",
     "datetime",
+    "firmware_applications",
+    "ext_applications",
+    "fw_updater_opts",
+    "elf_mapfile_gen",
+    "wb55_lib_config",
     "wiseconnect",
 ]:
-    lib_script = env.FindModuleSconscript(libname)
-    env.RegisterComponent(f"fwlib_{libname}", lib_script)
+    env.RegisterComponent(f"fwlib_{libname}", env.FindModuleSconscript(libname))
 
 # Return("libs")
