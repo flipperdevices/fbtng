@@ -18,6 +18,7 @@ env = ENV.Clone(
     # Basic paths and directories
     BUILD_DIR=fw_build_meta["build_dir"],
     FW_FLAVOR=fw_build_meta["flavor"],
+    FIRMWARE_BUILD_CFG=fw_build_meta["type"],
     LIB_DIST_DIR=fw_build_meta["build_dir"].Dir("lib"),
     LIBPATH=[
         "${LIB_DIST_DIR}",
