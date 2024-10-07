@@ -66,14 +66,11 @@
     ],
     "fw_modules": [
         "fw_elf",
-        "fw_artifacts",
+        "fw_artifacts_silabs",
         "fw_cdb",
         "link_builddir"
     ],
     "dist_modules": [
-        "elf_flash",
-        "debug",
-        "vscode_env"
     ],
     "platform": "si917",
     "svd_file": "SiWG917_CM4.svd",
