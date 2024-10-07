@@ -48,14 +48,7 @@
         "-Wl,--wrap,_realloc_r"
     ],
     "defines": [
-        "_GNU_SOURCE",
-        "SI917",
-        "SLI_SI917",
-        "SLI_SI917B0",
-        "SIWG917M111MGTBA",
-        "USER_CONFIGURATION_ENABLE",
-        "SLI_SI91X_MCU_CONFIG_RADIO_BOARD_BASE_VER",
-        "SLI_SI91X_MCU_CONFIG_RADIO_BOARD_VER2"
+        "_GNU_SOURCE"
     ],
     "include_paths": [
         "config"
