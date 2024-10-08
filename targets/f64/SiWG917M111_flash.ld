@@ -27,155 +27,116 @@
  *
  ******************************************************************************/
 
-
- MEMORY
- {
-   rom   (rx)  : ORIGIN = 0x8202000, LENGTH = 0x1fe000
-
-   ram   (rwx) : ORIGIN = 0xc, LENGTH = 0x2fbf4
- }
- MEMORY
- {
-   udma0   (rwx)  : ORIGIN = 0x2fc00, LENGTH = 0x400
-   udma1   (rwx)  : ORIGIN = 0x24061c00, LENGTH = 0x400
- }
-
 ENTRY(Reset_Handler)
+
+MEMORY {
+    FLASH (rx) : ORIGIN = 0x8202000, LENGTH = 0x1fe000
+    RAM (rwx)  : ORIGIN = 0xc, LENGTH = 0x50000
+}
+
+SECTIONS {
+    .text : {
+        KEEP(*(.isr_vector))
+          *(EXCLUDE_FILE(*UDMA.o).text*)
+             KEEP(*(.init))
+             KEEP(*(.fini))
+
+        /* .ctors */
+        *crtbegin.o(.ctors)
+        *crtbegin?.o(.ctors)
+        *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+        *(SORT(.ctors.*))
+        *(.ctors)
+
+        /* .dtors */
+        *crtbegin.o(.dtors)
+        *crtbegin?.o(.dtors)
+        *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+        *(SORT(.dtors.*))
+        *(.dtors)
+        *(.rodata*)
+
+        KEEP(*(.eh_fram e*))
+    } > FLASH
+
+    .ARM.extab : {
+        *(.ARM.extab* .gnu.linkonce.armextab.*)
+    } > FLASH
+
+    __exidx_start = .;
+    .ARM.exidx : {
+        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+    } > FLASH
+    __exidx_end = .;
+    __etext = .;
+
+    /* _sidata is used in code startup code */
+    _sidata = __etext;
+
+    .data : {
+        __data_start__ = .;
+
+        /* _sdata is used in startup code */
+        _sdata = __data_start__;
+        *(.data*)
+        *UDMA.o(.text*)
+
+        . = ALIGN(4);
+        /* preinit data */
+        PROVIDE_HIDDEN (__preinit_array_start = .);
+        KEEP(*(.preinit_array))
+        PROVIDE_HIDDEN (__preinit_array_end = .);
+
+        . = ALIGN(4);
+        /* init data */
+
+        PROVIDE_HIDDEN (__init_array_start = .);
+        KEEP(*(SORT(.init_array.*)))
+        KEEP(*(.init_array))
+        PROVIDE_HIDDEN (__init_array_end = .);
+
+        . = ALIGN(4);
+        /* finit data */
+        PROVIDE_HIDDEN (__fini_array_start = .);
+        KEEP(*(SORT(.fini_array.*)))
+        KEEP(*(.fini_array))
+        PROVIDE_HIDDEN (__fini_array_end = .);
+
+        KEEP(*(.jcr*))
+        . = ALIGN(4);
+        /* All data end */
+        __data_end__ = .;
+
+        /* _edata is used in startup code */
+        _edata = __data_end__;
+    } > RAM AT> FLASH
+
+    .bss (NOLOAD) : {
+        . = ALIGN(4);
+        __bss_start__ = .;
+        *(.bss*)
+        *(COMMON)
+        . = ALIGN(4);
+        __bss_end__ = .;
+    } > RAM
+
+    .stack (NOLOAD): {
+        __StackLimit = .;
+        KEEP(*(.stack*))
+        . = ALIGN(4);
+        __StackTop = .;
+        PROVIDE(__stack = __StackTop);
+    } > RAM
+
+      .heap (COPY): {
+        __HeapBase = .;
+        __end__ = .;
+        end = __end__;
+        _end = __end__;
+        KEEP(*(.heap*))
+        . = ORIGIN(RAM) + LENGTH(RAM);
+        __HeapLimit = .;
+      } > RAM
  
-SECTIONS
-{
-	.text :
-	{
-		KEEP(*(.isr_vector))
-		  *(EXCLUDE_FILE(*UDMA.o).text*)        
-			 KEEP(*(.init))
-			 KEEP(*(.fini))
-    
-			
-     	  	
-		
-
-		/* .ctors */
-		*crtbegin.o(.ctors)
-		*crtbegin?.o(.ctors)
-		*(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
-		*(SORT(.ctors.*))
-		*(.ctors)
-		
-		/* .dtors */
-		*crtbegin.o(.dtors)
-		*crtbegin?.o(.dtors)
-		*(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
-		*(SORT(.dtors.*))
-		*(.dtors)
-		*(.rodata*)
-		
-		KEEP(*(.eh_fram e*))			
-	} > rom	
-	
-	.ARM.extab : 
-	{
-		*(.ARM.extab* .gnu.linkonce.armextab.*)			
-	} > rom
-	
-	__exidx_start = .;
-	.ARM.exidx :
-	{
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)			
-	} > rom 
-	__exidx_end = .;
-	__etext = .;
-	
-
-
-	/* _sidata is used in code startup code */
-	_sidata = __etext;
-
-	
-
-	
-	
-	.data :
-
-	{
-		__data_start__ = .;
-		
-		/* _sdata is used in startup code */
-		_sdata = __data_start__;
-		*(.data*)
-		*UDMA.o(.text*)
-		
-		
-		
-		. = ALIGN(4);
-		/* preinit data */
-		PROVIDE_HIDDEN (__preinit_array_start = .);
-		KEEP(*(.preinit_array))
-		PROVIDE_HIDDEN (__preinit_array_end = .);
-		
-		. = ALIGN(4);
-		/* init data */
-		
-		PROVIDE_HIDDEN (__init_array_start = .);
-		KEEP(*(SORT(.init_array.*)))
-		KEEP(*(.init_array))
-		PROVIDE_HIDDEN (__init_array_end = .);
-		
-		. = ALIGN(4);
-		/* finit data */
-		PROVIDE_HIDDEN (__fini_array_start = .);
-		KEEP(*(SORT(.fini_array.*)))
-		KEEP(*(.fini_array))
-		PROVIDE_HIDDEN (__fini_array_end = .);
-		
-		KEEP(*(.jcr*))
-		. = ALIGN(4);
-		/* All data end */
-		__data_end__ = .;
-		
-		/* _edata is used in startup code */
-		_edata = __data_end__; 
-	} > ram AT> rom
-	
-	.bss (NOLOAD) :
-	{
-		. = ALIGN(4);
-		__bss_start__ = .;
-		*(.bss*)
-		*(COMMON)
-		. = ALIGN(4);
-		__bss_end__ = .;
-	} > ram 
-
-	
-	.stack (NOLOAD):
-	{
-		__StackLimit = .;
-		KEEP(*(.stack*))
-		. = ALIGN(4);
-		__StackTop = .;
-		PROVIDE(__stack = __StackTop);			
-	} > ram
-  	.heap (COPY):
-  	{
-		__HeapBase = .;
-		__end__ = .;
-		end = __end__;
-		_end = __end__;
-		KEEP(*(.heap*))
-		. = ORIGIN(ram) + LENGTH(ram);
-		__HeapLimit = .;			
-  	} > ram
- 
-	__heap_size = __HeapLimit - __HeapBase;
-	.udma_addr0 :
-	{
-		*(.udma_addr0*)
-	} > udma0 AT> rom
-
-	.udma_addr1 :
-	{
-		*(.udma_addr1*)		
-	} > udma1 AT> rom	
-   
+    __heap_size = __HeapLimit - __HeapBase;
 }
