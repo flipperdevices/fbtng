@@ -23,7 +23,7 @@ target_bootstrap_env = cmd_environment.Clone(
     TARGETS_ROOT=Dir("#/targets"),
 )
 target_bootstrap_env.ConfigureForTarget(lightweight=True)
-target_bootstrap_env.ConfigureVariables(fbt_variables)
+target_bootstrap_env.ConfigureCommandlineVariables(fbt_variables)
 
 fbt_variables.Update(target_bootstrap_env)
 if fbt_variables.UnknownVariables():

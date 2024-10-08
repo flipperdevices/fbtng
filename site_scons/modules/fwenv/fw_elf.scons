@@ -9,6 +9,7 @@ fwelf_src = fwenv["FW_ELF"] = fw_elf_env.Program(
     [],  # sources - empty, because firmware is built from libraries only
     LIBS=fwenv["FW_LIBS"],
 )
+Depends(fwelf_src, fwenv["LINKER_SCRIPT_PATH"])
 
 Depends(fwelf_src, fwenv["LINKER_SCRIPT_PATH"])
 

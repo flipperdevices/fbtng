@@ -10,7 +10,7 @@ Import("FW_ENV")
 fwenv = FW_ENV
 
 # Build external apps + configure SDK
-if fwenv["IS_BASE_FIRMWARE"]:
+if fwenv.get("IS_BASE_FIRMWARE", False):
     fw_artifacts = fwenv["FW_ARTIFACTS"]
     # Ensure all libs are built - even if they are not used in firmware
     fw_artifacts.append(fwenv["LIB_DIST_DIR"].glob("*.a"))

@@ -9,7 +9,7 @@ libenv.ApplyLibFlags()
 
 lib = libenv.StaticLibrary(
     "${FW_LIB_NAME}",
-    env.get("TARGET_CFG").gatherSources(),
+    env.get("TARGET_CFG").gatherTargetSources(),
 )
 libenv.Install("${LIB_DIST_DIR}", lib)
 Return("lib")

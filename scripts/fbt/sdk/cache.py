@@ -229,14 +229,17 @@ class SdkCache:
     ):
         new_entries = new_set - known_set
         if new_entries:
-            print(f"New: {new_entries}")
+            print(fg.green(f"New {type(list(new_entries)[0]).__name__}:"), new_entries)
             known_set |= new_entries
             self.new_entries |= new_entries
             if update_version and self.version_action == VersionBump.NONE:
                 self.version_action = VersionBump.MINOR
         removed_entries = known_set - new_set
         if removed_entries:
-            print(f"Removed: {removed_entries}")
+            print(
+                fg.red(f"Removed {type(list(removed_entries)[0]).__name__}:"),
+                removed_entries,
+            )
             self.loaded_dirty_version = True
             known_set -= removed_entries
             # If any of removed entries was a part of active API, that's a major bump
