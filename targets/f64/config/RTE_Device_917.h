@@ -31,7 +31,6 @@
 #if USER_CONFIGURATION_ENABLE
 
 #include "rsi_ccp_user_config.h"
-#include "pin_config.h"
 
 #define GPIO_PORT_0       0  // GPIO port 0
 #define ULP_GPIO_MODE_6   6  // ULP GPIO mode 6
