@@ -10,6 +10,8 @@ fwelf_src = fwenv["FW_ELF"] = fw_elf_env.Program(
     LIBS=fwenv["FW_LIBS"],
 )
 
+Depends(fwelf_src, fwenv["LINKER_SCRIPT_PATH"])
+
 # Add whole-archive flags to the firmware ELF
 # - note that this is required to avoid multi-pass linking with libraries
 fw_elf_env.Prepend(_LIBFLAGS="-Wl,--whole-archive ")
