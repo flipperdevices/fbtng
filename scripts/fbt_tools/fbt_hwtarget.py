@@ -1,4 +1,6 @@
+import itertools
 import json
+import os
 
 
 class TargetLoaderError(Exception):
@@ -12,31 +14,27 @@ class HardwareTargetLoader:
         self.env = env
         self.all_targets_root_dir = root_target_scons_dir
         self.target_dir = self._getTargetDir(target_id)
-        # self.target_id = target_id
-        self.layered_target_dirs = []
 
         self.include_paths = []
-        self.sdk_header_paths = []
-        self.startup_script = None
+        self.sdk_headers = []
         self.linker_script_flash = None
         self.linker_script_ram = None
         self.linker_script_app = None
         self.sdk_symbols = None
         self.platform = None
-        self.svd_file = None
+        self.svd_file = ""
         self.flash_address = None
         self.rtos_flavor = None
-        self.included_sources = []
-        self.excluded_sources = []
-        self.excluded_headers = []
-        self.env_modules = []
+        self.lib_modules = []
         self.fw_modules = []
         self.variables_sconscript = None
         self.target_sconscript = None
         self.dist_modules = []
-        self.target_sources_paths = []
+        self.sources = []
         # self.script_dir , tool_dir?
+
         self._processTargetDefinitions(target_id)
+        # print(f"Config for {target_id} : {self.__dict__}")
 
     def _getTargetDir(self, target_id):
         return self.all_targets_root_dir.Dir(f"{target_id}")
@@ -56,38 +54,86 @@ class HardwareTargetLoader:
                     f"Failed to parse target file {target_json_file}: {e}"
                 )
 
+    def _mergeList(self, target_list, new_list, converter=lambda x: x):
+        # print(f"Merge list: {target_list} with {new_list}")
+        # if len(target_list) > 0 and not isinstance(target_list[0], str):
+        #     print(f"Existing list: {[n.path for n in target_list]}")
+        actions = {
+            "-": lambda lst, elem: (
+                lst.remove(elem)
+                if elem in lst
+                else self._raise_error(elem, lst, "remove")
+            ),
+            "^": lambda lst, elem: (
+                lst.insert(0, elem)
+                if elem not in lst
+                else self._raise_error(elem, lst, "insert")
+            ),
+            "": lambda lst, elem: (
+                lst.append(elem)
+                if elem not in lst
+                else self._raise_error(elem, lst, "append")
+            ),
+        }
+
+        for elem in new_list:
+            prefix = elem[0] if elem[0] in actions else ""
+            elem = converter(elem[1:] if prefix else elem)
+            actions[prefix](target_list, elem)
+
+        return target_list
+
+    def _raise_error(self, elem, lst, action):
+        raise TargetLoaderError(f"Cannot {action} element {elem} in the list {lst}")
+
+    def _path_spec_to_dir_node_pair(self, curr_target_dir, path_spec):
+        if ":" in path_spec:
+            target_id, path_spec = path_spec.split(":")
+            target_dir = self._getTargetDir(target_id)
+            if not target_dir:
+                raise TargetLoaderError(f"Unknown target {target_id}")
+        else:
+            target_dir = curr_target_dir
+
+        return (target_dir, path_spec)
+
     def _processTargetDefinitions(self, target_id):
         target_dir = self._getTargetDir(target_id)
+        if not target_dir.exists():
+            raise TargetLoaderError(f"Target directory {target_dir} does not exist")
 
         config = self._loadDescription(target_id)
+        if inherited_target := config.get("inherit", None):
+            self._processTargetDefinitions(inherited_target)
 
-        for path_list in (
-            "include_paths",
-            "sdk_header_paths",
-            "target_sources_paths",
-        ):
-            getattr(self, path_list).extend(
-                target_dir.Dir(p) for p in config.get(path_list, [])
+        for path_list_name in ("include_paths",):
+            self._mergeList(
+                getattr(self, path_list_name),
+                config.get(path_list_name, []),
+                target_dir.Dir,
             )
 
-        for dirpath in self.target_sources_paths:
-            if not dirpath.exists():
-                raise TargetLoaderError(f"Target sources path {dirpath} does not exist")
-            self.layered_target_dirs.append(dirpath)
+        # We store these path globs in conjunction with the target directory, so we can
+        # resolve them later in the context of that directory
+        for file_glob_list_name in (
+            "sdk_headers",
+            "sources",
+        ):
+            self._mergeList(
+                getattr(self, file_glob_list_name),
+                config.get(file_glob_list_name, []),
+                lambda pathspec: self._path_spec_to_dir_node_pair(target_dir, pathspec),
+            )
 
         for prop_name in (
-            "included_sources",
-            "excluded_sources",
-            "excluded_headers",
-            "env_modules",
+            "lib_modules",
             "dist_modules",
             "fw_modules",
         ):
-            getattr(self, prop_name).extend(config.get(prop_name, []))
+            self._mergeList(getattr(self, prop_name), config.get(prop_name, []))
 
         file_attrs = (
-            # (name, is_target_file_node)
-            ("startup_script", True),
+            ## (name, is_target_file_node)
             ("linker_script_flash", True),
             ("linker_script_ram", True),
             ("linker_script_app", True),
@@ -101,17 +147,10 @@ class HardwareTargetLoader:
         )
 
         for attr_name, is_target_file_node in file_attrs:
-            if (val := config.get(attr_name)) and not getattr(self, attr_name):
-                if is_target_file_node:
-                    node = target_dir.File(val).srcnode()
-                else:
-                    node = val
-                # print(f"Got node {node}, {node.path} for {attr_name}")
+            if val := config.get(attr_name):  # and not getattr(self, attr_name):
+                node = target_dir.File(val).srcnode() if is_target_file_node else val
+                # print(f"Got node {node} for {attr_name}")
                 setattr(self, attr_name, node)
-
-        # for attr_name in ("linker_dependencies",):
-        #     if (val := config.get(attr_name)) and not getattr(self, attr_name):
-        #         setattr(self, attr_name, val)
 
         cpu_flags = config.get("cpu_flags", [])
         flags_pairs = (
@@ -128,44 +167,55 @@ class HardwareTargetLoader:
             flags.extend(config.get(json_name, []))
             self.env.AppendUnique(**{env_var: flags})
 
-        self.env.AppendUnique(LINKFLAGS="-T${LINKER_SCRIPT_PATH}")
+        # print(f"Processed target {target_id} with config: {config}")
 
-        if inherited_target := config.get("inherit", None):
-            self._processTargetDefinitions(inherited_target)
+    def _processTargetGlobs(
+        self, target_globs, *, filter_same_paths=False, strings=False
+    ):
+        collected_paths = []
+        seen_rel_paths = set()
 
-    def gatherSources(self):
-        sources = []
-        if self.startup_script:
-            sources.append(self.startup_script)
-        if self.included_sources:
-            sources += list(self.target_dir.File(p) for p in self.included_sources)
-            return list(f.get_path(self.all_targets_root_dir) for f in sources)
+        # Group (target, source_glob) pairs by target directory
+        grouped_sources = itertools.groupby(
+            sorted(target_globs, key=lambda x: x[0]),
+            key=lambda x: x[0],
+        )
 
-        seen_filenames = set(self.excluded_sources)
-        # print("Layers: ", self.layered_target_dirs)
-        for target_dir in self.layered_target_dirs:
-            accepted_sources = list(
-                filter(
-                    lambda f: f.name not in seen_filenames,
-                    self.env.GlobRecursive("*.c", target_dir),
-                )
-            )
-            seen_filenames.update(f.name for f in accepted_sources)
-            sources.extend(accepted_sources)
-        # print(f"Found {len(sources)} sources: {list(f.path for f in sources)}")
-        return list(f.get_path(self.all_targets_root_dir) for f in sources)
+        for target_dir, source_glob_group in grouped_sources:
+            # print(f"Seen sources: {seen_rel_paths}")
+            for src in self.env.GatherSources(
+                list(g[1] for g in source_glob_group),
+                target_dir,
+            ):
+                relpath = os.path.relpath(src.get_abspath(), target_dir.get_abspath())
+                # print(
+                #     f"Candidate source: {src.path}, tdir: {target_dir}, seen: {seen_sources_rel_paths}"
+                # )
+                if filter_same_paths and relpath in seen_rel_paths:
+                    continue
+                # print(f"Adding source: {src.path}, rel: {relpath}")
+                seen_rel_paths.add(relpath)
+                collected_paths.append(src)
 
-    def gatherSdkHeaders(self):
-        sdk_headers = []
-        seen_sdk_headers = set(self.excluded_headers)
-        for sdk_path in self.sdk_header_paths:
-            # dirty, but fast - exclude headers from overlayed targets by name
-            # proper way would be to use relative paths, but names will do for now
-            for header in self.env.GlobRecursive("*.h", sdk_path, "*_i.h"):
-                if header.name not in seen_sdk_headers:
-                    seen_sdk_headers.add(header.name)
-                    sdk_headers.append(header)
-        return sdk_headers
+        # print(
+        #     f"Found {len(collected_paths)} sources: {list(f.path for f in collected_paths)}"
+        # )
+
+        return (
+            list(f.get_path(self.all_targets_root_dir) for f in collected_paths)
+            if strings
+            else collected_paths
+        )
+
+    def gatherTargetSources(self):
+        sources = self._processTargetGlobs(
+            self.sources, filter_same_paths=True, strings=True
+        )
+        print(f"Sources for {self.env['TARGET_HW']}: {sources}")
+        return sources
+
+    def gatherTargetSdkHeaders(self):
+        return self._processTargetGlobs(self.sdk_headers)
 
 
 def ConfigureForTarget(env, lightweight=False):
@@ -189,9 +239,10 @@ def ConfigureForTarget(env, lightweight=False):
     if lightweight:
         return
 
-    env.Append(
+    env.AppendUnique(
+        LINKFLAGS="-T${LINKER_SCRIPT_PATH}",
         CPPPATH=target_loader.include_paths,
-        SDK_HEADERS=target_loader.gatherSdkHeaders(),
+        SDK_HEADERS=target_loader.gatherTargetSdkHeaders(),
     )
 
 
@@ -199,12 +250,12 @@ def ApplyLibFlags(env, lib_name=None):
     if not lib_name:
         lib_name = env["FW_LIB_NAME"]
     flags_to_apply = env["FW_LIB_OPTS"].get(lib_name, env["FW_LIB_OPTS"]["Default"])
-    # if env["VERBOSE"]:
-    #     print(f"Flags for {lib_name}: {flags_to_apply}")
+    if env["VERBOSE"]:
+        print(f"Flags for {lib_name}: {flags_to_apply}")
     env.MergeFlags(flags_to_apply)
 
 
-def ConfigureVariables(env, variables):
+def ConfigureCommandlineVariables(env, variables):
     loader = env["TARGET_CFG"]
     if loader.variables_sconscript:
         variables = env.SConscript(
@@ -235,7 +286,7 @@ def ConfigureDistTargets(env, distenv):
 def ConfigureFwEnvWithLibraries(env):
     # print("ConfigureFwEnvWithLibraries")
     static_libs = []
-    for dep_lib in env["TARGET_CFG"].env_modules:
+    for dep_lib in env["TARGET_CFG"].lib_modules:
         # print("Dep lib: ", dep_lib)
         component_script = env.GetComponent(f"fwlib_{dep_lib}")
         script_eval_res = env.SConscript(
@@ -248,8 +299,6 @@ def ConfigureFwEnvWithLibraries(env):
 
         if script_eval_res:
             static_libs.append(script_eval_res)
-        # static_libs.append(env.
-        # env.Depends(env["FW_LIB_NAME"], dep_lib)
 
     # print("Static libs: ", static_libs)
     env.AppendUnique(FW_LIBS=static_libs)
@@ -283,7 +332,7 @@ def GetComponentDiscoveryDirs(env):
 def generate(env):
     env.AddMethod(ConfigureForTarget)
     env.AddMethod(ApplyLibFlags)
-    env.AddMethod(ConfigureVariables)
+    env.AddMethod(ConfigureCommandlineVariables)
     env.AddMethod(ConfigureDistTargets)
     env.AddMethod(ConfigureFwEnvWithLibraries)
     env.AddMethod(ConfigureFwEnvComponents)

@@ -8,9 +8,6 @@ env.AppendUnique(
     ]
 )
 
-
-env.SetDefault(IS_BASE_FIRMWARE=(env["FW_BUILD_META"]["type"] == "firmware"))
-
 if env["IS_BASE_FIRMWARE"]:
     env.Append(
         RAM_EXEC=False,

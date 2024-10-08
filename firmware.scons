@@ -19,11 +19,12 @@ env = ENV.Clone(
     BUILD_DIR=fw_build_meta["build_dir"],
     FW_FLAVOR=fw_build_meta["flavor"],
     FIRMWARE_BUILD_CFG=fw_build_meta["type"],
+    IS_BASE_FIRMWARE=fw_build_meta["type"] == "firmware",
     LIB_DIST_DIR=fw_build_meta["build_dir"].Dir("lib"),
     LIBPATH=[
         "${LIB_DIST_DIR}",
     ],
-    # Default optimization and debug settings. You can override them with a module in `env_modules`.
+    # Default optimization and debug settings. You can override them with a module in `lib_modules`.
     CPPDEF_FURI_DEBUG="FURI_DEBUG" if ENV["DEBUG"] else "FURI_NDEBUG",
     CPPDEF_DEBUG="DEBUG" if ENV["DEBUG"] else "NDEBUG",
     OPTIMIZATION="-Os" if ENV["COMPACT"] else "-Og",

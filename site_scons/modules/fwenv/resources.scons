@@ -6,7 +6,7 @@ fwenv = FW_ENV
 
 
 # Build external apps + configure SDK
-if fwenv["IS_BASE_FIRMWARE"]:
+if fwenv.get("IS_BASE_FIRMWARE", False):
     fwenv.SetDefault(RESOURCES_ROOT="${BUILD_DIR}/resources")
 
     resources_env = fwenv.Clone(tools=["fbt_resources"])

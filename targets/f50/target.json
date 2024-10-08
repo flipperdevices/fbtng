@@ -65,17 +65,17 @@
         "driver",
         "st_abomination"
     ],
-    "sdk_header_paths": [],
-    "target_sources_paths": [
-        "."
+    "sdk_headers": [],
+    "sources": [
+        "startup_stm32u5g9xx.s",
+        "*/*.c"
     ],
-    "startup_script": "startup_stm32u5g9xx.s",
     "linker_script_flash": "STM32U5g9xx_FLASH.ld",
     "linker_script_ram": "STM32U5g9xx_FLASH.ld",
     "linker_script_app": "application_ext.ld",
     "sdk_symbols": "api_symbols.csv",
     "rtos_flavor": "freertos-cm33-ntz",
-    "env_modules": [
+    "lib_modules": [
         "fw_updater_opts",
         "lib_base",
         "mlib",
