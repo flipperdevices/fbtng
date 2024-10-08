@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device schemaVersion="1.1" xmlns:x="http://www.w3.org/2001/XMLSchema-instance" x:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
+    <peripherals>
+        <!-- Placeholder file -->
+    </peripherals>
+</device>

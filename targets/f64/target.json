@@ -71,6 +71,7 @@
         "link_builddir"
     ],
     "dist_modules": [
+        "debug"
     ],
     "platform": "si917",
     "svd_file": "SiWG917_CM4.svd",
