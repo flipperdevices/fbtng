@@ -99,6 +99,7 @@
         "datetime",
         "targets",
         "furi",
+        "version",
         "ext_applications",
         "firmware_applications"
     ],

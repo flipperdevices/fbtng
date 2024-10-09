@@ -117,6 +117,7 @@
         "ext_resources",
         "targets",
         "furi",
+        "version",
         "ext_applications",
         "firmware_applications",
         "elf_mapfile_gen"

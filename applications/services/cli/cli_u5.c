@@ -1,7 +1,7 @@
 #include "cli_i.h"
 #include "cli_commands.h"
 #include "cli_vcp.h"
-#include <toolbox/version.h>
+#include <version/version.h>
 #include <loader/loader.h>
 
 #include <furi.h>

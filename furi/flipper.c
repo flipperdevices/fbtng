@@ -1,7 +1,7 @@
 #include "flipper.h"
 #include <applications.h>
 #include <furi.h>
-#include <toolbox/version.h>
+#include <version/version.h>
 #include <furi_hal_version.h>
 #include <furi_hal_rtc.h>
 

@@ -42,6 +42,7 @@ for libname in [
     "fw_updater_opts",
     "elf_mapfile_gen",
     "wb55_lib_config",
+    "version",
 ]:
     env.RegisterComponent(f"fwlib_{libname}", env.FindModuleSconscript(libname))
 

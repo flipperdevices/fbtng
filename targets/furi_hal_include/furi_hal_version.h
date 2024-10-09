@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include <lib/toolbox/version.h>
+#include <lib/version/version.h>
 
 #ifdef __cplusplus
 extern "C" {
