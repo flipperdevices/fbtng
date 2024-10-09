@@ -13,7 +13,7 @@
         "-Wundef",
         "-Wno-error=deprecated-declarations",
         "-Wno-address-of-packed-member",
-        "-Wredundant-decls",
+        "-Wno-redundant-decls",
         "-Wdouble-promotion",
         "-fdata-sections",
         "-ffunction-sections",
@@ -51,18 +51,24 @@
         "_GNU_SOURCE"
     ],
     "include_paths": [
-        "config"
+        "config",
+        "furi_hal"
     ],
     "sdk_header_paths": [],
-    "target_sources_paths": [
-        "."
+    "sources": [
+        "*/*.c"
     ],
     "linker_script_flash": "SiWG917M111_flash.ld",
     "rtos_flavor": "freertos-cm4",
-    "env_modules": [
+    "lib_modules": [
+        "lib_base",
+        "mlib",
         "cmsis",
         "wiseconnect",
-        "targets"
+        "freertos",
+        "print",
+        "targets",
+        "furi"
     ],
     "fw_modules": [
         "fw_elf",

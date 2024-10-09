@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,18 +51,22 @@ typedef struct {
     size_t size_bytes;
 } FuriHalMemoryRegion;
 
-/** Get memory region count
- *
- * @return      Number of available memory regions
- */
-size_t furi_hal_memory_regions_count(void);
+typedef enum {
+    FuriHalMemoryRegionIdHeap,
+} FuriHalMemoryRegionId;
 
 /** Get memory region information
  *
  * @param[in]  index  Region number
  * @return     Details of specified memory region
  */
-const FuriHalMemoryRegion* furi_hal_memory_regions_get(size_t index);
+const FuriHalMemoryRegion* furi_hal_memory_get_region(uint32_t index);
+
+/** Get memory region count
+ *
+ * @return      Number of available memory regions
+ */
+uint32_t furi_hal_memory_get_region_count(void);
 
 typedef enum {
     FuriHalMemoryHeapTrackModeNone = 0, /**< Disable allocation tracking */

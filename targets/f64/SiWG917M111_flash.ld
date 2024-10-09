@@ -29,9 +29,11 @@
 
 ENTRY(Reset_Handler)
 
+_stack_size = 0x200; /* Required amount of stack */
+
 MEMORY {
     FLASH (rx) : ORIGIN = 0x8202000, LENGTH = 0x1fe000
-    RAM (rwx)  : ORIGIN = 0xc, LENGTH = 0x50000
+    RAM (rwx)  : ORIGIN = 0x000000c, LENGTH = 0x4fff4
 }
 
 SECTIONS {
@@ -79,7 +81,6 @@ SECTIONS {
         /* _sdata is used in startup code */
         _sdata = __data_start__;
         *(.data*)
-        *UDMA.o(.text*)
 
         . = ALIGN(4);
         /* preinit data */
@@ -120,23 +121,20 @@ SECTIONS {
         __bss_end__ = .;
     } > RAM
 
-    .stack (NOLOAD): {
-        __StackLimit = .;
-        KEEP(*(.stack*))
+    .heap (NOLOAD) : {
         . = ALIGN(4);
-        __StackTop = .;
-        PROVIDE(__stack = __StackTop);
+        __heap_start__ = .;
+        . = ORIGIN(RAM) + LENGTH(RAM) - _stack_size;
+        . = ALIGN(4);
+        __heap_end__ = .;
     } > RAM
 
-      .heap (COPY): {
-        __HeapBase = .;
-        __end__ = .;
-        end = __end__;
-        _end = __end__;
-        KEEP(*(.heap*))
-        . = ORIGIN(RAM) + LENGTH(RAM);
-        __HeapLimit = .;
-      } > RAM
- 
-    __heap_size = __HeapLimit - __HeapBase;
+    .stack (NOLOAD) : {
+        . = ALIGN(4);
+        __StackLimit = .;
+        . = . + _stack_size;
+        . = ALIGN(4);
+        __StackTop = .;
+        PROVIDE(_stack_end = __StackTop);
+    } > RAM
 }
