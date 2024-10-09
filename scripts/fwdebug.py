@@ -141,7 +141,7 @@ class CoreConfigurationExtension(BaseDebugExtension):
         )
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
-        yield GdbParam(f"--quiet")  # Suppress the welcome message
+        yield GdbParam(f"--quiet", True)  # Suppress the welcome message
         if args.init:
             yield GdbParam(f"source {args.root / self.GDBINIT}")
         if args.file:

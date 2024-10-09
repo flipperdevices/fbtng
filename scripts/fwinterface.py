@@ -153,7 +153,7 @@ def discover_probes(
                 capture_output=True,
                 timeout=2,
             )
-            logger.debug("Return code", process.returncode)
+            logger.debug("Return code %d", process.returncode)
             logger.debug(process.stdout)
             if process.returncode == 0:
                 boards.append(BoardConnection(interface, target, serial_hint))
