@@ -1,0 +1,11 @@
+Import("env")
+
+SDK_DIR = "simplicity_sdk"
+SDK_INCDIR = f"#/lib/{SDK_DIR}"
+
+env.Append(
+    CPPPATH=[
+        f"{SDK_INCDIR}/platform/common/inc",
+    ],
+)
+

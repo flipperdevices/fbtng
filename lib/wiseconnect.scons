@@ -16,6 +16,7 @@ env.Append(
         f"{MCU_INCDIR}/drivers/peripheral_drivers/inc",
         f"{MCU_INCDIR}/drivers/cmsis_driver",
         f"{MCU_INCDIR}/drivers/cmsis_driver/CMSIS/Driver/Include",
+        f"{MCU_INCDIR}/drivers/service/clock_manager/inc",
     ],
     CPPDEFINES=[
         "SI917",
@@ -24,6 +25,8 @@ env.Append(
         "SIWG917M111MGTBA",
         "USER_CONFIGURATION_ENABLE",
         "SL_SI91X_TICKLESS_MODE=0",
+        "SLI_SI91X_MCU_INTERFACE",
+        "SLI_SI91X_MCU_ENABLE_IPMU_APIS",
         "SLI_SI91X_MCU_CONFIG_RADIO_BOARD_BASE_VER",
         "SLI_SI91X_MCU_CONFIG_RADIO_BOARD_VER2",
     ],
@@ -45,6 +48,11 @@ sources = [
     f"{MCU_DIR}/core/chip/src/startup_si91x.c",
     f"{MCU_DIR}/core/chip/src/rsi_ps_ram_func.c",
     f"{MCU_DIR}/core/chip/src/rsi_deepsleep_soc.c",
+    f"{MCU_DIR}/core/chip/src/rsi_system_config.c",
+    f"{MCU_DIR}/drivers/systemlevel/src/rsi_pll.c",
+    f"{MCU_DIR}/drivers/systemlevel/src/rsi_ipmu.c",
+    f"{MCU_DIR}/drivers/systemlevel/src/rsi_ulpss_clk.c",
+    f"{MCU_DIR}/drivers/service/clock_manager/src/sl_si91x_clock_manager.c",
 ]
 
 lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
