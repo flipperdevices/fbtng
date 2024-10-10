@@ -21,8 +21,7 @@
         "-fno-math-errno"
     ],
     "c_flags": [
-        "-std=gnu2x",
-        "-Wstrict-prototypes"
+        "-std=gnu2x"
     ],
     "cpp_flags": [
         "-std=c++20",

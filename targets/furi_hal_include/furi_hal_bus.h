@@ -1,13 +1,13 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef uint32_t FuriHalBus;
+#include <furi_hal_bus_defs.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** Early initialization */
 void furi_hal_bus_init_early(void);

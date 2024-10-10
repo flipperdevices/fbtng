@@ -25,7 +25,7 @@ typedef struct {
 } FuriHalInterruptISRPair;
 
 typedef struct {
-    // FuriHalInterruptISRPair isr[FuriHalInterruptIdMax];
+    FuriHalInterruptISRPair isr[FuriHalInterruptIdMax];
     uint32_t counter_time_in_isr_total;
 } FuriHalIterrupt;
 

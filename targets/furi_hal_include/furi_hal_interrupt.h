@@ -2,15 +2,14 @@
 
 #include <stdint.h>
 
+#include <furi_hal_interrupt_defs.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** Timer ISR */
 typedef void (*FuriHalInterruptISR)(void* context);
-
-/** Device-specific interrupt identifier */
-typedef uint32_t FuriHalInterruptId;
 
 typedef enum {
     FuriHalInterruptPriorityLowest =
