@@ -9,10 +9,19 @@ static int32_t init_task(void* context) {
     furi_hal_init();
     furi_log_set_level(FuriLogLevelDebug);
 
-    static volatile uint32_t dummy;
+    // GPIO_10
+    const GpioPin gpio = {
+        5,
+        0,
+        10,
+    };
+
+    furi_hal_bus_enable(FuriHalBusEGPIO_CLK);
+
+    furi_hal_gpio_init_simple(&gpio, GpioModeOutputPushPull);
 
     for(;;) {
-        dummy++;
+        furi_hal_gpio_write(&gpio, !furi_hal_gpio_read(&gpio));
         furi_delay_ms(500);
     }
 

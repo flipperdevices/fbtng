@@ -400,10 +400,6 @@ void IRQ039_Handler(void) {
     furi_hal_interrupt_call(FuriHalInterruptIdUART1);
 }
 
-// 41: GPIO Wakeup Interrupt
-void IRQ041_Handler(void) {
-}
-
 // 42: I2C1 Interrupt
 void IRQ042_Handler(void) {
 }
@@ -412,16 +408,8 @@ void IRQ042_Handler(void) {
 void IRQ044_Handler(void) {
 }
 
-// 45: Reserved
-void IRQ045_Handler(void) {
-}
-
 // 46: GSPI Master 1 Interrupt
 void IRQ046_Handler(void) {
-}
-
-// 47: Reserved
-void IRQ047_Handler(void) {
 }
 
 // 48: MCPWM Interrupt
@@ -430,46 +418,6 @@ void IRQ048_Handler(void) {
 
 // 49: QEI Interrupt
 void IRQ049_Handler(void) {
-}
-
-// 50: GPIO Group Interrupt0
-void IRQ050_Handler(void) {
-}
-
-// 51: GPIO Group Interrupt1
-void IRQ051_Handler(void) {
-}
-
-// 52: GPIO Pin Interrupt0
-void IRQ052_Handler(void) {
-}
-
-// 53: GPIO Pin Interrupt1
-void IRQ053_Handler(void) {
-}
-
-// 54: GPIO Pin Interrupt2
-void IRQ054_Handler(void) {
-}
-
-// 55: GPIO Pin Interrupt3
-void IRQ055_Handler(void) {
-}
-
-// 56: GPIO Pin Interrupt4
-void IRQ056_Handler(void) {
-}
-
-// 57: GPIO Pin Interrupt5
-void IRQ057_Handler(void) {
-}
-
-// 58: GPIO Pin Interrupt6
-void IRQ058_Handler(void) {
-}
-
-// 59: GPIO Pin Interrupt7
-void IRQ059_Handler(void) {
 }
 
 // 60: QSPI Interrupt
@@ -484,24 +432,12 @@ void IRQ061_Handler(void) {
 void IRQ062_Handler(void) {
 }
 
-// 63: Reserved
-void IRQ063_Handler(void) {
-}
-
 // 64: I2S master Interrupt
 void IRQ064_Handler(void) {
 }
 
-// 65: Reserved
-void IRQ065_Handler(void) {
-}
-
 // 66: Can 1 Interrupt
 void IRQ066_Handler(void) {
-}
-
-// 67: Reserved
-void IRQ067_Handler(void) {
 }
 
 // 68: SDMEM Interrupt
@@ -510,10 +446,6 @@ void IRQ068_Handler(void) {
 
 // 69: PLL clock ind Interrupt
 void IRQ069_Handler(void) {
-}
-
-// 70: Reserved
-void IRQ070_Handler(void) {
 }
 
 // 71: CCI system Interrupt Out
