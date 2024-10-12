@@ -1,15 +1,15 @@
 #include "subghz_txrx_i.h" // IWYU pragma: keep
 #include "subghz_txrx_create_protocol_key.h"
-#include <lib/subghz/transmitter.h>
-#include <lib/subghz/protocols/protocol_items.h>
-#include <lib/subghz/protocols/protocol_items.h>
-#include <lib/subghz/protocols/keeloq.h>
-#include <lib/subghz/protocols/secplus_v1.h>
-#include <lib/subghz/protocols/secplus_v2.h>
+#include <subghz/transmitter.h>
+#include <subghz/protocols/protocol_items.h>
+#include <subghz/protocols/protocol_items.h>
+#include <subghz/protocols/keeloq.h>
+#include <subghz/protocols/secplus_v1.h>
+#include <subghz/protocols/secplus_v2.h>
 
 #include <flipper_format/flipper_format_i.h>
-#include <lib/toolbox/stream/stream.h>
-#include <lib/subghz/protocols/raw.h>
+#include <toolbox/stream/stream.h>
+#include <subghz/protocols/raw.h>
 
 #define TAG "SubGhzCreateProtocolKey"
 

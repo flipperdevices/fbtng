@@ -1,7 +1,7 @@
 #include <furi_hal.h>
 #include <furi.h>
 
-#include <lib/toolbox/args.h>
+#include <toolbox/args.h>
 #include <cli/cli.h>
 
 void crypto_cli_print_usage(void) {

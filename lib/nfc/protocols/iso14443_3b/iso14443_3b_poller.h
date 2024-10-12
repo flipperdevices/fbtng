@@ -1,7 +1,7 @@
 #pragma once
 
 #include "iso14443_3b.h"
-#include <lib/nfc/nfc.h>
+#include <nfc/nfc.h>
 
 #include <nfc/nfc_poller.h>
 

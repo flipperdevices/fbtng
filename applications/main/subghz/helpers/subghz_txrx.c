@@ -1,8 +1,8 @@
 #include "subghz_txrx_i.h" // IWYU pragma: keep
 
-#include <lib/subghz/protocols/protocol_items.h>
+#include <subghz/protocols/protocol_items.h>
 #include <applications/drivers/subghz/cc1101_ext/cc1101_ext_interconnect.h>
-#include <lib/subghz/devices/cc1101_int/cc1101_int_interconnect.h>
+#include <subghz/devices/cc1101_int/cc1101_int_interconnect.h>
 
 #define TAG "SubGhz"
 

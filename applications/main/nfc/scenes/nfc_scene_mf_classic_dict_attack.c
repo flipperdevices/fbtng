@@ -1,7 +1,7 @@
 #include "../nfc_app_i.h"
 
 #include <dolphin/dolphin.h>
-#include <lib/nfc/protocols/mf_classic/mf_classic_poller.h>
+#include <nfc/protocols/mf_classic/mf_classic_poller.h>
 
 #define TAG "NfcMfClassicDictAttack"
 

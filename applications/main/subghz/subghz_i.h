@@ -2,7 +2,7 @@
 
 #include "helpers/subghz_types.h"
 #include "helpers/subghz_error_type.h"
-#include <lib/subghz/types.h>
+#include <subghz/types.h>
 #include "subghz.h"
 #include "views/receiver.h"
 #include "views/transmitter.h"
@@ -25,7 +25,7 @@
 #include "subghz_history.h"
 
 #include <gui/modules/variable_item_list.h>
-#include <lib/toolbox/path.h>
+#include <toolbox/path.h>
 
 #include "rpc/rpc_app.h"
 

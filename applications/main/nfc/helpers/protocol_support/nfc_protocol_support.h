@@ -76,7 +76,7 @@
 #pragma once
 
 #include <gui/scene_manager.h>
-#include <lib/nfc/protocols/nfc_protocol.h>
+#include <nfc/protocols/nfc_protocol.h>
 
 #include "nfc_protocol_support_common.h"
 

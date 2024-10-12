@@ -5,7 +5,9 @@
 #
 
 import os
+
 from SCons.Errors import StopError
+from SCons.Script.SConsOptions import SConsBadOptionError
 
 DefaultEnvironment(tools=[])
 
@@ -13,10 +15,7 @@ EnsurePythonVersion(3, 8)
 
 # This environment is created only for loading options & validating file/dir existence
 fbt_variables = SConscript("site_scons/commandline.scons")
-cmd_environment = Environment(
-    toolpath=["#/scripts/fbt_tools"],
-    variables=fbt_variables,
-)
+cmd_environment = Environment(variables=fbt_variables)
 
 target_bootstrap_env = cmd_environment.Clone(
     tools=["fbt_hwtarget"],
@@ -32,6 +31,13 @@ if fbt_variables.UnknownVariables():
         print(f"  {key} = {value}")
     raise StopError("Please check your command line.")
 
+try:
+    ValidateOptions(throw_exception=True)
+except SConsBadOptionError as e:
+    print(f"Option validation failure: ", e.opt_str)
+    print("See --help and documentation for details on available options.")
+    Exit(1)
+
 fbt_variables.Update(cmd_environment)
 
 
@@ -41,9 +47,9 @@ coreenv = SConscript(
     "site_scons/environ.scons",
     exports={
         "VAR_ENV": cmd_environment,
-        "COMPONENT_DIRS": target_bootstrap_env.GetComponentDiscoveryDirs(),
+        "COMPONENT_SCRIPTS": target_bootstrap_env["FBT_ENV_SETUP_SCRIPTS"],
+        "EXTRA_TOOLPATHS": target_bootstrap_env.GetAdditionalToolPaths(),
     },
-    toolpath=["#/scripts/fbt_tools"],
 )
 
 # Create a separate "dist" environment and add construction envs to it

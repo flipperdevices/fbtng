@@ -41,7 +41,7 @@ fwenv.PrepareApplicationsBuild()
 fwenv.AppendUnique(
     # Add preprocessor definitions for current set of apps to global list, available to all modules
     CPPDEFINES=fwenv["APPBUILD"].get_apps_cdefs(),
-    LINT_SOURCES=[Dir("#applications")],
+    LINT_SOURCES=[Dir("#applications")],  # FIXME
 )
 
 
@@ -49,9 +49,9 @@ libenv = env.Clone(FW_LIB_NAME="applications")
 libenv.ApplyLibFlags()
 
 # This will be the variant dir for the library
-lib_build_dir = libenv.Dir(".")
+apps_build_dir = libenv.Dir("approot")
 # And this will map the root of the project to the variant dir
-libenv.VariantDir(lib_build_dir, "#", duplicate=0)
+libenv.VariantDir(apps_build_dir, "#", duplicate=0)
 
 # Build applications.c for selected services & apps
 # Depends on virtual value-only node, so it only gets rebuilt when set of apps changes
@@ -67,13 +67,15 @@ for app_dir, _ in env["APPDIRS"]:
         apps_c, app_dir_node.glob("*/" + FlipperApplication.APP_MANIFEST_DEFAULT_NAME)
     )
 
+
 sources = list(apps_c)
+
 # Gather sources only from app folders in current configuration
 sources.extend(
     map(
         # This is a bit of a hack. We need to get the node from current dir, where
         # root of the project had been mapped to. But GatherSources returns original nodes
-        lambda node: lib_build_dir.File(node.relpath),
+        lambda node: apps_build_dir.File(node.get_tpath()),
         itertools.chain.from_iterable(
             # fwenv.GatherSources([source_type, "!lib"], appdir.relpath)
             fwenv.GatherSources([source_type, "!lib"], appdir)
@@ -81,8 +83,6 @@ sources.extend(
         ),
     )
 )
-
-# print("sources: ", list(map(lambda x: x.relpath, sources)))  # FIXME
 
 
 lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)

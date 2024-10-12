@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include <lib/flipper_format/flipper_format.h>
+#include <flipper_format/flipper_format.h>
 #include <furi.h>
 #include <furi_hal.h>
 #include "../types.h"

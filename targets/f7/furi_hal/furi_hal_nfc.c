@@ -1,7 +1,7 @@
 #include "furi_hal_nfc_i.h"
 #include "furi_hal_nfc_tech_i.h"
 
-#include <lib/drivers/st25r3916.h>
+#include <drivers/st25r3916.h>
 
 #include <furi.h>
 #include <furi_hal_spi.h>

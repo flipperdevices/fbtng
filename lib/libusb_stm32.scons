@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/libusb_stm32/inc",
+        Dir("libusb_stm32/inc").rdir(),
     ],
     SDK_HEADERS=env.GlobRecursive(
         "*.h",
