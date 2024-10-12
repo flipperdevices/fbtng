@@ -1,7 +1,0 @@
-Import("env")
-
-# env.RegisterComponent("fwlib_assets", env.File("assets.scons"))
-env.RegisterComponent("fwlib_dolphin", env.File("dolphin.scons"))
-env.RegisterComponent("fwlib_ext_resources", env.File("ext_resources.scons"))
-env.RegisterComponent("fwlib_icon_assets", env.File("icon_assets.scons"))
-env.RegisterComponent("fwlib_rpc_proto", env.File("rpc_proto.scons"))

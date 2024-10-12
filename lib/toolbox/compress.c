@@ -1,8 +1,8 @@
 #include "compress.h"
 
 #include <furi.h>
-#include <lib/heatshrink/heatshrink_encoder.h>
-#include <lib/heatshrink/heatshrink_decoder.h>
+#include <heatshrink/heatshrink_encoder.h>
+#include <heatshrink/heatshrink_decoder.h>
 #include <stdint.h>
 
 #define TAG "Compress"

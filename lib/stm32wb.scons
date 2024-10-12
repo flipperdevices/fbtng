@@ -2,10 +2,9 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/cmsis_core",
-        "#/lib/stm32wb_cmsis/Include",
-        "#/lib/stm32wb_hal/Inc",
-        "#/lib/stm32wb_copro/wpan",
+        Dir("./stm32wb_cmsis/Include").srcnode(),
+        Dir("./stm32wb_copro/wpan").srcnode(),
+        Dir("./stm32wb_hal/Inc").srcnode(),
     ],
     CPPDEFINES=[
         "STM32WB",
@@ -31,12 +30,13 @@ if env.get("RAM_EXEC", False):
 libenv = env.Clone(FW_LIB_NAME="stm32wb")
 libenv.Append(
     CPPPATH=[
-        "#/lib/stm32wb_copro/wpan/ble",
-        "#/lib/stm32wb_copro/wpan/ble/core",
-        "#/lib/stm32wb_copro/wpan/interface/patterns/ble_thread",
-        "#/lib/stm32wb_copro/wpan/interface/patterns/ble_thread/shci",
-        "#/lib/stm32wb_copro/wpan/interface/patterns/ble_thread/tl",
-        "#/lib/stm32wb_copro/wpan/utilities",
+        Dir("./stm32wb_copro/wpan").srcnode(),
+        Dir("./stm32wb_copro/wpan/ble").srcnode(),
+        Dir("./stm32wb_copro/wpan/ble/core").srcnode(),
+        Dir("./stm32wb_copro/wpan/interface/patterns/ble_thread").srcnode(),
+        Dir("./stm32wb_copro/wpan/interface/patterns/ble_thread/shci").srcnode(),
+        Dir("./stm32wb_copro/wpan/interface/patterns/ble_thread/tl").srcnode(),
+        Dir("./stm32wb_copro/wpan/utilities").srcnode(),
     ]
 )
 libenv.ApplyLibFlags()

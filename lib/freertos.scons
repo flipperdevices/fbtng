@@ -5,20 +5,20 @@ if not (rtos_flavor := env["HW_RTOS_FLAVOR"]):
 
 _rtos_dirs = {
     "freertos-cm33-ntz": [
-        "#/lib/FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure",
+        Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure").rdir(),
     ],
     "freertos-cm4": [
-        "#/lib/FreeRTOS-Kernel/portable/GCC/ARM_CM4F",
+        Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM4F").srcnode(),
     ],
 }
 
 _rtos_sources = {
     "freertos-cm33-ntz": [
-        "FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c",
-        "FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c",
+        File("FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"),
+        File("FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"),
     ],
     "freertos-cm4": [
-        "FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c",
+        File("FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c"),
     ],
 }
 

@@ -1,6 +1,6 @@
 #include "subghz_test_static.h"
 #include "../helpers/subghz_test_frequency.h"
-#include <lib/subghz/devices/cc1101_configs.h>
+#include <subghz/devices/cc1101_configs.h>
 
 #include <furi.h>
 #include <furi_hal.h>

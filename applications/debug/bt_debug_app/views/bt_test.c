@@ -3,7 +3,7 @@
 #include <canvas/canvas.h>
 #include <gui/elements.h>
 
-#include <lib/toolbox/float_tools.h>
+#include <toolbox/float_tools.h>
 #include <m-array.h>
 #include <furi.h>
 #include <inttypes.h>

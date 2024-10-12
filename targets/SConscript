@@ -1,3 +1,0 @@
-Import("env")
-
-env.RegisterComponent("fwlib_targets", env.File("target.scons"))

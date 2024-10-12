@@ -5,8 +5,8 @@
 #include <furi.h>
 #include <furi_hal.h>
 #include <loader/loader.h>
-#include <lib/toolbox/path.h>
-#include <lib/toolbox/crc32_calc.h>
+#include <toolbox/path.h>
+#include <toolbox/crc32_calc.h>
 
 #define UPDATE_ROOT_DIR EXT_PATH("update")
 

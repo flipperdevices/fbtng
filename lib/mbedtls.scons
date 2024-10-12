@@ -3,7 +3,7 @@ Import("env")
 env.Append(
     CPPPATH=[
         # "#/lib/mbedtls",
-        "#/lib/mbedtls/include",
+        Dir("mbedtls/include").rdir(),
     ],
     SDK_HEADERS=[
         File("mbedtls/include/mbedtls/des.h"),

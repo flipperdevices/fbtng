@@ -5,7 +5,7 @@
 
 #include <furi.h>
 #include <protobuf_version.h>
-#include <lib/version/version.h>
+#include <version/version.h>
 
 #include "dev_info_service_uuid.inc"
 

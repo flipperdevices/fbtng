@@ -1,12 +1,12 @@
 #include "raw.h"
-#include <lib/flipper_format/flipper_format.h>
+#include <flipper_format/flipper_format.h>
 #include "../subghz_file_encoder_worker.h"
 
 #include "../blocks/const.h"
 #include "../blocks/generic.h"
 
 #include <flipper_format/flipper_format_i.h>
-#include <lib/toolbox/stream/stream.h>
+#include <toolbox/stream/stream.h>
 
 #define TAG "SubGhzProtocolRaw"
 

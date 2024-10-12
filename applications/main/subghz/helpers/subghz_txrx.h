@@ -2,12 +2,12 @@
 
 #include "subghz_types.h"
 
-#include <lib/subghz/subghz_worker.h>
-#include <lib/subghz/subghz_setting.h>
-#include <lib/subghz/receiver.h>
-#include <lib/subghz/transmitter.h>
-#include <lib/subghz/protocols/raw.h>
-#include <lib/subghz/devices/devices.h>
+#include <subghz/subghz_worker.h>
+#include <subghz/subghz_setting.h>
+#include <subghz/receiver.h>
+#include <subghz/transmitter.h>
+#include <subghz/protocols/raw.h>
+#include <subghz/devices/devices.h>
 
 typedef struct SubGhzTxRx SubGhzTxRx;
 

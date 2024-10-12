@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lib/nfc/protocols/iso14443_3b/iso14443_3b_poller.h>
+#include <nfc/protocols/iso14443_3b/iso14443_3b_poller.h>
 
 #include "iso14443_4b.h"
 

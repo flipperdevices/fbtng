@@ -2,8 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/cmsis_core/device",
-        "#/lib/cmsis_core/include",
+        Dir("./cmsis_core/device").rdir(),
+        Dir("./cmsis_core/include").rdir(),
     ]
 )
-

@@ -1,3 +1,0 @@
-Import("env")
-
-env.RegisterComponent("fwlib_furi", env.File("furi.scons"))

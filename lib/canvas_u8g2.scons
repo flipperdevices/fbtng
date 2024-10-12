@@ -3,7 +3,7 @@ LIB_FOLDER = "canvas_u8g2"
 
 env.Append(
     CPPPATH=[
-        "#/lib/" + LIB_FOLDER,
+        Dir(LIB_FOLDER).srcnode(),
     ],
     LINT_SOURCES=[
         Dir(LIB_FOLDER),

@@ -9,7 +9,7 @@
 #include <time.h>
 //#include <notification/notification_messages.h>
 //#include <loader/loader.h>
-#include <lib/toolbox/args.h>
+#include <toolbox/args.h>
 
 // Close to ISO, `date +'%Y-%m-%d %H:%M:%S %u'`
 #define CLI_DATE_FORMAT "%.4d-%.2d-%.2d %.2d:%.2d:%.2d %d"

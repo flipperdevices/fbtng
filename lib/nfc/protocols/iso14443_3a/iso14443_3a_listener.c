@@ -4,7 +4,7 @@
 #include "nfc/helpers/iso14443_crc.h"
 
 #include <furi.h>
-#include <lib/nfc/nfc.h>
+#include <nfc/nfc.h>
 
 #define TAG "Iso14443_3aListener"
 

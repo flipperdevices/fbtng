@@ -4,7 +4,7 @@
 #include <math.h>
 #include <furi.h>
 #include <furi_hal.h>
-#include <lib/flipper_format/flipper_format.h>
+#include <flipper_format/flipper_format.h>
 
 #ifdef __cplusplus
 extern "C" {

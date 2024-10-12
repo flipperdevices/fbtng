@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/microtar/src",
+        Dir("microtar/src").srcnode(),
     ],
 )
 
