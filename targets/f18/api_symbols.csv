@@ -1,5 +1,5 @@
 entry,status,name,type,params
-Version,+,72.2,,
+Version,+,73.0,,
 Header,+,applications/services/bt/bt_service/bt.h,,
 Header,+,applications/services/bt/bt_service/bt_keys_storage.h,,
 Header,+,applications/services/cli/cli.h,,
@@ -189,9 +189,14 @@ Header,+,targets/f7/platform_specific/cxx_virtual_stub.h,,
 Header,+,targets/f7/platform_specific/intrinsic_export.h,,
 Header,+,targets/f7/platform_specific/math_wrapper.h,,
 Header,+,targets/furi_hal_include/furi_hal.h,,
+Header,+,targets/furi_hal_include/furi_hal_bus.h,,
+Header,+,targets/furi_hal_include/furi_hal_cortex.h,,
+Header,+,targets/furi_hal_include/furi_hal_debug.h,,
 Header,+,targets/furi_hal_include/furi_hal_flash.h,,
 Header,+,targets/furi_hal_include/furi_hal_info.h,,
+Header,+,targets/furi_hal_include/furi_hal_interrupt.h,,
 Header,+,targets/furi_hal_include/furi_hal_memory.h,,
+Header,+,targets/furi_hal_include/furi_hal_os.h,,
 Header,+,targets/furi_hal_include/furi_hal_rtc.h,,
 Header,+,targets/furi_hal_include/furi_hal_version.h,,
 Function,-,LL_ADC_CommonDeInit,ErrorStatus,ADC_Common_TypeDef*
@@ -1271,11 +1276,11 @@ Function,+,furi_hal_light_set,void,"Light, uint8_t"
 Function,+,furi_hal_memory_alloc,void*,size_t
 Function,+,furi_hal_memory_get_free,size_t,
 Function,+,furi_hal_memory_get_heap_track_mode,FuriHalMemoryHeapTrackMode,
+Function,+,furi_hal_memory_get_region,const FuriHalMemoryRegion*,uint32_t
+Function,+,furi_hal_memory_get_region_count,uint32_t,
 Function,+,furi_hal_memory_init,void,
 Function,-,furi_hal_memory_init_early,void,
 Function,+,furi_hal_memory_max_pool_block,size_t,
-Function,+,furi_hal_memory_regions_count,size_t,
-Function,+,furi_hal_memory_regions_get,const FuriHalMemoryRegion*,size_t
 Function,+,furi_hal_memory_set_heap_track_mode,void,FuriHalMemoryHeapTrackMode
 Function,+,furi_hal_mpu_disable,void,
 Function,+,furi_hal_mpu_enable,void,

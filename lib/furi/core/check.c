@@ -5,7 +5,6 @@
 #include <furi_hal_debug.h>
 #include <furi_hal_interrupt.h>
 #include <furi_hal_rtc.h>
-#include <furi_hal_power.h>
 
 #include <stdio.h>
 

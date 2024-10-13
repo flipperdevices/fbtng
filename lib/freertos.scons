@@ -5,7 +5,7 @@ if not (rtos_flavor := env["HW_RTOS_FLAVOR"]):
 
 _rtos_dirs = {
     "freertos-cm33-ntz": [
-        Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure").rdir(),
+        Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure").srcnode(),
     ],
     "freertos-cm4": [
         Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM4F").srcnode(),

@@ -77,9 +77,8 @@ DICT_DEF2( //-V1048
 /* Assumes 8bit bytes! */
 #define heapBITS_PER_BYTE ((size_t)8)
 
-/* Heap start and size provided by HAL 
- * Initialized after fetching info from furi_hal_memory_init_early() */
-static const FuriHalMemoryRegion* heap_region = NULL;
+/* Heap start and size provided by HAL */
+static const FuriHalMemoryRegion* heap_region;
 
 /* Define the linked list structure.  This is used to link free blocks in order
 of their memory address. */
@@ -364,8 +363,6 @@ void* pvPortMalloc(size_t xWantedSize) {
 
         vTaskSuspendAll();
         {
-            furi_hal_memory_init_early();
-            heap_region = furi_hal_memory_regions_get(0);
             prvHeapInit();
             memmgr_heap_init_trace();
         }
@@ -575,6 +572,7 @@ void vPortInitialiseBlocks(void) {
 /*-----------------------------------------------------------*/
 
 static void prvHeapInit(void) {
+    heap_region = furi_hal_memory_get_region(FuriHalMemoryRegionIdHeap);
     furi_check(heap_region);
 
     BlockLink_t* pxFirstFreeBlock;
