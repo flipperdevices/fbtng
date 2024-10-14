@@ -44,8 +44,6 @@ for libname in [
     "elf_mapfile_gen",
     "wb55_lib_config",
     "version",
-    "simplicity_sdk",
-    "wiseconnect",
 ]:
     env.RegisterComponent(f"fwlib_{libname}", env.FindComponentSconscript(libname))
 
