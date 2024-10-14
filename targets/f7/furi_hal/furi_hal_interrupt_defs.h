@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stm32wbxx_ll_tim.h>
 
 /** Device-specific interrupt identifier */

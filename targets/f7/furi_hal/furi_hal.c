@@ -7,6 +7,7 @@
 #define TAG "FuriHal"
 
 void furi_hal_init_early(void) {
+    furi_hal_memory_init_early();
     furi_hal_cortex_init_early();
     furi_hal_clock_init_early();
     furi_hal_bus_init_early();
