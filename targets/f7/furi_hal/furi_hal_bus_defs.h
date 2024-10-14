@@ -1,4 +1,4 @@
-// typedef uint32_t FuriHalBus;
+#pragma once
 
 #include <stm32wbxx.h>
 
