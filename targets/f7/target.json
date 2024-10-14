@@ -108,7 +108,7 @@
         "furi"
     ],
     "platform": "stm32wb",
-    "svd_file": "STM3WB55_CM4.svd",
+    "svd_file": "STM32WB55_CM4.svd",
     "flash_address": "0x08000000",
     "variables_sconscript": "scons/stm32wb_vars.scons",
     "dist_sconscript": "scons/stm32wb_dist.scons"

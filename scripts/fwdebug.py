@@ -60,33 +60,19 @@ class RemoteParametesExtension(BaseDebugExtension):
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         self._debug_root = args.root
-        yield GdbParam(f"target {self._get_remote(args)}")
+        for arg in self._get_remote(args):
+            yield GdbParam(arg, True)
 
     def _get_remote(self, args: argparse.Namespace):
         serial = args.serial[0]
-        # TODO: blackmagic discovery?
+
         if serial.upper() == self.DEFAULT_ADAPTER_SERIAL.upper():
             serial = None
+        return self._build_connection_args(args.target, serial)
 
-        return f"extended-remote | openocd {shlex.join(self._build_openocd_args(args.target, serial))}"
-
-    def _build_openocd_args(self, target: str, adapter_sn: Optional[str]):
+    def _build_connection_args(self, target: str, adapter_sn: Optional[str]):
         adapter = self._discover_adapter(target, adapter_sn)
-        connect_args = list(adapter.to_openocd_args())
-        for param in (
-            "gdb_port pipe",
-            f"log_output {self._debug_root / 'openocd.log'}",
-            "telnet_port disabled",
-            "tcl_port disabled",
-            "init",
-        ):
-            connect_args.append(
-                OpenOCDCommandLineParameter(
-                    OpenOCDCommandLineParameter.Type.COMMAND, param
-                )
-            )
-
-        return OpenOCDCommandLineParameter.to_args(connect_args)
+        return adapter.to_connection_args()
 
     def _discover_adapter(self, target: str, adapter_sn: Optional[str]):
         if target not in TARGETS:
@@ -141,7 +127,7 @@ class CoreConfigurationExtension(BaseDebugExtension):
         )
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
-        yield GdbParam(f"--quiet")  # Suppress the welcome message
+        yield GdbParam(f"--quiet", True)  # Suppress the welcome message
         if args.init:
             yield GdbParam(f"source {args.root / self.GDBINIT}")
         if args.file:

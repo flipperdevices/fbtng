@@ -25,7 +25,7 @@ fap_deploy = distenv.PhonyTarget(
 Depends(fap_deploy, firmware_env["FW_RESOURCES_MANIFEST"])
 
 firmware_flash = distenv.AddFwFlashTarget(
-    firmware_env, FW_FLASH_TARGET_INTEFACE="target/stm32wbx.cfg"
+    firmware_env, FW_FLASH_TARGET_INTEFACE="stm32wb"
 )
 distenv.Alias("flash", firmware_flash)
 

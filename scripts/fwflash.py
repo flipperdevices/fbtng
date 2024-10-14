@@ -12,6 +12,9 @@ from dataclasses import dataclass, field
 from flipper.app import App
 from serial.tools.list_ports_common import ListPortInfo
 
+from fwinterface import TARGETS, discover_probes
+
+
 # When adding an interface, also add it to DEBUG_INTERFACE in fbt/ufbt options
 
 
@@ -79,7 +82,7 @@ class OpenOCDProgrammer(Programmer):
         self.serial: typing.Optional[str] = None
 
     def set_mcu_interface_config(self, mcu_interface_config: str):
-        self.mcu_interface_config = mcu_interface_config
+        self.mcu_interface_config = mcu_interface_config  # TODO: брать из boardconnection для openocd тольк
 
     def _add_file(self, params: list[str], file: str):
         params += ["-f", file]
@@ -446,11 +449,18 @@ class Main(App):
             help="Serial number or port of the programmer",
         )
         self.parser.add_argument(
+            "-t",
             "--target",
-            type=str,
-            default="target/stm32u5x.cfg",
-            help="OpenOCD interface file for acessing target MPU",
+            help="Target device",
+            required=True,
+            choices=TARGETS.keys(),
         )
+        # self.parser.add_argument(
+        #     "--target",
+        #     type=str,
+        #     default="target/stm32u5x.cfg",
+        #     help="OpenOCD interface file for acessing target MPU",
+        # )
         self.parser.add_argument(
             "--extra-commands",
             action="append",
@@ -459,6 +469,25 @@ class Main(App):
         self.parser.set_defaults(func=self.flash)
 
     def _search_interface(self, interface_list: list[Programmer]) -> list[Programmer]:
+        # target = self.args.target
+        # self.logger.error(f"target: {target}, from dict: {TARGETS.get(target)}")
+        # self.logger.error(f"serial: {self.args.serial}")
+        #
+        # if target not in TARGETS:
+        #     raise Exception(
+        #         f"Unknown target: {target}. Available targets: {list(TARGETS.keys())}"
+        #     )
+        # adapters = discover_probes(TARGETS.get(target), None)
+        # if not adapters:
+        #     raise Exception("No debug adapter found")
+        # if len(adapters) > 1:
+        #     raise Exception(
+        #         f"Multiple debug adapters found: {adapters}, specify one with --serial"
+        #     )
+        # print('hhh')
+        # print(f"Using {adapters[0]}")
+        # return adapters[0]
+
         found_programmers = []
 
         for p in interface_list:
@@ -499,6 +528,7 @@ class Main(App):
         else:
             self.logger.info("Probing for local interfaces...")
             available_interfaces = self._search_interface(local_flash_interfaces)
+            self.logger.error(f"interfaces: {available_interfaces}")
 
             if not available_interfaces:
                 # Probe network blackmagic

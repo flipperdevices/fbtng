@@ -6,7 +6,7 @@ import posixpath
 FIRMWARE_ORIGIN = "Official"
 
 # Default hardware target
-TARGET_HW = "50"
+TARGET_HW = "7"
 
 # Optimization flags
 ## Optimize for size
