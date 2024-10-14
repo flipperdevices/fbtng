@@ -64,7 +64,3 @@ PVS-Studio.log
 .gdbinit
 
 /fbt_options_local.py
-
-# TODO: remove
-targets/f50_cube
-targets/f50_psram

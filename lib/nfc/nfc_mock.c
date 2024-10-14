@@ -1,11 +1,11 @@
 #ifdef FW_CFG_unit_tests
 
-#include <lib/nfc/nfc.h>
-#include <lib/nfc/helpers/iso14443_crc.h>
-#include <lib/nfc/protocols/iso14443_3a/iso14443_3a.h>
-#include <lib/nfc/protocols/felica/felica.h>
-#include <lib/nfc/helpers/felica_crc.h>
-#include <lib/nfc/protocols/felica/felica_poller_sync.h>
+#include <nfc/nfc.h>
+#include <nfc/helpers/iso14443_crc.h>
+#include <nfc/protocols/iso14443_3a/iso14443_3a.h>
+#include <nfc/protocols/felica/felica.h>
+#include <nfc/helpers/felica_crc.h>
+#include <nfc/protocols/felica/felica_poller_sync.h>
 
 #include <furi/furi.h>
 

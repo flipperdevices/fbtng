@@ -10,7 +10,7 @@ from fbt.util import (
 )
 from SCons.Platform import TempFileMunge
 
-Import("VAR_ENV")
+Import("VAR_ENV", "COMPONENT_SCRIPTS", "EXTRA_TOOLPATHS")
 
 forward_os_env = {
     # Import PATH from OS env - scons doesn't do that by default
@@ -27,6 +27,7 @@ for env_value_name in variables_to_forward:
         forward_os_env[env_value_name] = environ_value
 
 coreenv = VAR_ENV.Clone(
+    toolpath=EXTRA_TOOLPATHS,
     tools=[
         "fbt_tweaks",
         (
@@ -37,10 +38,12 @@ coreenv = VAR_ENV.Clone(
             },
         ),
         "python3",
-        "sconsmodular",
-        "sconsrecursiveglob",
+        "fbt_components",
+        "fbt_envutils",
+        "recursive_glob",
         "ccache",
     ],
+    FBT_COMPONENT_SCRIPTS=COMPONENT_SCRIPTS,
     TEMPFILE=TempFileMunge,
     POSIXPATH=PosixPathWrapper,
     MAXLINELENGTH=2048,

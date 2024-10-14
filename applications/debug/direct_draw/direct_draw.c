@@ -1,6 +1,6 @@
 #include <furi.h>
 #include <gui/gui.h>
-#include <gui/canvas_i.h>
+#include <canvas/canvas_i.h>
 #include <input/input.h>
 
 #define BUFFER_SIZE (32U)

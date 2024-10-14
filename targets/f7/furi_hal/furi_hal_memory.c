@@ -134,14 +134,14 @@ static FuriHalMemoryRegion memory_regions[] = {
 };
 
 void furi_hal_memory_init_early(void) {
-    memory_regions[0].size_bytes = __heap_size__;
+    memory_regions[0].size_bytes = (void*)&__heap_end__ - (void*)&__heap_start__;
 }
 
-size_t furi_hal_memory_regions_count(void) {
+uint32_t furi_hal_memory_get_region_count(void) {
     return COUNT_OF(memory_regions);
 }
 
-const FuriHalMemoryRegion* furi_hal_memory_regions_get(size_t index) {
+const FuriHalMemoryRegion* furi_hal_memory_get_region(uint32_t index) {
     furi_check(index < COUNT_OF(memory_regions));
     return &memory_regions[index];
 }

@@ -38,8 +38,8 @@
         "-c"
     ],
     "linker_flags": [
-        "-specs=nano.specs",
         "-mlittle-endian",
+        "-specs=nano.specs",
         "-Wl,--gc-sections",
         "-Wl,--no-warn-rwx-segment",
         "-Wl,--wrap,_malloc_r",
@@ -57,20 +57,29 @@
         "furi_hal",
         "inc"
     ],
-    "sdk_header_paths": [
-        "../furi_hal_include",
-        "furi_hal",
-        "platform_specific",
-        "ble_glue/furi_ble",
-        "ble_glue/services",
-        "ble_glue/profiles"
+    "sdk_headers": [
+        "../furi_hal_include/*.h",
+        "!furi_hal/*_i.h",
+        "furi_hal/furi_hal_mpu.h",
+        "furi_hal/furi_hal_pwm.h",
+        "furi_hal/furi_hal_usb_cdc.h",
+        "furi_hal/furi_hal_usb_hid_u2f.h",
+        "platform_specific/*.h",
+        "ble_glue/*/*.h"
+    ],
+    "sources": [
+        "*/*.c"
     ],
     "linker_script_flash": "stm32wb55xx_flash.ld",
     "linker_script_ram": "stm32wb55xx_ram_fw.ld",
     "linker_script_app": "application_ext.ld",
     "sdk_symbols": "api_symbols.csv",
     "rtos_flavor": "freertos-cm4",
-    "env_modules": [
+    "variables_sconscript": "fbt_conf/stm32wb_vars.scons",
+    "lib_modules": [
+        "fw_updater_opts",
+        "lib_base",
+        "wb55_lib_config",
         "mlib",
         "cmsis",
         "stm32wb",
@@ -79,6 +88,7 @@
         "drivers",
         "microtar",
         "mbedtls",
+        "icon_assets",
         "toolbox",
         "print",
         "fatfs",
@@ -103,13 +113,38 @@
         "ble_profile",
         "bit_lib",
         "datetime",
-        "assets",
+        "dolphin",
+        "rpc_proto",
+        "ext_resources",
         "targets",
-        "furi"
+        "version",
+        "furi",
+        "ext_applications",
+        "firmware_applications",
+        "elf_mapfile_gen"
+    ],
+    "fw_modules": [
+        "app_check",
+        "fw_elf",
+        "fw_artifacts",
+        "sdk_extapps",
+        "resources",
+        "fw_cdb",
+        "static_analysis",
+        "link_builddir"
+    ],
+    "dist_modules": [
+        "elf_flash",
+        "debug",
+        "fap_deploy",
+        "wb55_dist",
+        "lint",
+        "devboard",
+        "doxygen",
+        "vscode_env",
+        "cli"
     ],
     "platform": "stm32wb",
     "svd_file": "STM32WB55_CM4.svd",
-    "flash_address": "0x08000000",
-    "variables_sconscript": "scons/stm32wb_vars.scons",
-    "dist_sconscript": "scons/stm32wb_dist.scons"
+    "flash_address": "0x08000000"
 }

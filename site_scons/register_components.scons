@@ -1,0 +1,36 @@
+Import("env")
+
+from pathlib import Path
+
+# Hardware target library
+env.RegisterComponent("fwlib_targets", env.File("#/targets/target.scons"))
+
+
+# Assets libs
+for assets_component in [
+    "dolphin",
+    "ext_resources",
+    "icon_assets",
+    "rpc_proto",
+]:
+    env.RegisterComponent(
+        f"fwlib_{assets_component}", env.File("#/assets/%s.scons" % assets_component)
+    )
+
+
+# Register all modules in env_modules as dist and fw env components
+for dist_module in env.Glob("env_modules/dist/*.scons"):
+    module_basename = Path(dist_module.name).stem
+    env.RegisterComponent(f"dist_{module_basename}", dist_module.srcnode())
+
+for fwenv_module in env.Glob("env_modules/fwenv/*.scons"):
+    module_basename = Path(fwenv_module.name).stem
+    env.RegisterComponent(f"fwenv_{module_basename}", fwenv_module.srcnode())
+
+
+# Register all libraries in lib folder
+SConscript(
+    "#/lib/register_core_env_libs.scons",
+    exports={"env": env},
+    duplicate=0,
+)

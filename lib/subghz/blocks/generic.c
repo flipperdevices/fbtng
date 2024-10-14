@@ -1,6 +1,6 @@
 #include "generic.h"
-#include <lib/toolbox/stream/stream.h>
-#include <lib/flipper_format/flipper_format_i.h>
+#include <toolbox/stream/stream.h>
+#include <flipper_format/flipper_format_i.h>
 
 #define TAG "SubGhzBlockGeneric"
 

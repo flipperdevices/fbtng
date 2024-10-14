@@ -1,0 +1,14 @@
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+# Update WiFi devboard firmware with release channel
+distenv.PhonyTarget(
+    "devboard_flash",
+    [
+        [
+            "${PYTHON3}",
+            "${FBT_SCRIPT_DIR}/wifi_board.py",
+            "${ARGS}",
+        ]
+    ],
+)

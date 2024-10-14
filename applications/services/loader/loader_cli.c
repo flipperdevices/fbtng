@@ -3,7 +3,7 @@
 #include <furi.h>
 #include <cli/cli.h>
 #include <applications.h>
-#include <lib/toolbox/args.h>
+#include <toolbox/args.h>
 #include <notification/notification_messages.h>
 
 static void loader_cli_print_usage(void) {

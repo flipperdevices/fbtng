@@ -3,7 +3,7 @@
 
 #include <gui/modules/file_browser.h>
 #include <storage/storage.h>
-#include <lib/toolbox/path.h>
+#include <toolbox/path.h>
 #include <furi.h>
 #include <furi_hal.h>
 

@@ -80,7 +80,14 @@ __STM32WBX = OpenOCDTarget(
     "stm32wbx.cpu configure -rtos auto",
 )
 
-TARGETS = dict((t.name, t) for t in (__STM32U5X, __STM32WBX))
+__SI917 = OpenOCDTarget(
+    "si917",
+    "scripts/debug/siw917.cfg",
+    "siw917.cpu configure -rtos auto",
+)
+
+
+TARGETS = dict((t.name, t) for t in (__STM32U5X, __STM32WBX, __SI917))
 
 
 class BaseInterface(ABC):
@@ -270,7 +277,7 @@ class BaseAdapter(ABC):
                 capture_output=True,
                 timeout=2,
             )
-            logger.debug("Return code", process.returncode)
+            logger.debug("Return code %d", process.returncode)
             logger.debug(process.stdout)
             if process.returncode == 0:
                 return True

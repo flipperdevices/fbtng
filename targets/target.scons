@@ -1,0 +1,15 @@
+Import("env")
+
+env.Append(
+    LINT_SOURCES=[Dir(".")],
+)
+
+libenv = env.Clone(FW_LIB_NAME="flipper${TARGET_HW}")
+libenv.ApplyLibFlags()
+
+lib = libenv.StaticLibrary(
+    "${FW_LIB_NAME}",
+    env.get("TARGET_CFG").gatherTargetSources(),
+)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

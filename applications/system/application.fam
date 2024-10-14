@@ -8,4 +8,13 @@ App(
         "js_app_start",
         # "archive",
     ],
+    targets=["!f50"],
+)
+
+App(
+    appid="system_apps",
+    name="Applications not shown in menus",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[],
+    targets=["f50"],
 )

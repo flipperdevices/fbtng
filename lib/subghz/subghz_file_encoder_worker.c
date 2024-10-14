@@ -3,7 +3,7 @@
 #include <toolbox/stream/stream.h>
 #include <flipper_format/flipper_format.h>
 #include <flipper_format/flipper_format_i.h>
-#include <lib/subghz/devices/devices.h>
+#include <subghz/devices/devices.h>
 
 #define TAG "SubGhzFileEncoderWorker"
 

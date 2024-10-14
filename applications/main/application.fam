@@ -14,7 +14,7 @@ App(
         "archive",
         "main_apps_on_start",
     ],
-    targets=["!f50"],
+    targets=["f7"],
 )
 
 App(
@@ -29,5 +29,31 @@ App(
         "lfrfid_start",
         "nfc_start",
     ],
-    targets=["!f50"],
+    targets=["f7"],
+)
+
+# F18
+
+App(
+    appid="main_apps",
+    name="Basic applications for main menu",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[
+        "gpio",
+        "bad_usb",
+        "u2f",
+        "archive",
+        "main_apps_on_start",
+    ],
+    targets=["f18"],
+)
+
+App(
+    appid="main_apps_on_start",
+    name="On start hooks",
+    apptype=FlipperAppType.METAPACKAGE,
+    provides=[
+        "onewire_start",
+    ],
+    targets=["f18"],
 )

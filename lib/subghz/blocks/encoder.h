@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include <lib/toolbox/level_duration.h>
+#include <toolbox/level_duration.h>
 
 #ifdef __cplusplus
 extern "C" {

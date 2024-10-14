@@ -80,22 +80,15 @@ vars.AddVariables(
         help="Optimize for size",
         default=False,
     ),
-    # EnumVariable(
-    # help="Hardware target",
-    # default="50",
     (
         "TARGET_HW",
         "Hardware target",
-        "50",
-        # allowed_values=[
-        #     "7",
-        #     "18",
-        #     "50",
-        # ],
+        "7",
     ),
     (
         "DIST_SUFFIX",
         "Suffix for binaries in build output for dist targets",
+        # If OS environment has DIST_SUFFIX set, it will be used instead
         "local",
     ),
     (
@@ -118,7 +111,7 @@ vars.AddVariables(
     (
         "FBT_TOOLCHAIN_VERSIONS",
         "Whitelisted toolchain versions (leave empty for no check)",
-        tuple(),
+        (" 12.3.", " 13.2."),  # Also update in scripts/ufbt/SConstruct
     ),
     (
         "SWD_TRANSPORT_SERIAL",
@@ -139,15 +132,7 @@ vars.AddVariables(
         "FIRMWARE_APPS",
         "Map of (configuration_name->application_list)",
         {
-            "default": (
-                # Svc
-                "basic_services",
-                # Apps
-                "main_apps",
-                "system_apps",
-                # Settings
-                "settings_apps",
-            ),
+            "default": ("basic_services",),
         },
     ),
     (
@@ -167,12 +152,6 @@ vars.AddVariables(
         [
             ("applications", False),
             ("applications/services", True),
-            ("applications/main", True),
-            ("applications/settings", False),
-            ("applications/system", False),
-            ("applications/debug", False),
-            ("applications/examples", False),
-            ("applications/drivers", False),
             ("applications_user", False),
         ],
     ),

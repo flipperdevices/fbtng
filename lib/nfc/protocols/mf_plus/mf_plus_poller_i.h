@@ -2,7 +2,7 @@
 
 #include "mf_plus_poller.h"
 
-#include <lib/nfc/protocols/iso14443_4a/iso14443_4a_poller_i.h>
+#include <nfc/protocols/iso14443_4a/iso14443_4a_poller_i.h>
 
 #ifdef __cplusplus
 extern "C" {
