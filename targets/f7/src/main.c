@@ -19,11 +19,10 @@ int32_t init_task(void* context) {
 }
 
 int main(void) {
-    // Initialize FURI layer
-    furi_init();
-
     // Flipper critical FURI HAL
     furi_hal_init_early();
+    // Initialize FURI layer
+    furi_init();
 
     FuriThread* main_thread = furi_thread_alloc_ex("Init", 4096, init_task, NULL);
 

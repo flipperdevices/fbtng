@@ -145,6 +145,6 @@
         "cli"
     ],
     "platform": "stm32wb",
-    "svd_file": "STM3WB55_CM4.svd",
+    "svd_file": "STM32WB55_CM4.svd",
     "flash_address": "0x08000000"
 }
