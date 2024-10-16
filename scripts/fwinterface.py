@@ -390,9 +390,8 @@ class BlackmagicNetAdapter(BaseBlackmagicAdapter):
         return f"tcp:{probe}:2345"
 
 
-
 def discover_probes(
-    target: OpenOCDTarget, serial_hint: Optional[str] = None
+    target: OpenOCDTarget, serial_hint: Optional[str] = None, interface: OpenOCDInterface | BlackmagicInterface | None = None
 ) -> list[BaseAdapter]:
     interface_adapters = {
         __DAPLINK: OpenOCDAdapter,
@@ -402,13 +401,21 @@ def discover_probes(
     }
     adapters = []
 
-    for interface in INTERFACES.values():
+    if interface is not None:
         logger.debug(f"Checking {interface.name}, sn {serial_hint}")
         adapter_class = interface_adapters.get(interface)
         adapter_to_check = adapter_class(interface, target, serial_hint)
 
         if adapter_to_check.probe() is True:
             adapters.append(adapter_to_check)
+    else:
+        for interface in INTERFACES.values():
+            logger.debug(f"Checking {interface.name}, sn {serial_hint}")
+            adapter_class = interface_adapters.get(interface)
+            adapter_to_check = adapter_class(interface, target, serial_hint)
+
+            if adapter_to_check.probe() is True:
+                adapters.append(adapter_to_check)
 
     return adapters
 

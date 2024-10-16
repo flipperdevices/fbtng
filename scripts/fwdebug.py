@@ -11,7 +11,7 @@ from itertools import chain
 from typing import Optional
 
 from flipper.app import App
-from fwinterface import TARGETS, OpenOCDCommandLineParameter, discover_probes
+from fwinterface import TARGETS, OpenOCDCommandLineParameter, discover_probes, INTERFACES
 
 """
 This script is a wrapper for gdb that will autodetect current debug adapter and
@@ -48,6 +48,7 @@ class BaseDebugExtension:
 
 class RemoteParametesExtension(BaseDebugExtension):
     DEFAULT_ADAPTER_SERIAL = "auto"
+    DEFAULT_ADAPTER_INTERFACE = "auto"
 
     @staticmethod
     def configure_arg_parser(parser: argparse.ArgumentParser):
@@ -57,6 +58,16 @@ class RemoteParametesExtension(BaseDebugExtension):
             nargs=1,
             default=[RemoteParametesExtension.DEFAULT_ADAPTER_SERIAL],
         )
+        parser.add_argument(
+            "-i",
+            "--interface",
+            choices=(
+                RemoteParametesExtension.DEFAULT_ADAPTER_INTERFACE,
+                INTERFACES.keys()
+            ),
+            default=RemoteParametesExtension.DEFAULT_ADAPTER_INTERFACE,
+            help="Interface to use",
+        )
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         self._debug_root = args.root
@@ -65,28 +76,39 @@ class RemoteParametesExtension(BaseDebugExtension):
 
     def _get_remote(self, args: argparse.Namespace):
         serial = args.serial[0]
+        interface = args.interface
 
         if serial.upper() == self.DEFAULT_ADAPTER_SERIAL.upper():
             serial = None
-        return self._build_connection_args(args.target, serial)
 
-    def _build_connection_args(self, target: str, adapter_sn: Optional[str]):
-        adapter = self._discover_adapter(target, adapter_sn)
+        return self._build_connection_args(args.target, serial, interface)
+
+    def _build_connection_args(self, target: str, adapter_sn: Optional[str], interface: str | None):
+        adapter = self._discover_adapter(target, adapter_sn, interface)
         return adapter.to_connection_args()
 
-    def _discover_adapter(self, target: str, adapter_sn: Optional[str]):
+    def _discover_adapter(self, target: str, adapter_sn: Optional[str], interface: str):
         if target not in TARGETS:
             raise Exception(
                 f"Unknown target: {target}. Available targets: {list(TARGETS.keys())}"
             )
-        adapters = discover_probes(TARGETS.get(target), adapter_sn)
+
+        if interface.upper() == self.DEFAULT_ADAPTER_INTERFACE.upper():
+            interface = None
+        elif interface in INTERFACES:
+            interface = INTERFACES[interface]
+        else:
+            raise Exception(
+                f"Unknown interface: {interface}. Available interfaces: {list(INTERFACES.keys())}"
+            )
+
+        adapters = discover_probes(TARGETS.get(target), adapter_sn, interface)
         if not adapters:
             raise Exception("No debug adapter found")
         if len(adapters) > 1:
             raise Exception(
                 f"Multiple debug adapters found: {adapters}, specify one with --serial"
             )
-        print(f"Using {adapters[0]}")
         return adapters[0]
 
 
@@ -249,10 +271,10 @@ class GdbConfigurationManager:
 
 GdbConfigurationManager.register_extension(CoreConfigurationExtension)
 GdbConfigurationManager.register_extension(RemoteParametesExtension)
-GdbConfigurationManager.register_extension(FlipperScriptsExtension)
-GdbConfigurationManager.register_extension(SVDLoaderExtension)
-GdbConfigurationManager.register_extension(RTOSExtension)
-GdbConfigurationManager.register_extension(ExtraCommandsExtension)
+# GdbConfigurationManager.register_extension(FlipperScriptsExtension)
+# GdbConfigurationManager.register_extension(SVDLoaderExtension)
+# GdbConfigurationManager.register_extension(RTOSExtension)
+# GdbConfigurationManager.register_extension(ExtraCommandsExtension)
 
 
 class Main(App):
@@ -270,7 +292,6 @@ class Main(App):
         try:
             gdb_args = [self.GDB_BIN]
             gdb_args.extend(mgr.get_gdb_args(self.args))
-
             self.logger.debug(f"Running: {gdb_args}")
             proc = subprocess.run(gdb_args)
             return 0
