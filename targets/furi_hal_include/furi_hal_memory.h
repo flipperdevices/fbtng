@@ -14,12 +14,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Init control structures 
- * @note Must be done before first allocation
- */
-void furi_hal_memory_init_early(void);
-
-/**
  * @brief Init memory pool manager
  */
 void furi_hal_memory_init(void);
