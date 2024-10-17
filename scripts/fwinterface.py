@@ -2,14 +2,15 @@ import enum
 import itertools
 import os
 import shlex
+import socket
 import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Iterable, Optional, Callable
-import socket
-import serial.tools.list_ports as list_ports
-
 from logging import getLogger
+from typing import Iterable, Optional
+
+import serial.tools.list_ports as list_ports
+from flipper.utils.hw_platform import FbtHardwarePlatform
 
 logger = getLogger(__name__)
 
@@ -52,7 +53,7 @@ class OpenOCDCommandLineParameter:
 class OpenOCDTarget:
     name: str
     config_file: str
-    config_command: str
+    config_commands: list[str]
 
     def to_args(self) -> list[str]:
         params = [
@@ -60,43 +61,30 @@ class OpenOCDTarget:
                 OpenOCDCommandLineParameter.Type.FILE,
                 self.config_file,
             ),
-            OpenOCDCommandLineParameter(
-                OpenOCDCommandLineParameter.Type.COMMAND,
-                self.config_command,
+            *(
+                OpenOCDCommandLineParameter(
+                    OpenOCDCommandLineParameter.Type.COMMAND, command
+                )
+                for command in self.config_commands
             ),
         ]
         return list(OpenOCDCommandLineParameter.to_args(params))
 
-
-__STM32U5X = OpenOCDTarget(
-    "stm32u5",
-    "scripts/debug/stm32u5x.cfg",
-    "stm32u5x.cpu configure -rtos auto",
-)
-
-__STM32WBX = OpenOCDTarget(
-    "stm32wb",
-    "scripts/debug/stm32wbx.cfg",
-    "stm32wbx.cpu configure -rtos auto",
-)
-
-__SI917 = OpenOCDTarget(
-    "si917",
-    "scripts/debug/siw917.cfg",
-    "siw917.cpu configure -rtos auto",
-)
-
-
-TARGETS = dict((t.name, t) for t in (__STM32U5X, __STM32WBX, __SI917))
+    @staticmethod
+    def for_platform(platform: FbtHardwarePlatform) -> "OpenOCDTarget":
+        return OpenOCDTarget(
+            platform.name,
+            str(platform.openocd_interface_file),
+            platform.openocd_init_commands,
+        )
 
 
 class BaseInterface(ABC):
-    COMMAND_NAME = 'COMMAND_NAME'
+    COMMAND_NAME = "COMMAND_NAME"
 
     def __init__(self, name):
         self.name = name
         self._serial = None
-        self.supported_targets = (None, None)
 
     @abstractmethod
     def base_args(self) -> list[str]:
@@ -111,7 +99,7 @@ class BaseInterface(ABC):
         pass
 
     def is_target_supported(self, target):
-        return target in self.supported_targets
+        return True  # FIXME: implement
 
     def init_serial(self, serial):
         self._serial = serial
@@ -121,14 +109,13 @@ class BaseInterface(ABC):
 
 
 class OpenOCDInterface(BaseInterface):
-    COMMAND_NAME = 'openocd'
+    COMMAND_NAME = "openocd"
 
     def __init__(self, name, config_file, serial_command, transport_mode):
         super().__init__(name)
         self.config_file = config_file
         self.serial_command = serial_command
         self.transport_mode = transport_mode
-        self.supported_targets = TARGETS.values()
 
     def base_args(self) -> list[str]:
         params = [
@@ -151,14 +138,16 @@ class OpenOCDInterface(BaseInterface):
         return list(OpenOCDCommandLineParameter.to_args(params))
 
     def initial_args(self) -> list[str]:
-        params = [OpenOCDCommandLineParameter(
-            OpenOCDCommandLineParameter.Type.COMMAND,
-            "init",
-        ),
+        params = [
+            OpenOCDCommandLineParameter(
+                OpenOCDCommandLineParameter.Type.COMMAND,
+                "init",
+            ),
             OpenOCDCommandLineParameter(
                 OpenOCDCommandLineParameter.Type.COMMAND,
                 "exit",
-            ), ]
+            ),
+        ]
 
         return list(OpenOCDCommandLineParameter.to_args(params))
 
@@ -167,7 +156,8 @@ class OpenOCDInterface(BaseInterface):
             OpenOCDCommandLineParameter(
                 OpenOCDCommandLineParameter.Type.COMMAND,
                 param,
-            ) for param in (
+            )
+            for param in (
                 "gdb_port pipe",
                 # f"log_output {self._debug_root / 'openocd.log'}",  # TODO: add debug support
                 "telnet_port disabled",
@@ -179,8 +169,7 @@ class OpenOCDInterface(BaseInterface):
 
 
 class BlackmagicInterface(BaseInterface):
-
-    COMMAND_NAME = 'arm-none-eabi-gdb'
+    COMMAND_NAME = "arm-none-eabi-gdb"
 
     def __init__(self, name):
         super().__init__(name)
@@ -223,10 +212,10 @@ class BlackmagicInterface(BaseInterface):
 
 
 _BLACKMAGIC_USB = BlackmagicInterface(
-    'blackmagic_usb',
+    "blackmagic_usb",
 )
 _BLACKMAGIC_WIFI = BlackmagicInterface(
-    'blackmagic_wifi',
+    "blackmagic_wifi",
 )
 __DAPLINK = OpenOCDInterface(
     "daplink",
@@ -242,27 +231,31 @@ __STLINK = OpenOCDInterface(
     "hla_swd",
 )
 
-INTERFACES = dict((i.name, i) for i in (__DAPLINK, __STLINK, _BLACKMAGIC_USB, _BLACKMAGIC_WIFI))
+INTERFACES = dict(
+    (i.name, i) for i in (__DAPLINK, __STLINK, _BLACKMAGIC_USB, _BLACKMAGIC_WIFI)
+)
 
 
 class BaseAdapter(ABC):
 
-    def __init__(self, interface: BaseInterface, target: OpenOCDTarget, serial: str):
+    def __init__(
+        self, interface: BaseInterface, target_platform: OpenOCDTarget, serial: str
+    ):
         self.interface = interface
         self.serial = serial
-        self.target = target
+        self.target_platform = target_platform
 
         if self.serial is not None:
             self.interface.init_serial(self.serial)
 
     def __repr__(self) -> str:
-        return f"<{self.target.name} via {self.interface.name} {self.serial if self.serial else ''}>"
+        return f"<{self.target_platform.name} via {self.interface.name} {self.serial if self.serial else ''}>"
 
     def to_args(self) -> list[str]:
         args = [self.interface.COMMAND_NAME]
         args.extend(self.interface.base_args())
-        if self.interface.is_target_supported(target=self.target):
-            args.extend(self.target.to_args())
+        if self.interface.is_target_supported(target=self.target_platform):
+            args.extend(self.target_platform.to_args())
 
         return args
 
@@ -305,7 +298,7 @@ class OpenOCDAdapter(BaseAdapter):
 
     def to_connection_args(self):
         args = self.to_args() + self.interface.connection_args()
-        return ['-ex', f"target extended-remote | {shlex.join(args)}"]
+        return ["-ex", f"target extended-remote | {shlex.join(args)}"]
 
 
 class BaseBlackmagicAdapter(BaseAdapter):
@@ -315,7 +308,10 @@ class BaseBlackmagicAdapter(BaseAdapter):
         pass
 
     def to_connection_args(self) -> list[str]:
-        return ['-ex', f'target extended-remote {self.interface._serial}'] + self.interface.connection_args()
+        return [
+            "-ex",
+            f"target extended-remote {self.interface._serial}",
+        ] + self.interface.connection_args()
 
     def probe(self) -> bool:
         if not (port := self._port_resolver(self.serial)):
@@ -342,8 +338,8 @@ class BlackmagicUSBAdapter(BaseBlackmagicAdapter):
                 ports = list(
                     filter(
                         lambda p: p.serial_number == serial
-                                  or p.name == serial
-                                  or p.device == serial,
+                        or p.name == serial
+                        or p.device == serial,
                         ports,
                     )
                 )
@@ -390,47 +386,43 @@ class BlackmagicNetAdapter(BaseBlackmagicAdapter):
         return f"tcp:{probe}:2345"
 
 
+__interface_adapters = {
+    __DAPLINK: OpenOCDAdapter,
+    __STLINK: OpenOCDAdapter,
+    _BLACKMAGIC_USB: BlackmagicUSBAdapter,
+    _BLACKMAGIC_WIFI: BlackmagicNetAdapter,
+}
+
+
+def check_adapter(
+    interface: OpenOCDInterface | BlackmagicInterface,
+    target_platform: FbtHardwarePlatform,
+    serial_hint: Optional[str] = None,
+):
+    logger.debug(f"Checking {interface.name}, sn {serial_hint}")
+    adapter_class = __interface_adapters.get(interface)
+    adapter_to_check = adapter_class(
+        interface, OpenOCDTarget.for_platform(target_platform), serial_hint
+    )
+
+    if adapter_to_check.probe() is True:
+        return adapter_to_check
+
+
 def discover_probes(
-    target: OpenOCDTarget, serial_hint: Optional[str] = None, interface: OpenOCDInterface | BlackmagicInterface | None = None
+    target_platform: FbtHardwarePlatform,
+    serial_hint: Optional[str] = None,
+    interface: OpenOCDInterface | BlackmagicInterface | None = None,
+    find_all: bool = False,
 ) -> list[BaseAdapter]:
-    interface_adapters = {
-        __DAPLINK: OpenOCDAdapter,
-        __STLINK: OpenOCDAdapter,
-        _BLACKMAGIC_USB: BlackmagicUSBAdapter,
-        _BLACKMAGIC_WIFI: BlackmagicNetAdapter,
-    }
+
     adapters = []
+    interfaces_to_check = [interface] if interface is not None else INTERFACES.values()
 
-    if interface is not None:
-        logger.debug(f"Checking {interface.name}, sn {serial_hint}")
-        adapter_class = interface_adapters.get(interface)
-        adapter_to_check = adapter_class(interface, target, serial_hint)
-
-        if adapter_to_check.probe() is True:
-            adapters.append(adapter_to_check)
-    else:
-        for interface in INTERFACES.values():
-            logger.debug(f"Checking {interface.name}, sn {serial_hint}")
-            adapter_class = interface_adapters.get(interface)
-            adapter_to_check = adapter_class(interface, target, serial_hint)
-
-            if adapter_to_check.probe() is True:
-                adapters.append(adapter_to_check)
+    for iface in interfaces_to_check:
+        if adapter := check_adapter(iface, target_platform, serial_hint):
+            adapters.append(adapter)
+            if not find_all:
+                break
 
     return adapters
-
-
-def main():
-    for target in (
-        # STM32WBX,
-        __STM32U5X,
-    ):
-
-        bs = discover_probes(target)
-        print(bs)
-    # bs = discover_probes(STM32U5X)
-    # print(bs)
-
-
-if __name__ == "__main__":
-    main()
