@@ -126,16 +126,12 @@ size_t furi_hal_memory_max_pool_block(void) {
     return max;
 }
 
-static FuriHalMemoryRegion memory_regions[] = {
+static const FuriHalMemoryRegion memory_regions[] = {
     {
         .start = (void*)&__heap_start__,
-        .size_bytes = 0,
+        .size_bytes = (size_t)&__heap_size__,
     },
 };
-
-void furi_hal_memory_init_early(void) {
-    memory_regions[0].size_bytes = (void*)&__heap_end__ - (void*)&__heap_start__;
-}
 
 uint32_t furi_hal_memory_get_region_count(void) {
     return COUNT_OF(memory_regions);

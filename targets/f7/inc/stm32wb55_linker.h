@@ -32,6 +32,7 @@ extern const void _eMB_MEM2; /**< RAM2a end */
 
 extern const void __heap_start__; /**< RAM1 Heap start */
 extern const void __heap_end__; /**< RAM1 Heap end */
+extern const void __heap_size__; /**< RAM1 Heap size (as symbol address) */
 
 extern const void __free_flash_start__; /**< Free Flash space start */
 
