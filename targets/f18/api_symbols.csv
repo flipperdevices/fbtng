@@ -1279,7 +1279,6 @@ Function,+,furi_hal_memory_get_heap_track_mode,FuriHalMemoryHeapTrackMode,
 Function,+,furi_hal_memory_get_region,const FuriHalMemoryRegion*,uint32_t
 Function,+,furi_hal_memory_get_region_count,uint32_t,
 Function,+,furi_hal_memory_init,void,
-Function,-,furi_hal_memory_init_early,void,
 Function,+,furi_hal_memory_max_pool_block,size_t,
 Function,+,furi_hal_memory_set_heap_track_mode,void,FuriHalMemoryHeapTrackMode
 Function,+,furi_hal_mpu_disable,void,
