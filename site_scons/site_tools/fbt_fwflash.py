@@ -17,7 +17,6 @@ def AddFwFlashTarget(env, targetenv, **kw):
 def generate(env):
     env.SetDefault(
         FW_FLASH_SCRIPT="${FBT_SCRIPT_DIR}/fwflash.py",
-        FW_FLASH_TARGET_INTEFACE="auto",
         DEBUG_INTERFACE_SERIAL="auto",
         FW_FLASH_EXTRA_COMMANDS="",
     )
@@ -34,8 +33,9 @@ def generate(env):
                         "-d" if env["VERBOSE"] else "",
                         "--interface=${DEBUG_INTERFACE}",
                         "--serial=${DEBUG_INTERFACE_SERIAL}",
-                        "--target=${FW_FLASH_TARGET_INTEFACE}",
-                        '--extra-commands="${FW_FLASH_EXTRA_COMMANDS}"',
+                        "--platform=${HW_CONFIG_FILE}",
+                        "-ex",
+                        "${FW_FLASH_EXTRA_COMMANDS}",
                         "${SOURCE}",
                         "${ARGS}",
                     ],

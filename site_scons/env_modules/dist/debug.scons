@@ -1,18 +1,20 @@
 Import("FW_ENV", "DIST_ENV")
 distenv, firmware_env = DIST_ENV, FW_ENV
 
-debug_env = distenv.Clone(tools=["fbt_debugopts"])
+debug_env = distenv.Clone(
+    tools=["fbt_debugopts"],
+    HW_CONFIG_FILE=firmware_env["HW_CONFIG_FILE"],
+)
 
 __base_debug_opts = [
     "--root",
     "${FBT_DEBUG_DIR}",
     "--serial",
     "${DEBUG_INTERFACE_SERIAL}",
-    "-t",
-    firmware_env["HW_PLATFORM"],
+    "--platform",
+    "${HW_CONFIG_FILE}",
     "--init",
     "--with-svd",
-    firmware_env["HW_SVD_FILE"],
 ]
 
 # Debugging firmware

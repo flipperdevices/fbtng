@@ -1,6 +1,7 @@
 import itertools
 import json
 import os
+from flipper.utils.hw_platform import FbtHardwarePlatform
 
 from SCons.Errors import StopError
 
@@ -16,6 +17,7 @@ class HardwareTargetLoader:
         self.env = env
         self.all_targets_root_dir = root_target_scons_dir
         self.target_dir = self._getTargetDir(target_id)
+        self.target_id = target_id
 
         self.include_paths = []
         self.sdk_headers = []
@@ -23,9 +25,7 @@ class HardwareTargetLoader:
         self.linker_script_ram = None
         self.linker_script_app = None
         self.sdk_symbols = None
-        self.platform = None
-        self.svd_file = ""
-        self.flash_address = None
+        self.platform_desc = None
         self.rtos_flavor = None
         self.lib_modules = []
         self.fw_modules = []
@@ -39,7 +39,20 @@ class HardwareTargetLoader:
         self.extra_tool_paths = []
 
         self._processTargetDefinitions(target_id)
+        self._checkEffectiveConfig()
         # print(f"Config for {target_id} : {self.__dict__}")
+
+    def _checkEffectiveConfig(self):
+        for prop_name in (
+            "platform_desc",
+            "linker_script_flash",
+            "fw_modules",
+            "lib_modules",
+        ):
+            if not getattr(self, prop_name):
+                raise TargetLoaderError(
+                    f"Property {prop_name} is not set for target {self.target_id}"
+                )
 
     def _getTargetDir(self, target_id):
         return self.all_targets_root_dir.Dir(f"{target_id}")
@@ -150,9 +163,7 @@ class HardwareTargetLoader:
             ("linker_script_ram", True),
             ("linker_script_app", True),
             ("sdk_symbols", True),
-            ("platform", False),
-            ("svd_file", False),
-            ("flash_address", False),
+            ("platform_desc", True),
             ("rtos_flavor", False),
             ("variables_sconscript", True),
             ("target_sconscript", True),
@@ -243,15 +254,18 @@ def ConfigureForTarget(env, lightweight=False):
     except TargetLoaderError as e:
         raise StopError(e)
 
+    hw_target_obj = FbtHardwarePlatform.from_file(target_loader.platform_desc.abspath)
     env.Replace(
         TARGET_CFG=target_loader,
         SDK_DEFINITION=target_loader.sdk_symbols,
-        HW_PLATFORM=target_loader.platform,
-        HW_IMAGE_BASE_ADDRESS=target_loader.flash_address,
-        HW_SVD_FILE="${FBT_DEBUG_DIR}/" + target_loader.svd_file,
+        HW_PLATFORM=hw_target_obj,
         HW_RTOS_FLAVOR=target_loader.rtos_flavor,
         LINKER_SCRIPT_PATH=target_loader.linker_script_flash,
         APP_LINKER_SCRIPT_PATH=target_loader.linker_script_app,
+        # Extracting relevant properties from the target loader
+        HW_CONFIG_FILE=target_loader.platform_desc,
+        HW_SVD_FILE=env.File(hw_target_obj.svd_file).rfile(),
+        HW_IMAGE_BASE_ADDRESS=f"{hw_target_obj.flash_address:#x}",
     )
     env.AppendUnique(
         FBT_ENV_SETUP_SCRIPTS=target_loader.env_setup_scripts,

@@ -1,0 +1,12 @@
+{
+    "name": "stm32wb",
+    "flash_address": "0x08000000",
+    "ram_address": "0x20000000",
+    "svd_file": "stm32wb55/STM32WB55_CM4.svd",
+    "openocd": {
+        "chip_config": "stm32wb55/stm32wbx.cfg",
+        "init_commands": [
+            "stm32wbx.cpu configure -rtos auto"
+        ]
+    }
+}
