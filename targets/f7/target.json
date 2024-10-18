@@ -144,7 +144,5 @@
         "vscode_env",
         "cli"
     ],
-    "platform": "stm32wb",
-    "svd_file": "STM32WB55_CM4.svd",
-    "flash_address": "0x08000000"
+    "platform_desc": "../../scripts/debug/platforms/stm32wb55.json"
 }
