@@ -15,6 +15,7 @@ class FbtHardwarePlatform:
 
     @staticmethod
     def from_dict(param_dict: dict, rel_path_root: Path) -> "FbtHardwarePlatform":
+        rel_path_root = rel_path_root.resolve()
         oocd_params = param_dict.get("openocd", {})
         return FbtHardwarePlatform(
             param_dict["name"],
