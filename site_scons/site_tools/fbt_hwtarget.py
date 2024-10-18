@@ -17,6 +17,7 @@ class HardwareTargetLoader:
         self.env = env
         self.all_targets_root_dir = root_target_scons_dir
         self.target_dir = self._getTargetDir(target_id)
+        self.target_id = target_id
 
         self.include_paths = []
         self.sdk_headers = []
@@ -38,7 +39,20 @@ class HardwareTargetLoader:
         self.extra_tool_paths = []
 
         self._processTargetDefinitions(target_id)
+        self._checkEffectiveConfig()
         # print(f"Config for {target_id} : {self.__dict__}")
+
+    def _checkEffectiveConfig(self):
+        for prop_name in (
+            "platform_desc",
+            "linker_script_flash",
+            "fw_modules",
+            "lib_modules",
+        ):
+            if not getattr(self, prop_name):
+                raise TargetLoaderError(
+                    f"Property {prop_name} is not set for target {self.target_id}"
+                )
 
     def _getTargetDir(self, target_id):
         return self.all_targets_root_dir.Dir(f"{target_id}")
