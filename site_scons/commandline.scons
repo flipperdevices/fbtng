@@ -52,7 +52,7 @@ AddOption(
 
 # Construction environment variables
 
-vars = Variables(GetOption("optionfile"), ARGUMENTS)
+vars = Variables([GetOption("optionfile"), "fbt_options_local.py"], ARGUMENTS)
 
 vars.AddVariables(
     BoolVariable(
@@ -107,6 +107,11 @@ vars.AddVariables(
         help="Path to prebuilt ELF file to debug",
         validator=PathVariable.PathAccept,
         default="",
+    ),
+    (
+        "FBT_EXTRA_REPOS",
+        "Extra repositories to search for components",
+        [],
     ),
     (
         "FBT_TOOLCHAIN_VERSIONS",

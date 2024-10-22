@@ -218,7 +218,7 @@ _BLACKMAGIC_WIFI = BlackmagicInterface(
     "blackmagic_wifi",
 )
 __DAPLINK = OpenOCDInterface(
-    "daplink",
+    "cmsis-dap",
     "interface/cmsis-dap.cfg",
     "adapter serial",
     "swd",

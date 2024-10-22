@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // Cortex-Debug params: https://github.com/Marus/cortex-debug/blob/master/debug_attributes.md
+{% for rtos_enabled in [True, False]: %}
+    {% for probe in probes: %}
+        {
+            "name": "Attach FW ({{ probe.name }})",
+            "cwd": "${workspaceFolder}",
+            "executable": "./build/latest/firmware.elf",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "device": "{{ probe.name }}",
+    {% if FWENV["HW_PLATFORM"].svd_file: %}
+            "svdFile": "{{ FWENV["HW_PLATFORM"].svd_file }}",
+    {% :endif %}
+    {% if rtos_enabled: %}
+            "rtos": "FreeRTOS",
+    {% :endif %}
+            "configFiles": [
+                "{{ probe.config_file }}",
+                "{{ FWENV["HW_PLATFORM"].openocd_interface_file }}",
+            ],
+            "openOCDLaunchCommands": [
+        {% for cmd in FWENV["HW_PLATFORM"].openocd_init_commands: %}
+                "{{ cmd }}",
+        {% :endfor %}
+            ],
+            "postAttachCommands": [
+                // "source scripts/debug/flipperversion.py",
+                // "fw-version",
+                "source scripts/debug/flipperapps.py",
+                "fap-set-debug-elf-root build/latest/.extapps"
+            ],
+            // "showDevDebugOutput": "raw",
+        },
+    {% :endfor %}
+{% :endfor %}
+    ]
+}

@@ -189,7 +189,9 @@ class Templite:
                 else:
                     base = os.path.dirname(sys.argv[0])
                 file = os.path.join(base, file)
-            t = Templite(None, file, self.encoding, self.delimiters, self.caching)
+            t = Templite(
+                None, filename=file, encoding=self.encoding, caching=self.caching
+            )
             stack.append(t.render(**namespace))
 
         namespace["include"] = include

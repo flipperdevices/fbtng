@@ -15,10 +15,10 @@ link_dir_command = fwenv["FW_LINK_LATEST"] = fwenv.PhonyTarget(
     ),
 )
 
-# If current configuration was explicitly requested, generate compilation database
-# and link its directory as build/latest
 fw_artifacts = fwenv["FW_ARTIFACTS"]
 
+# If current configuration was explicitly requested, generate compilation database
+# and link its directory as build/latest
 if should_gen_cdb_and_link_dir(fwenv, BUILD_TARGETS):
     if fw_cdb := fwenv.get("FW_CDB"):
         fw_artifacts.append(fw_cdb)

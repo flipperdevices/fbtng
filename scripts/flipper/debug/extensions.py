@@ -186,7 +186,7 @@ class FlipperScriptsExtension(BaseDebugExtension):
             type=pathlib.Path,
         )
         parser.add_argument(
-            "--with-firmware",
+            "--with-fwversion",
             help="Enable support for firmware versioning",
             action="store_true",
         )
@@ -195,6 +195,6 @@ class FlipperScriptsExtension(BaseDebugExtension):
         if args.apps_root:
             yield GdbParam(f"source {args.root / self.APPS_SCRIPT}")
             yield GdbParam(f"fap-set-debug-elf-root {args.apps_root[0]}")
-        if args.with_firmware:
+        if args.with_fwversion:
             yield GdbParam(f"source {args.root / self.FIRMWARE_SCRIPT}")
             yield GdbParam("fw-version")
