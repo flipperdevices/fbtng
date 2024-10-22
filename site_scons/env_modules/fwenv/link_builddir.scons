@@ -1,28 +1,29 @@
-from fbt_extra.util import link_elf_dir_as_latest, should_gen_cdb_and_link_dir
+from fbt_extra.util import link_dirs, should_gen_cdb_and_link_dir
 
 
 Import("FW_ENV")
 fwenv = FW_ENV
 
 
-# If current configuration was explicitly requested, generate compilation database
-# and link its directory as build/latest
+link_dir_command = fwenv["FW_LINK_LATEST"] = fwenv.PhonyTarget(
+    fwenv.subst("${FIRMWARE_BUILD_CFG}_latest"),
+    Action(
+        lambda source, target, env: link_dirs(
+            env, dst=env.Dir("#build/latest"), src=fwenv["BUILD_DIR"]
+        ),
+        None,
+    ),
+)
+
 fw_artifacts = fwenv["FW_ARTIFACTS"]
 
+# If current configuration was explicitly requested, generate compilation database
+# and link its directory as build/latest
 if should_gen_cdb_and_link_dir(fwenv, BUILD_TARGETS):
-    if fwenv.get("FW_CDB"):
-        fw_artifacts.append(fwenv["FW_CDB"])
+    if fw_cdb := fwenv.get("FW_CDB"):
+        fw_artifacts.append(fw_cdb)
+        Depends(fw_cdb, link_dir_command)
 
-    fwelf = fwenv["FW_ELF"]
-    # Adding as a phony target, so folder link is updated even if elf didn't change
-    link_dir_command = fwenv.PhonyTarget(
-        fwenv.subst("${FIRMWARE_BUILD_CFG}_latest"),
-        Action(
-            lambda source, target, env: link_elf_dir_as_latest(env, source[0]),
-            None,
-        ),
-        source=fwelf,
-    )
     fw_artifacts.append(link_dir_command)
 
 Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_all"), fw_artifacts)

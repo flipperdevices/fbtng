@@ -1,0 +1,9 @@
+{
+	"folders": [
+{% for folder in folders: %}        {
+            "path": "{{ folder }}"
+        },
+{% :endfor %}	],
+	"settings": 
+{% include("settings.json.tmpl") %}
+}

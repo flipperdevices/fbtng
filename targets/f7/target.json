@@ -74,8 +74,10 @@
     "linker_script_ram": "stm32wb55xx_ram_fw.ld",
     "linker_script_app": "application_ext.ld",
     "sdk_symbols": "api_symbols.csv",
-    "rtos_flavor": "freertos-cm4",
     "variables_sconscript": "fbt_conf/stm32wb_vars.scons",
+    "platform_desc": "../../scripts/debug/platforms/stm32wb55.json",
+    "apps_c_template": "apps_c_template.tmpl",
+    "rtos_flavor": "freertos-cm4",
     "lib_modules": [
         "fw_updater_opts",
         "lib_base",
@@ -141,8 +143,16 @@
         "lint",
         "devboard",
         "doxygen",
-        "vscode_env",
+        "vscode_project",
+        "subl_project",
         "cli"
     ],
-    "platform_desc": "../../scripts/debug/platforms/stm32wb55.json"
+    "extra_target_meta": {
+        "debug_tags": [
+            "rtos",
+            "apps",
+            "fwversion",
+            "svd"
+        ]
+    }
 }

@@ -31,6 +31,7 @@ class HardwareTargetLoader:
         self.fw_modules = []
         self.variables_sconscript = None
         self.target_sconscript = None
+        self.apps_c_template = None
         self.dist_modules = []
         self.sources = []
         self.extra_target_meta = {}
@@ -167,6 +168,7 @@ class HardwareTargetLoader:
             ("rtos_flavor", False),
             ("variables_sconscript", True),
             ("target_sconscript", True),
+            ("apps_c_template", True),
         )
 
         for attr_name, is_target_file_node in file_attrs:
@@ -241,6 +243,10 @@ class HardwareTargetLoader:
     def gatherTargetSdkHeaders(self):
         return self._processTargetGlobs(self.sdk_headers)
 
+    def resolveTargetFilePath(self, path_spec):
+        path = self._path_spec_to_dir_node_pair(self.target_dir, path_spec)
+        return path[0].File(path[1]).rfile()
+
 
 def ConfigureForTarget(env, lightweight=False):
     env.SetDefault(
@@ -290,7 +296,9 @@ def ApplyLibFlags(env, lib_name=None):
         lib_name = env["FW_LIB_NAME"]
     flags_to_apply = env["FW_LIB_OPTS"].get(lib_name, env["FW_LIB_OPTS"]["Default"])
     if env["VERBOSE"]:
-        print(f"Flags for {lib_name}: {flags_to_apply}")
+        print(
+            f"Flags for {lib_name}: {flags_to_apply} -> {dict((k,env.subst(v)) for k,v in flags_to_apply.items())}"
+        )
     env.MergeFlags(flags_to_apply)
 
 
