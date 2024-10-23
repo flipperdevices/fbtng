@@ -63,19 +63,15 @@ libenv.VariantDir(apps_build_dir, "#", duplicate=0)
 
 # Build applications.c for selected services & apps
 # Depends on virtual value-only node, so it only gets rebuilt when set of apps changes
-# apps_c = libenv.ApplicationsC(
-#     "applications.c",
-#     [Value(fwenv["APPS"])],
-# )
-
 apps_c = libenv.TempliteFile(
-    "newapps.c",
+    "applications.c",
     "template/applications.c.tmpl",
     SUBST_DICT={
         "autorun_app_name": fwenv.subst("$LOADER_AUTOSTART"),
         "buildset": fwenv["APPBUILD"],
     },
 )
+Depends(apps_c, [Value(fwenv["APPS"])])
 
 # Adding dependency on manifest files so apps.c is rebuilt when any manifest is changed
 for app_dir, _ in env["APPDIRS"]:
