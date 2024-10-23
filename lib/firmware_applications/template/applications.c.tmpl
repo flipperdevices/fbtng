@@ -65,11 +65,11 @@ const FlipperExternalApplication FLIPPER_EXTERNAL_APPS[] = {
     {
         .name = "{{ app.name }}",
         .icon = 
-        {% if app.icon: %}
-        &{{ app.icon }},
-        {% :else: %}
-        NULL,
-        {% :endif %}
+    {% if app.icon: %}
+            &{{ app.icon }},
+    {% :else: %}
+            NULL,
+    {% :endif %}
         .path = "{{ app_path }}",
     },
 {% :endfor %}
