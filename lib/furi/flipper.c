@@ -1,5 +1,4 @@
 #include "flipper.h"
-#include <applications.h>
 #include <furi.h>
 #include <version/version.h>
 #include <furi_hal_version.h>
@@ -29,24 +28,16 @@ static void flipper_print_version(const char* target, const Version* version) {
     }
 }
 
+FURI_WEAK void flipper_init_services(void) {
+    FURI_LOG_W(TAG, "flipper_init_services not implemented");
+}
+
 void flipper_init(void) {
     flipper_print_version("Firmware", furi_hal_version_get_firmware_version());
 
     FURI_LOG_I(TAG, "Boot mode %d", furi_hal_rtc_get_boot_mode());
-    FURI_LOG_I(TAG, "Starting %d services", FLIPPER_SERVICES_COUNT);
 
-    for(size_t i = 0; i < FLIPPER_SERVICES_COUNT; i++) {
-        FURI_LOG_D(TAG, "Starting service %s", FLIPPER_SERVICES[i].name);
-
-        FuriThread* thread = furi_thread_alloc_service(
-            FLIPPER_SERVICES[i].name,
-            FLIPPER_SERVICES[i].stack_size,
-            FLIPPER_SERVICES[i].app,
-            NULL);
-        furi_thread_set_appid(thread, FLIPPER_SERVICES[i].appid);
-
-        furi_thread_start(thread);
-    }
+    flipper_init_services();
 
     FURI_LOG_I(TAG, "Startup complete");
 }

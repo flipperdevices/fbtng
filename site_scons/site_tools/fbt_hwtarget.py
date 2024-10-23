@@ -31,7 +31,6 @@ class HardwareTargetLoader:
         self.fw_modules = []
         self.variables_sconscript = None
         self.target_sconscript = None
-        self.apps_c_template = None
         self.dist_modules = []
         self.sources = []
         self.extra_target_meta = {}
@@ -168,7 +167,6 @@ class HardwareTargetLoader:
             ("rtos_flavor", False),
             ("variables_sconscript", True),
             ("target_sconscript", True),
-            ("apps_c_template", True),
         )
 
         for attr_name, is_target_file_node in file_attrs:

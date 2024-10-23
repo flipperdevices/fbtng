@@ -13,7 +13,7 @@ def format_templite(target, source, env):
     target_path = target[0].abspath
 
     if "SUBST_DICT" not in env:
-        subs = {}  # no substitutions
+        subst_dict = {}  # no substitutions
         warn(
             WarningOnByDefault,
             "No substitutions provided for template file %s" % source_path,
@@ -36,6 +36,7 @@ def generate(env):
                     format_templite,
                     "${TEMPLITECOMSTR}",
                 ),
+                src_suffix=".tmpl",
             ),
         }
     )

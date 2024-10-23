@@ -1,0 +1,77 @@
+#include "applications.h"
+#include <assets_icons.h>
+
+{%
+from fbt.appmanifest import FlipperApplication, FlipperAppType
+
+APP_TYPE_MAP = {
+    FlipperAppType.SERVICE: ("FlipperInternalApplication", "FLIPPER_SERVICES"),
+    FlipperAppType.SYSTEM: ("FlipperInternalApplication", "FLIPPER_SYSTEM_APPS"),
+    FlipperAppType.APP: ("FlipperInternalApplication", "FLIPPER_APPS"),
+    FlipperAppType.DEBUG: ("FlipperInternalApplication", "FLIPPER_DEBUG_APPS"),
+    FlipperAppType.SETTINGS: (
+        "FlipperInternalApplication",
+        "FLIPPER_SETTINGS_APPS",
+    ),
+    FlipperAppType.STARTUP: (
+        "FlipperInternalOnStartHook",
+        "FLIPPER_ON_SYSTEM_START",
+    ),
+}
+%}
+
+const char* FLIPPER_AUTORUN_APP_NAME = "{{ autorun_app_name }}";
+
+{% for apptype in APP_TYPE_MAP: %}
+    {% for app in buildset.get_apps_of_type(apptype): %}
+        {% if app.apptype == FlipperAppType.STARTUP: %}
+extern void {{ app.entry_point }}(void);
+        {% :else: %}
+extern int32_t {{ app.entry_point }}(void* p);
+        {% :endif %}
+    {% :endfor %}
+    {% entry_type, entry_block = APP_TYPE_MAP[apptype] %}
+const {{ entry_type }} {{ entry_block }}[] = {
+    {% for app in buildset.get_apps_of_type(apptype): %}
+        {% if app.apptype == FlipperAppType.STARTUP: %}
+    {{ app.entry_point }},
+        {% :else: %}
+{% include("app_block.tmpl") %},
+        {% :endif %}
+    {% :endfor %}
+};
+
+const size_t {{ entry_block }}_COUNT = COUNT_OF({{ entry_block }});
+{% :endfor %}
+
+{% archive_app = buildset.get_apps_of_type(FlipperAppType.ARCHIVE) %}
+{% if archive_app: %}
+{%     app = archive_app[0] %}
+extern int32_t {{ app.entry_point }}(void* p);
+const FlipperInternalApplication FLIPPER_ARCHIVE =
+{% include("app_block.tmpl") %};
+{% :endif %}
+
+
+{% external_apps = buildset.get_apps_of_type(FlipperAppType.MENUEXTERNAL) %}
+const FlipperExternalApplication FLIPPER_EXTERNAL_APPS[] = {
+{% for app in external_apps: %}
+{% 
+    app_path = "/ext/apps"
+    if app.fap_category:
+        app_path += f"/{app.fap_category}"
+    app_path += f"/{app.appid}.fap"
+%}
+    {
+        .name = "{{ app.name }}",
+        .icon = 
+        {% if app.icon: %}
+        &{{ app.icon }},
+        {% :else: %}
+        NULL,
+        {% :endif %}
+        .path = "{{ app_path }}",
+    },
+{% :endfor %}
+};
+const size_t FLIPPER_EXTERNAL_APPS_COUNT = COUNT_OF(FLIPPER_EXTERNAL_APPS);

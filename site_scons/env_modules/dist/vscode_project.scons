@@ -20,7 +20,8 @@ probes = list(filter(lambda x: isinstance(x, OpenOCDInterface), INTERFACES.value
 
 template_substs = {
     "FBT_PLATFORM_EXECUTABLE_EXT": ".exe" if os.name == "nt" else "",
-    "TARGET_HW": firmware_env.subst("${TARGET_HW}"),
+    "f_target": firmware_env.subst("${F_TARGET_HW}"),
+    "target": firmware_env.subst("${TARGET_HW}"),
     "FWENV": firmware_env,
     "folders": ["..", *default_fs.Top.repositories],
     "probes": probes,
