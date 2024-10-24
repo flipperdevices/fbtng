@@ -22,12 +22,11 @@ _rtos_sources = {
     ],
 }
 
-env.Append(
+env.AppendUnique(
     CPPPATH=[
-        "#/lib/drivers",
-        "#/lib/FreeRTOS-Kernel/include",
+        Dir("FreeRTOS-Kernel/include").srcnode(),
         *_rtos_dirs[rtos_flavor],
-        "#/lib/FreeRTOS-glue",
+        Dir("FreeRTOS-glue").srcnode(),
     ],
     CCFLAGS=[
         # "-Wno-unused-parameter",

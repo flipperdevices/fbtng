@@ -5,7 +5,7 @@ env.Append(
         Dir("."),
     ],
     CPPPATH=[
-        "#/lib/bit_lib",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("bit_lib.h"),
