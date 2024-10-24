@@ -1,0 +1,183 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "[Debug] [{{ f_target }}] Make",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} DEBUG=1 LIB_DEBUG=1"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] CDB",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} DEBUG=1 LIB_DEBUG=1 firmware_cdb"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] List",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} DEBUG=1 LIB_DEBUG=1 firmware_list"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Flash",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} FORCE=1 DEBUG=1 LIB_DEBUG=1 flash"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Build firmware",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] CDB",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 firmware_cdb"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] List",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 firmware_list"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Flash",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} updater_package"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Build updater",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} updater_all COMPACT=1 DEBUG=0"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Build updater",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} updater_all"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Flash (USB, w/o resources)",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 FORCE=1 flash_usb"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Flash (USB, w/o resources)",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} FORCE=1 flash_usb"
+        },
+        {
+            "label": "[Debug:unit_tests] [{{ f_target }}] Flash (USB)",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} FIRMWARE_APP_SET=unit_tests FORCE=1 flash_usb_full"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Flash (USB, with resources)",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 FORCE=1 flash_usb_full"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Flash (USB, with resources)",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} FORCE=1 flash_usb_full"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Create PVS-Studio report",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} firmware_pvs"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Build FAPs",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 fap_dist"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Build FAPs",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} fap_dist"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Build App",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 build APPSRC=${relativeFileDirname}"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Build App",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} build APPSRC=${relativeFileDirname}"
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Launch App on Flipper",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 launch APPSRC=${relativeFileDirname}"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Launch App on Flipper",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} launch APPSRC=${relativeFileDirname}"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Launch App on Flipper with Serial Console",
+            "dependsOrder": "sequence",
+            "group": "build",
+            "dependsOn": [
+                "[Debug] Launch App on Flipper",
+                "Serial Console"
+            ]
+        },
+        {
+            "label": "[Release] [{{ f_target }}] Build and upload all FAPs to Flipper over USB",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} COMPACT=1 DEBUG=0 fap_deploy"
+        },
+        {
+            "label": "[Debug] [{{ f_target }}] Build and upload all FAPs to Flipper over USB",
+            "group": "build",
+            "type": "shell",
+            "command": "./fbt TARGET_HW={{ target }} fap_deploy"
+        },
+        {
+            // Press Ctrl+] to quit
+            "label": "Serial Console",
+            "type": "shell",
+            "command": "./fbt cli",
+            "group": "none",
+            "isBackground": true,
+            "options": {
+                "env": {
+                    "FBT_NO_SYNC": "0"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "revealProblems": "never",
+                "showReuseMessage": false,
+                "panel": "dedicated",
+                "focus": true,
+                "echo": true,
+                "close": true,
+                "group": "Logger"
+            }
+        }
+    ]
+}

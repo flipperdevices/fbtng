@@ -8,6 +8,10 @@ Import("env")
 # Set up app configuration
 fwenv = env
 
+fwenv.AppendUnique(
+    CPPPATH=[Dir(".").srcnode()],
+)
+
 
 fw_build_configuration = env["FW_BUILD_META"]["type"]
 
@@ -23,6 +27,7 @@ if fw_build_configuration == "firmware":
         APPS=fwenv["FIRMWARE_APPS"].get(fwenv.subst("$FIRMWARE_APP_SET"))
     )
 elif fw_build_configuration == "updater":
+    # Inject updater service into the build
     fwenv.AppendUnique(APPS=["updater"])
 else:
     raise ValueError(f"Unknown firmware type: {fw_build_configuration}")
@@ -45,7 +50,10 @@ fwenv.AppendUnique(
 )
 
 
-libenv = env.Clone(FW_LIB_NAME="applications")
+libenv = env.Clone(
+    FW_LIB_NAME="applications",
+    tools=["fbt_templite"],
+)
 libenv.ApplyLibFlags()
 
 # This will be the variant dir for the library
@@ -55,10 +63,15 @@ libenv.VariantDir(apps_build_dir, "#", duplicate=0)
 
 # Build applications.c for selected services & apps
 # Depends on virtual value-only node, so it only gets rebuilt when set of apps changes
-apps_c = libenv.ApplicationsC(
+apps_c = libenv.TempliteFile(
     "applications.c",
-    [Value(fwenv["APPS"])],
+    "template/applications.c.tmpl",
+    SUBST_DICT={
+        "autorun_app_name": fwenv.subst("$LOADER_AUTOSTART"),
+        "buildset": fwenv["APPBUILD"],
+    },
 )
+Depends(apps_c, [Value(fwenv["APPS"])])
 
 # Adding dependency on manifest files so apps.c is rebuilt when any manifest is changed
 for app_dir, _ in env["APPDIRS"]:
@@ -68,7 +81,7 @@ for app_dir, _ in env["APPDIRS"]:
     )
 
 
-sources = list(apps_c)
+sources = [apps_c, "svc_startup.c"]
 
 # Gather sources only from app folders in current configuration
 sources.extend(

@@ -1,10 +1,9 @@
 {
-    "folders":
-    [
-        {
-            "path": ".",
-        }
-    ],
+    "folders":[
+{% for folder in folders: %}        {
+            "path": "{{ folder }}"
+        },
+{% :endfor %}	],
     "settings": {
         "LSP": {
             "clangd": {

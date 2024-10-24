@@ -1,19 +1,29 @@
 Import("FW_ENV", "DIST_ENV")
 distenv, firmware_env = DIST_ENV, FW_ENV
 
-debug_env = distenv.Clone(tools=["fbt_debugopts"])
+debug_env = distenv.Clone(
+    tools=["fbt_debugopts"],
+    HW_CONFIG_FILE=firmware_env["HW_CONFIG_FILE"],
+)
 
 __base_debug_opts = [
     "--root",
     "${FBT_DEBUG_DIR}",
     "--serial",
     "${DEBUG_INTERFACE_SERIAL}",
-    "-t",
-    firmware_env["HW_PLATFORM"],
+    "--platform",
+    "${HW_CONFIG_FILE}",
     "--init",
-    "--with-svd",
-    firmware_env["HW_SVD_FILE"],
 ]
+
+_target_debug_tags = FW_ENV["TARGET_CFG"].extra_target_meta.get("debug_tags", ())
+
+if "svd" in _target_debug_tags:
+    __base_debug_opts.append("--with-svd")
+
+if "fwversion" in _target_debug_tags:
+    __base_debug_opts.append("--with-fwversion")
+
 
 # Debugging firmware
 firmware_debug = debug_env.PhonyTarget(
@@ -24,16 +34,20 @@ firmware_debug = debug_env.PhonyTarget(
             *__base_debug_opts,
             "${SOURCE}",
             "--compare",
-            # "--with-firmware",
-            "--with-rtos",
-            ## Uncomment to enable apps debugging
-            # "--with-apps",
-            # firmware_env["FBT_FAP_DEBUG_ELF_ROOT"],
+            "--with-rtos" if "rtos" in _target_debug_tags else None,
+            *(
+                ["--with-apps", firmware_env["FBT_FAP_DEBUG_ELF_ROOT"]]
+                if "apps" in _target_debug_tags
+                else ()
+            ),
         ],
     ],
     source=firmware_env["FW_ELF"],
 )
-# debug_env.Depends(firmware_debug, firmware_flash) # FIXME: firmware_flash is not defined
+
+if firmware_flash := distenv.get("FW_FLASH"):
+    debug_env.Depends(firmware_debug, firmware_flash)
+
 
 # Debug alien elf
 debug_env.PhonyTarget(
@@ -42,7 +56,6 @@ debug_env.PhonyTarget(
         [
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
-            # "--with-firmware",
         ],
     ],
 )
@@ -55,8 +68,7 @@ debug_env.PhonyTarget(
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
             "${SOURCE}",
-            "--with-rtos",
-            # "--with-firmware",
+            "--with-rtos" if "rtos" in _target_debug_tags else None,
             "-ex",
             "thread apply all bt",
             "-ex",

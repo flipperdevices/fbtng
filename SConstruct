@@ -15,12 +15,14 @@ EnsurePythonVersion(3, 8)
 
 # This environment is created only for loading options & validating file/dir existence
 fbt_variables = SConscript("site_scons/commandline.scons")
+
 cmd_environment = Environment(variables=fbt_variables)
 
 target_bootstrap_env = cmd_environment.Clone(
-    tools=["fbt_hwtarget"],
+    tools=["fbt_hwtarget", "fbt_repos"],
     TARGETS_ROOT=Dir("#/targets"),
 )
+target_bootstrap_env.InitializeRepositories()
 target_bootstrap_env.ConfigureForTarget(lightweight=True)
 target_bootstrap_env.ConfigureCommandlineVariables(fbt_variables)
 
@@ -51,6 +53,8 @@ coreenv = SConscript(
         "EXTRA_TOOLPATHS": target_bootstrap_env.GetAdditionalToolPaths(),
     },
 )
+# fbt_variables.Save("fbt_options_auto.py", coreenv)
+
 
 # Create a separate "dist" environment and add construction envs to it
 distenv = coreenv.Clone(
