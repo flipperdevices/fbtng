@@ -76,7 +76,6 @@
     "sdk_symbols": "api_symbols.csv",
     "variables_sconscript": "fbt_conf/stm32wb_vars.scons",
     "platform_desc": "../../scripts/debug/platforms/stm32wb55.json",
-    "apps_c_template": "apps_c_template.tmpl",
     "rtos_flavor": "freertos-cm4",
     "lib_modules": [
         "fw_updater_opts",

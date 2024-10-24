@@ -139,7 +139,14 @@ class TempliteCompiler:
 class Templite:
     cache = {}
 
-    def __init__(self, text=None, filename=None, encoding="utf-8", caching=False):
+    def __init__(
+        self,
+        text=None,
+        filename=None,
+        encoding="utf-8",
+        caching=False,
+        debug_output=False,
+    ):
         """Loads a template from string or file."""
         if filename:
             filename = os.path.abspath(filename)
@@ -164,6 +171,11 @@ class Templite:
                 text = fh.read()
         # Compile template to executable
         code = TempliteCompiler(text, self.encoding).compile()
+
+        if debug_output and filename:
+            with open(f"{filename}.py", "wt") as f:
+                f.write(code)
+
         self._code = compile(code, self.file or "<string>", "exec")
         # Cache for future use
         if caching:

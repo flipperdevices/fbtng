@@ -8,7 +8,7 @@
 {% for rtos_enabled in [True, False]: %}
     {% for probe in probes: %}
         {
-            "name": "Attach FW ({{ probe.name }})",
+            "name": "[{{ probe.name }}] Attach {{ f_target }} {{ "(NoRTOS)" if not rtos_enabled else "" }}",
             "cwd": "${workspaceFolder}",
             "executable": "./build/latest/firmware.elf",
             "request": "attach",

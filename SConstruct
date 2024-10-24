@@ -17,13 +17,12 @@ EnsurePythonVersion(3, 8)
 fbt_variables = SConscript("site_scons/commandline.scons")
 
 cmd_environment = Environment(variables=fbt_variables)
-for repo_dir in cmd_environment.get("FBT_EXTRA_REPOS", []):
-    Repository(repo_dir)
 
 target_bootstrap_env = cmd_environment.Clone(
-    tools=["fbt_hwtarget"],
+    tools=["fbt_hwtarget", "fbt_repos"],
     TARGETS_ROOT=Dir("#/targets"),
 )
+target_bootstrap_env.InitializeRepositories()
 target_bootstrap_env.ConfigureForTarget(lightweight=True)
 target_bootstrap_env.ConfigureCommandlineVariables(fbt_variables)
 
