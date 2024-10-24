@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/pulse_reader",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("pulse_reader.h"),

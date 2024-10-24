@@ -5,7 +5,7 @@ env.Append(
         Dir("."),
     ],
     CPPPATH=[
-        "#/lib/ibutton",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("ibutton_key.h"),

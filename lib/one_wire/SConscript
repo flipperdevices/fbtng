@@ -5,7 +5,7 @@ env.Append(
         Dir("."),
     ],
     CPPPATH=[
-        "#/lib/one_wire",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("one_wire_host.h"),

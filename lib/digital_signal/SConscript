@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/digital_signal",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("digital_signal.h"),

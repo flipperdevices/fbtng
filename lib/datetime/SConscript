@@ -5,7 +5,7 @@ env.Append(
         Dir("."),
     ],
     CPPPATH=[
-        "#/lib/datetime",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("datetime.h"),
