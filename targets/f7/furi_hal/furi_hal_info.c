@@ -4,6 +4,7 @@
 #include <furi_hal_bt.h>
 #include <furi_hal_crypto.h>
 #include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 #include <furi_hal_memory.h>
 
 #include <interface/patterns/ble_thread/shci/shci.h>

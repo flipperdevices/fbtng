@@ -46,6 +46,7 @@ static bool flipper_update_init(void) {
 
     furi_hal_clock_init();
     furi_hal_rtc_init();
+    furi_hal_nvm_init();
     furi_hal_interrupt_init();
 
     furi_hal_spi_config_init();
