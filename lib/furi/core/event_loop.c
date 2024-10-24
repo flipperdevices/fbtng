@@ -472,8 +472,22 @@ static void furi_event_loop_item_notify(FuriEventLoopItem* instance) {
 
     FURI_CRITICAL_EXIT();
 
-    xTaskNotifyIndexed(
-        owner->thread_id, FURI_EVENT_LOOP_FLAG_NOTIFY_INDEX, FuriEventLoopFlagEvent, eSetBits);
+    if(FURI_IS_IRQ_MODE()) {
+        BaseType_t yield = pdFALSE;
+
+        (void)xTaskNotifyIndexedFromISR(
+            owner->thread_id,
+            FURI_EVENT_LOOP_FLAG_NOTIFY_INDEX,
+            FuriEventLoopFlagEvent,
+            eSetBits,
+            &yield);
+
+        portYIELD_FROM_ISR(yield);
+
+    } else {
+        (void)xTaskNotifyIndexed(
+            owner->thread_id, FURI_EVENT_LOOP_FLAG_NOTIFY_INDEX, FuriEventLoopFlagEvent, eSetBits);
+    }
 }
 
 static bool furi_event_loop_item_is_waiting(FuriEventLoopItem* instance) {
