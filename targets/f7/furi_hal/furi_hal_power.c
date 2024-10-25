@@ -4,7 +4,7 @@
 #include <furi_hal_vibro.h>
 #include <furi_hal_resources.h>
 #include <furi_hal_serial_control.h>
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 #include <furi_hal_debug.h>
 
 #include <stm32wbxx_ll_rcc.h>

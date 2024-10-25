@@ -12,7 +12,7 @@
 #include <furi_hal_i2c.h>
 #include <furi_hal_region.h>
 #include <furi_hal_resources.h>
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 #include <furi_hal_speaker.h>
 #include <furi_hal_gpio.h>
 #include <furi_hal_light.h>

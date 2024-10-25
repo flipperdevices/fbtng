@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/flipper_format",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("flipper_format.h"),

@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/u8g2",
+        Dir(".").srcnode(),
     ],
     LINT_SOURCES=[
         Dir("."),

@@ -5,7 +5,7 @@ env.Append(
         Dir("."),
     ],
     CPPPATH=[
-        "#/lib/lfrfid",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("lfrfid_worker.h"),
