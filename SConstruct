@@ -13,10 +13,10 @@ DefaultEnvironment(tools=[])
 
 EnsurePythonVersion(3, 8)
 
-# This environment is created only for loading options & validating file/dir existence
 fbt_variables = SConscript("site_scons/commandline.scons")
 
-cmd_environment = Environment(variables=fbt_variables)
+# This environment is created only for loading options & validating file/dir existence
+cmd_environment = Environment(tools=[], variables=fbt_variables)
 
 target_bootstrap_env = cmd_environment.Clone(
     tools=["fbt_hwtarget", "fbt_repos"],

@@ -9,7 +9,8 @@ def initialize_repo_dir(env, repo_dir):
         raise StopError(f"Repository directory does not exist: {repo_dir}")
 
     if not os.environ.get("FBT_NO_SYNC"):
-        if env.Execute(
+        git_env = env.Clone(ENV=os.environ)
+        if git_env.Execute(
             Action(
                 [
                     [
