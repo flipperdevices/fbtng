@@ -1,3 +1,4 @@
+{% from pathlib import Path %}
 {
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
@@ -16,14 +17,14 @@
             "servertype": "openocd",
             "device": "{{ probe.name }}",
     {% if FWENV["HW_PLATFORM"].svd_file: %}
-            "svdFile": "{{ FWENV["HW_PLATFORM"].svd_file }}",
+            "svdFile": "{{ Path(FWENV["HW_PLATFORM"].svd_file).as_posix() }}",
     {% :endif %}
     {% if rtos_enabled: %}
             "rtos": "FreeRTOS",
     {% :endif %}
             "configFiles": [
-                "{{ probe.config_file }}",
-                "{{ FWENV["HW_PLATFORM"].openocd_interface_file }}",
+                "{{ Path(probe.config_file).as_posix() }}",
+                "{{ Path(FWENV["HW_PLATFORM"].openocd_interface_file).as_posix() }}",
             ],
             "openOCDLaunchCommands": [
         {% for cmd in FWENV["HW_PLATFORM"].openocd_init_commands: %}
