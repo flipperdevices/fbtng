@@ -4,9 +4,6 @@ env.Append(
     CPPPATH=[
         Dir(".").srcnode(),
     ],
-    LINT_SOURCES=[
-        Dir("."),
-    ],
     SDK_HEADERS=[
         # Main
         File("nfc.h"),
@@ -56,6 +53,9 @@ env.Append(
         File("helpers/iso13239_crc.h"),
         File("helpers/nfc_data_generator.h"),
         File("helpers/crypto1.h"),
+    ],
+    LINT_SOURCES=[
+        Dir(".").srcnode(),
     ],
 )
 

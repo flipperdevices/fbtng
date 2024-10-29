@@ -1,7 +1,7 @@
 Import("env")
 
-env.Append(
-    LINT_SOURCES=[Dir(".")],
+env.AppendUnique(
+    LINT_SOURCES=[*Dir(".").getRepositories()],
 )
 
 libenv = env.Clone(FW_LIB_NAME="flipper${TARGET_HW}")

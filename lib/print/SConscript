@@ -101,7 +101,7 @@ env.Append(
         File("wrappers.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

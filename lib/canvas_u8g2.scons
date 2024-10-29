@@ -6,7 +6,7 @@ env.Append(
         Dir(LIB_FOLDER).srcnode(),
     ],
     LINT_SOURCES=[
-        Dir(LIB_FOLDER),
+        Dir(LIB_FOLDER).srcnode(),
     ],
 )
 

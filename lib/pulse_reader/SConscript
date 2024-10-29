@@ -8,7 +8,7 @@ env.Append(
         File("pulse_reader.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

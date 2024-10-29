@@ -8,7 +8,7 @@ env.Append(
         File("music_worker.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

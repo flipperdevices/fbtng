@@ -1,14 +1,14 @@
 Import("env")
 
 env.Append(
-    LINT_SOURCES=[
-        Dir("."),
-    ],
     CPPPATH=[
         Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("bit_lib.h"),
+    ],
+    LINT_SOURCES=[
+        Dir(".").srcnode(),
     ],
 )
 
