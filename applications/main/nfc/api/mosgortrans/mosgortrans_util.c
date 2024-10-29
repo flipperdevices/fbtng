@@ -1,4 +1,5 @@
 #include "mosgortrans_util.h"
+#include <furi_hal_nvm.h>
 
 #define TAG "Mosgortrans"
 

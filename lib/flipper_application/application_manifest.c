@@ -46,7 +46,5 @@ bool flipper_application_manifest_is_target_compatible(const FlipperApplicationM
     furi_check(manifest);
 
     const Version* version = furi_hal_version_get_firmware_version();
-    // return version_get_target(version) == manifest->base.hardware_target_id;
-    UNUSED(version);
-    return false; // TODO: version as string in manifest 
+    return version_get_target(version) == manifest->base.hardware_target_id;
 }
