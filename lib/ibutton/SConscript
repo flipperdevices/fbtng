@@ -1,9 +1,6 @@
 Import("env")
 
 env.Append(
-    LINT_SOURCES=[
-        Dir("."),
-    ],
     CPPPATH=[
         Dir(".").srcnode(),
     ],
@@ -11,6 +8,9 @@ env.Append(
         File("ibutton_key.h"),
         File("ibutton_worker.h"),
         File("ibutton_protocols.h"),
+    ],
+    LINT_SOURCES=[
+        Dir(".").srcnode(),
     ],
 )
 

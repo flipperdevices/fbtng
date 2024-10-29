@@ -46,7 +46,7 @@ fwenv.PrepareApplicationsBuild()
 fwenv.AppendUnique(
     # Add preprocessor definitions for current set of apps to global list, available to all modules
     CPPDEFINES=fwenv["APPBUILD"].get_apps_cdefs(),
-    LINT_SOURCES=[Dir("#applications")],  # FIXME
+    LINT_SOURCES=[*Dir("#applications").getRepositories()],  # FIXME
 )
 
 

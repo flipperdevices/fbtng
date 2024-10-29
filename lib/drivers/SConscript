@@ -10,7 +10,7 @@ env.Append(
         File("st25r3916.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

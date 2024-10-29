@@ -5,7 +5,7 @@ env.Append(
         Dir(".").srcnode(),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

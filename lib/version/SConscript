@@ -7,11 +7,11 @@ env.Append(
     CPPPATH=[
         Dir(".").srcnode(),
     ],
-    LINT_SOURCES=[
-        Dir("."),
-    ],
     SDK_HEADERS=[
         File("version.h"),
+    ],
+    LINT_SOURCES=[
+        Dir(".").srcnode(),
     ],
 )
 
