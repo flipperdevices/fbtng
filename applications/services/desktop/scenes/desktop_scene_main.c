@@ -45,8 +45,8 @@ static void
         return;
     }
 
-    FuriHalMemoryHeapTrackMode mode = furi_hal_memory_get_heap_track_mode();
-    if(mode > FuriHalMemoryHeapTrackModeNone) {
+    FuriHalRtcHeapTrackMode mode = furi_hal_rtc_get_heap_track_mode();
+    if(mode > FuriHalRtcHeapTrackModeNone) {
         furi_thread_enable_heap_trace(desktop->scene_thread);
     } else {
         furi_thread_disable_heap_trace(desktop->scene_thread);

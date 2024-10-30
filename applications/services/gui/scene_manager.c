@@ -2,7 +2,6 @@
 #include <furi.h>
 
 SceneManager* scene_manager_alloc(const SceneManagerHandlers* app_scene_handlers, void* context) {
-    furi_check(context);
     furi_check(app_scene_handlers);
 
     SceneManager* scene_manager =

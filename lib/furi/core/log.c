@@ -1,4 +1,7 @@
-#include <furi.h>
+#include "log.h"
+#include "check.h"
+#include "mutex.h"
+#include <furi_hal.h>
 #include <m-list.h>
 
 LIST_DEF(FuriLogHandlersList, FuriLogHandler, M_POD_OPLIST)
@@ -104,23 +107,17 @@ void furi_log_puts(const char* data) {
     furi_log_tx((const uint8_t*)data, strlen(data));
 }
 
-void furi_log_putu32(uint32_t data) {
-    char tmp_str[] = "4294967295";
-    itoa(data, tmp_str, 10);
-    furi_log_puts(tmp_str);
-}
-
-void furi_log_puthex32(uint32_t data) {
-    char tmp_str[] = "0xFFFFFFFF";
-    itoa(data, tmp_str, 16);
-    furi_log_puts(tmp_str);
-}
-
 void furi_log_print_format(FuriLogLevel level, const char* tag, const char* format, ...) {
-    if(level <= furi_log.log_level &&
-       furi_mutex_acquire(furi_log.mutex, FuriWaitForever) == FuriStatusOk) {
-        FuriString* string;
-        string = furi_string_alloc();
+    do {
+        if(level > furi_log.log_level) {
+            break;
+        }
+
+        if(furi_mutex_acquire(furi_log.mutex, furi_kernel_is_running() ? FuriWaitForever : 0) !=
+           FuriStatusOk) {
+            break;
+        }
+        FuriString* string = furi_string_alloc();
 
         const char* color = _FURI_LOG_CLR_RESET;
         const char* log_letter = " ";
@@ -166,7 +163,7 @@ void furi_log_print_format(FuriLogLevel level, const char* tag, const char* form
         furi_log_puts("\r\n");
 
         furi_mutex_release(furi_log.mutex);
-    }
+    } while(0);
 }
 
 void furi_log_print_raw_format(FuriLogLevel level, const char* format, ...) {

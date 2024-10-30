@@ -78,18 +78,6 @@ void furi_log_tx(const uint8_t* data, size_t size);
  */
 void furi_log_puts(const char* data);
 
-/** Transmit data as uint32 through log IO callbacks
- *
- * @param[in]  data  The data
- */
-void furi_log_putu32(uint32_t data);
-
-/** Transmit data as hex through log IO callbacks
- *
- * @param[in]  data  The data
- */
-void furi_log_puthex32(uint32_t data);
-
 /** Print log record
  * 
  * @param level 

@@ -7,13 +7,6 @@ App(
         "system_settings",
         "about",
     ],
-    targets=["!f50"],
+    targets=["f7", "f18"],
 )
 
-App(
-    appid="settings_apps",
-    name="Basic settings apps bundle",
-    apptype=FlipperAppType.METAPACKAGE,
-    provides=[],
-    targets=["f50"],
-)

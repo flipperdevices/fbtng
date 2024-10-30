@@ -8,7 +8,7 @@
 #include "gui.h"
 
 #include <furi.h>
-// #include <furi_hal_rtc.h>
+// #include <furi_hal_rtc.h> // FIXME
 #include <m-array.h>
 #include <stdio.h>
 

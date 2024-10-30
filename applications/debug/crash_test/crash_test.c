@@ -14,8 +14,8 @@ typedef struct {
 } CrashTest;
 
 typedef enum {
-    DesktopViewSubmenu,
-} DesktopView;
+    CrashTestViewSubmenu,
+} CrashTestView;
 
 typedef enum {
     CrashTestSubmenuReadNull,
@@ -98,7 +98,7 @@ CrashTest* crash_test_alloc(void) {
     instance->submenu = submenu_alloc();
     view = submenu_get_view(instance->submenu);
     view_set_previous_callback(view, crash_test_exit_callback);
-    view_dispatcher_add_view(instance->view_dispatcher, DesktopViewSubmenu, view);
+    view_dispatcher_add_view(instance->view_dispatcher, CrashTestViewSubmenu, view);
     submenu_add_item(
         instance->submenu,
         "Read NULL",
@@ -142,7 +142,7 @@ CrashTest* crash_test_alloc(void) {
 }
 
 void crash_test_free(CrashTest* instance) {
-    view_dispatcher_remove_view(instance->view_dispatcher, DesktopViewSubmenu);
+    view_dispatcher_remove_view(instance->view_dispatcher, CrashTestViewSubmenu);
     submenu_free(instance->submenu);
 
     view_dispatcher_free(instance->view_dispatcher);
@@ -152,7 +152,7 @@ void crash_test_free(CrashTest* instance) {
 }
 
 int32_t crash_test_run(CrashTest* instance) {
-    view_dispatcher_switch_to_view(instance->view_dispatcher, DesktopViewSubmenu);
+    view_dispatcher_switch_to_view(instance->view_dispatcher, CrashTestViewSubmenu);
     view_dispatcher_run(instance->view_dispatcher);
     return 0;
 }
