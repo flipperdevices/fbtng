@@ -14,7 +14,7 @@ distenv.PhonyTarget(
             "${ARGS}",
         ]
     ],
-    LINT_SOURCES=[n.srcnode() for n in firmware_env["LINT_SOURCES"]],
+    LINT_SOURCES=[n for n in firmware_env["LINT_SOURCES"]],
 )
 
 distenv.PhonyTarget(

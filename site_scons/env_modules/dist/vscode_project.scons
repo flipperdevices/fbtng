@@ -1,5 +1,6 @@
 import os
 from SCons.Node.FS import default_fs
+from pathlib import Path
 from fwinterface import OpenOCDInterface, INTERFACES
 
 Import("FW_ENV", "DIST_ENV")
@@ -18,27 +19,35 @@ vscode_dist = vscode_distenv.Install(
 
 probes = list(filter(lambda x: isinstance(x, OpenOCDInterface), INTERFACES.values()))
 
+config_dist_dir = vscode_distenv.Dir("#.vscode")
+
 template_substs = {
     "FBT_PLATFORM_EXECUTABLE_EXT": ".exe" if os.name == "nt" else "",
     "f_target": firmware_env.subst("${F_TARGET_HW}"),
     "target": firmware_env.subst("${TARGET_HW}"),
     "FWENV": firmware_env,
-    "folders": ["..", *default_fs.Top.repositories],
+    "folders": list(
+        map(
+            lambda x: Path(config_dist_dir.rel_path(x)).as_posix(),
+            [Dir("#"), *default_fs.Top.repositories],
+        )
+    ),
     "probes": probes,
 }
-
-# print("template_substs", template_substs)
 
 for template_file in vscode_distenv.Glob("#.vscode/template/*.tmpl"):
     vscode_dist.append(
         vscode_distenv.TempliteFile(
-            vscode_distenv.Dir("#.vscode").File(
-                template_file.name.replace(".tmpl", "")
-            ),
+            config_dist_dir.File(template_file.name.replace(".tmpl", "")),
             template_file,
             SUBST_DICT=template_substs,
         )
     )
+
+
+vscode_distenv.Depends(
+    vscode_dist, Value((template_substs["f_target"], template_substs["folders"]))
+)
 vscode_distenv.Precious(vscode_dist)
 vscode_distenv.NoClean(vscode_dist)
 vscode_distenv.Alias(
