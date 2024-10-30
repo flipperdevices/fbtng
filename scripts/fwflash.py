@@ -27,6 +27,7 @@ class FlashExtension(BaseDebugExtension):
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
 
+        yield GdbParam(f"set confirm off")
         yield GdbParam(f"load")
         if args.verify:
             yield GdbParam(f"compare-sections")
