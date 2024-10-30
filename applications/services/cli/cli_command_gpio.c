@@ -2,6 +2,7 @@
 
 #include <furi.h>
 #include <furi_hal.h>
+#include <furi_hal_nvm.h>
 #include <toolbox/args.h>
 
 void cli_command_gpio_print_usage(void) {
