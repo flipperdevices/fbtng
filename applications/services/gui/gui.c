@@ -1,9 +1,8 @@
 #include "gui_i.h"
 #include <assets_icons.h>
+#include <furi_hal_nvm.h>
 
 #define TAG "GuiSrv"
-
-#define furi_hal_rtc_is_flag_set(flag) false
 
 ViewPort* gui_view_port_find_enabled(ViewPortArray_t array) {
     // Iterating backward

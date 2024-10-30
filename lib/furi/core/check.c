@@ -136,6 +136,13 @@ static void __furi_print_name(bool isr) {
 
 FURI_NORETURN void __furi_crash_implementation(void) {
     __disable_irq();
+
+    __BKPT();
+
+    // FIXME: furi_crash() kills the debugger
+    for(;;)
+        ;
+
     GET_MESSAGE_AND_STORE_REGISTERS();
 
     bool isr = FURI_IS_IRQ_MODE();

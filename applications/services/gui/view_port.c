@@ -8,8 +8,6 @@
 
 #define TAG "ViewPort"
 
-#define furi_hal_rtc_is_flag_set(flag) false
-
 _Static_assert(ViewPortOrientationMAX == 4, "Incorrect ViewPortOrientation count");
 _Static_assert(
     (ViewPortOrientationHorizontal == 0 && ViewPortOrientationHorizontalFlip == 1 &&

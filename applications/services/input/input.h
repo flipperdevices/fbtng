@@ -4,6 +4,7 @@
  */
 
 #pragma once
+
 #include <stdint.h>
 #include <furi_hal_resources.h>
 
