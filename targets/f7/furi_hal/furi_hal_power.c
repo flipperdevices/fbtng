@@ -5,6 +5,7 @@
 #include <furi_hal_resources.h>
 #include <furi_hal_serial_control.h>
 #include <furi_hal_nvm.h>
+#include <furi_hal_rtc.h>
 #include <furi_hal_debug.h>
 
 #include <stm32wbxx_ll_rcc.h>
@@ -326,6 +327,7 @@ void furi_hal_power_shutdown(void) {
 
 void furi_hal_power_off(void) {
     // Crutch: shutting down with ext 3V3 off is causing LSE to stop
+    furi_hal_rtc_prepare_for_shutdown();
     furi_hal_power_enable_external_3_3v();
     furi_hal_vibro_on(true);
     furi_delay_us(50000);
