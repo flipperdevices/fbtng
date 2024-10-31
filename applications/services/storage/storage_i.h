@@ -24,7 +24,7 @@ struct Storage {
     FuriMessageQueue* message_queue;
     StorageData storage[STORAGE_COUNT];
     FuriPubSub* pubsub;
-#ifdef STM32U5G9xx // FIXME
+#if(defined STM32U5G9xx) || (defined STM32U595xx) // FIXME:
     bool sd_alive;
 #else
     StorageSDGui sd_gui;
