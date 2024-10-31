@@ -1720,7 +1720,9 @@ Function,+,furi_log_level_from_string,_Bool,"const char*, FuriLogLevel*"
 Function,+,furi_log_level_to_string,_Bool,"FuriLogLevel, const char**"
 Function,+,furi_log_print_format,void,"FuriLogLevel, const char*, const char*, ..."
 Function,+,furi_log_print_raw_format,void,"FuriLogLevel, const char*, ..."
+Function,+,furi_log_puthex32,void,uint32_t
 Function,+,furi_log_puts,void,const char*
+Function,+,furi_log_putu32,void,uint32_t
 Function,+,furi_log_remove_handler,_Bool,FuriLogHandler
 Function,+,furi_log_set_level,void,FuriLogLevel
 Function,+,furi_log_tx,void,"const uint8_t*, size_t"
