@@ -43,13 +43,13 @@ static void furi_hal_bt_log_c2_state(void* context, const FuriCrashLogInterface*
 
     const BleGlueHardfaultInfo* fault_info = ble_glue_get_hardfault_info();
     if(fault_info == NULL) {
-        furi_log_puts("\r\n\tcore2: not faulted");
+        log_interface->puts("\r\n\tcore2: not faulted");
     } else {
-        furi_log_puts("\r\n\tcore2: hardfaulted.\r\n\tPC: ");
+        log_interface->puts("\r\n\tcore2: hardfaulted.\r\n\tPC: ");
         log_interface->print_uint32_as_hex(fault_info->source_pc);
-        furi_log_puts("\r\n\tLR: ");
+        log_interface->puts("\r\n\tLR: ");
         log_interface->print_uint32_as_hex(fault_info->source_lr);
-        furi_log_puts("\r\n\tSP: ");
+        log_interface->puts("\r\n\tSP: ");
         log_interface->print_uint32_as_hex(fault_info->source_sp);
     }
 }

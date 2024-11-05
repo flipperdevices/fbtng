@@ -2,13 +2,12 @@
 
 #include <furi.h>
 #include <furi_hal.h>
+#include <furi_hal_nvm.h>
 
 #include "gui.h"
 #include "gui_i.h"
 
 #define TAG "ViewPort"
-
-#define furi_hal_rtc_is_flag_set(flag) false
 
 _Static_assert(ViewPortOrientationMAX == 4, "Incorrect ViewPortOrientation count");
 _Static_assert(

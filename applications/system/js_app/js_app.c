@@ -97,7 +97,7 @@ static void js_app_free(JsApp* app) {
 int32_t js_app(void* arg) {
     JsApp* app = js_app_alloc();
 
-    FuriString* script_path = furi_string_alloc_set(APP_ASSETS_PATH());
+    FuriString* script_path = furi_string_alloc_set(EXT_PATH("apps/Scripts"));
     do {
         if(arg != NULL && strlen(arg) > 0) {
             furi_string_set(script_path, (const char*)arg);
@@ -114,7 +114,7 @@ int32_t js_app(void* arg) {
         FuriString* start_text =
             furi_string_alloc_printf("Running %s", furi_string_get_cstr(name));
         console_view_print(app->console_view, furi_string_get_cstr(start_text));
-        console_view_print(app->console_view, "------------");
+        console_view_print(app->console_view, "-------------");
         furi_string_free(name);
         furi_string_free(start_text);
 

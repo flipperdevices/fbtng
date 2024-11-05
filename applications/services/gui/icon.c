@@ -1,21 +1,16 @@
 #include "icon.h"
 #include "icon_i.h" // IWYU pragma: keep
 #include <furi.h>
-#include <furi.h>
 
 #include <furi.h>
 
 uint16_t icon_get_width(const Icon* instance) {
     furi_check(instance);
 
-    furi_check(instance);
-
     return instance->width;
 }
 
 uint16_t icon_get_height(const Icon* instance) {
-    furi_check(instance);
-
     furi_check(instance);
 
     return instance->height;
