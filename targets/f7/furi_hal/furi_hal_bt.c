@@ -29,28 +29,24 @@
 typedef struct {
     FuriMutex* core2_mtx;
     FuriHalBtStack stack;
-    bool crash_handler_set;
 } FuriHalBt;
 
 static FuriHalBt furi_hal_bt = {
     .core2_mtx = NULL,
     .stack = FuriHalBtStackUnknown,
-    .crash_handler_set = false,
 };
 
-static void furi_hal_bt_log_c2_state(void* context, const FuriCrashLogInterface* log_interface) {
-    UNUSED(context);
-
+void furi_hal_bt_log_c2_state() {
     const BleGlueHardfaultInfo* fault_info = ble_glue_get_hardfault_info();
     if(fault_info == NULL) {
-        log_interface->puts("\r\n\tcore2: not faulted");
+        furi_log_puts("\r\n\tcore2: not faulted");
     } else {
-        log_interface->puts("\r\n\tcore2: hardfaulted.\r\n\tPC: ");
-        log_interface->print_uint32_as_hex(fault_info->source_pc);
-        log_interface->puts("\r\n\tLR: ");
-        log_interface->print_uint32_as_hex(fault_info->source_lr);
-        log_interface->puts("\r\n\tSP: ");
-        log_interface->print_uint32_as_hex(fault_info->source_sp);
+        furi_log_puts("\r\n\tcore2: hardfaulted.\r\n\tPC: ");
+        furi_log_puthex32(fault_info->source_pc);
+        furi_log_puts("\r\n\tLR: ");
+        furi_log_puthex32(fault_info->source_lr);
+        furi_log_puts("\r\n\tSP: ");
+        furi_log_puthex32(fault_info->source_sp);
     }
 }
 
@@ -65,11 +61,6 @@ void furi_hal_bt_init(void) {
     if(!furi_hal_bt.core2_mtx) {
         furi_hal_bt.core2_mtx = furi_mutex_alloc(FuriMutexTypeNormal);
         furi_check(furi_hal_bt.core2_mtx);
-    }
-
-    if(!furi_hal_bt.crash_handler_set) {
-        furi_crash_handler_add(furi_hal_bt_log_c2_state, NULL);
-        furi_hal_bt.crash_handler_set = true;
     }
 
     // Explicitly tell that we are in charge of CLK48 domain
