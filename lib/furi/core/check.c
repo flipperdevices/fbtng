@@ -80,6 +80,7 @@ static void __furi_print_heap_info(void) {
     furi_log_putu32(xPortGetFreeHeapSize());
     furi_log_puts("\r\n\t heap watermark: ");
     furi_log_putu32(xPortGetMinimumEverFreeHeapSize());
+    furi_log_puts("\r\n\n");
 }
 
 static void __furi_print_name(bool isr) {
