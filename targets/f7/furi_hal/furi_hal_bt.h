@@ -292,6 +292,12 @@ bool furi_hal_bt_extra_beacon_is_active(void);
  */
 const GapExtraBeaconConfig* furi_hal_bt_extra_beacon_get_config(void);
 
+/** Dumps core2 state to log
+ *
+ * @note       For debugging purposes and crash analysis
+ */
+void furi_hal_bt_log_c2_state(void);
+
 #ifdef __cplusplus
 }
 #endif

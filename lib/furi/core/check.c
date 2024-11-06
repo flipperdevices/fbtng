@@ -13,13 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static const char* __furi_check_message = NULL;
-static uint32_t __furi_check_registers[13] = {0};
-
-static struct {
-    FuriCrashCallback callback;
-    void* context;
-} registered_crash_handler = {0};
+static const char* volatile __furi_check_message = NULL;
+static volatile uint32_t __furi_check_registers[13] = {0};
 
 /** Load r12 value to __furi_check_message and store registers to __furi_check_registers */
 #define GET_MESSAGE_AND_STORE_REGISTERS()               \
@@ -60,55 +55,31 @@ static struct {
 
 extern size_t xPortGetTotalHeapSize(void);
 
-static void __furi_put_uint32_as_text(uint32_t data) {
-    char tmp_str[] = "-2147483648";
-    itoa(data, tmp_str, 10);
-    furi_log_puts(tmp_str);
-}
-
-static void __furi_put_uint32_as_hex(uint32_t data) {
-    char tmp_str[] = "0xFFFFFFFF";
-    itoa(data, tmp_str, 16);
-    furi_log_puts(tmp_str);
-}
-
-static const FuriCrashLogInterface crash_log_interface = {
-    .puts = furi_log_puts,
-    .print_uint32_as_hex = __furi_put_uint32_as_hex,
-    .print_uint32_as_dec = __furi_put_uint32_as_text,
-};
-
-void furi_crash_handler_add(FuriCrashCallback callback, void* context) {
-    furi_check(registered_crash_handler.callback == NULL);
-    registered_crash_handler.callback = callback;
-    registered_crash_handler.context = context;
-}
-
 static void __furi_print_register_info(void) {
     // Print registers
     for(uint8_t i = 0; i < 12; i++) {
         furi_log_puts("\r\n\tr");
-        __furi_put_uint32_as_text(i);
+        furi_log_putu32(i);
         furi_log_puts(" : ");
-        __furi_put_uint32_as_hex(__furi_check_registers[i]);
+        furi_log_puthex32(__furi_check_registers[i]);
     }
 
     furi_log_puts("\r\n\tlr : ");
-    __furi_put_uint32_as_hex(__furi_check_registers[12]);
+    furi_log_puthex32(__furi_check_registers[12]);
 }
 
 static void __furi_print_stack_info(void) {
     furi_log_puts("\r\n\tstack watermark: ");
-    __furi_put_uint32_as_text(uxTaskGetStackHighWaterMark(NULL) * 4);
+    furi_log_putu32(uxTaskGetStackHighWaterMark(NULL) * 4);
 }
 
 static void __furi_print_heap_info(void) {
     furi_log_puts("\r\n\t     heap total: ");
-    __furi_put_uint32_as_text(xPortGetTotalHeapSize());
+    furi_log_putu32(xPortGetTotalHeapSize());
     furi_log_puts("\r\n\t      heap free: ");
-    __furi_put_uint32_as_text(xPortGetFreeHeapSize());
+    furi_log_putu32(xPortGetFreeHeapSize());
     furi_log_puts("\r\n\t heap watermark: ");
-    __furi_put_uint32_as_text(xPortGetMinimumEverFreeHeapSize());
+    furi_log_putu32(xPortGetMinimumEverFreeHeapSize());
 }
 
 static void __furi_print_name(bool isr) {
@@ -119,7 +90,7 @@ static void __furi_print_name(bool isr) {
         if(name) {
             furi_log_puts(name);
         } else {
-            __furi_put_uint32_as_text(__get_IPSR());
+            furi_log_putu32(__get_IPSR());
         }
         furi_log_puts("] ");
     } else {
@@ -132,6 +103,10 @@ static void __furi_print_name(bool isr) {
             furi_log_puts("] ");
         }
     }
+}
+
+FURI_WEAK void furi_crash_handler() {
+    furi_log_puts("No additional crash handler defined.\r\n");
 }
 
 FURI_NORETURN void __furi_crash_implementation(void) {
@@ -165,9 +140,7 @@ FURI_NORETURN void __furi_crash_implementation(void) {
     }
     __furi_print_heap_info();
 
-    if(registered_crash_handler.callback) {
-        registered_crash_handler.callback(registered_crash_handler.context, &crash_log_interface);
-    }
+    furi_crash_handler();
 
     // Check if debug enabled by DAP
     // https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/Debug-register-support-in-the-SCS/Debug-Halting-Control-and-Status-Register--DHCSR?lang=en
@@ -214,7 +187,7 @@ FURI_NORETURN void __furi_halt_implementation(void) {
     // Check if debug enabled by DAP
     // https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/Debug-register-support-in-the-SCS/Debug-Halting-Control-and-Status-Register--DHCSR?lang=en
     bool debug = CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk;
-    RESTORE_REGISTERS_AND_HALT_MCU(debug);
+    furi_log_putu32(debug);
 
     __builtin_unreachable();
 }
