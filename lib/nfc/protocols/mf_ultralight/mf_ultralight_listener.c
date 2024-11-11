@@ -1,7 +1,7 @@
 #include "mf_ultralight_listener_i.h"
 #include "mf_ultralight_listener_defs.h"
 
-#include <lib/nfc/protocols/iso14443_3a/iso14443_3a_listener_i.h>
+#include <nfc/protocols/iso14443_3a/iso14443_3a_listener_i.h>
 
 #include <furi.h>
 #include <furi_hal.h>

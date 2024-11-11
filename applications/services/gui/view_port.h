@@ -6,7 +6,7 @@
 #pragma once
 
 #include <input/input.h>
-#include "canvas.h"
+#include <canvas/canvas.h>
 
 #ifdef __cplusplus
 extern "C" {

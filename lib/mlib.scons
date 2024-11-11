@@ -2,11 +2,11 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/mlib",
+        Dir("mlib").rdir(),
     ],
     SDK_HEADERS=[
         *(
-            File(f"#/lib/mlib/m-{name}.h")
+            File(f"mlib/m-{name}.h")
             for name in (
                 "algo",
                 "array",

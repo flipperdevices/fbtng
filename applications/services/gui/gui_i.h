@@ -8,12 +8,13 @@
 #include "gui.h"
 
 #include <furi.h>
-#include <furi_hal_rtc.h>
+// #include <furi_hal_rtc.h> // FIXME
 #include <m-array.h>
 #include <stdio.h>
 
-#include "canvas.h"
-#include "canvas_i.h"
+#include <canvas/canvas.h>
+#include <canvas/canvas_i.h>
+
 #include "view_port.h"
 #include "view_port_i.h"
 

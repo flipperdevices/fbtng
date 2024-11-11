@@ -4,7 +4,7 @@
 #include <toolbox/manchester_decoder.h>
 #include <bit_lib/bit_lib.h>
 #include "lfrfid_protocols.h"
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 
 #define FDX_B_ENCODED_BIT_SIZE       (128)
 #define FDX_B_ENCODED_BYTE_SIZE      (((FDX_B_ENCODED_BIT_SIZE) / 8))

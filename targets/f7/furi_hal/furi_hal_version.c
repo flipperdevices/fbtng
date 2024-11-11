@@ -1,9 +1,10 @@
 #include <furi_hal_version.h>
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 
 #include <furi.h>
 #include <stm32wbxx.h>
 #include <stm32wbxx_ll_rtc.h>
+#include <stm32wbxx_ll_system.h>
 
 #include <stdio.h>
 #include <ble/ble.h>
@@ -99,7 +100,7 @@ static void furi_hal_version_set_name(const char* name) {
             "xFlipper %s",
             furi_hal_version.name);
     } else {
-        snprintf(furi_hal_version.device_name, FURI_HAL_VERSION_DEVICE_NAME_LENGTH, "xFlipper");
+        strlcpy(furi_hal_version.device_name, "xFlipper", FURI_HAL_VERSION_DEVICE_NAME_LENGTH);
     }
 
     furi_hal_version.device_name[0] = AD_TYPE_COMPLETE_LOCAL_NAME;

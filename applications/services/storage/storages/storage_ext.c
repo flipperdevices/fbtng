@@ -422,18 +422,18 @@ static bool storage_ext_file_close(void* ctx, File* file) {
     return file->error_id == FSE_OK;
 }
 
-static uint16_t
-    storage_ext_file_read(void* ctx, File* file, void* buff, uint16_t const bytes_to_read) {
+static uint32_t
+    storage_ext_file_read(void* ctx, File* file, void* buff, uint32_t const bytes_to_read) {
     StorageData* storage = ctx;
     SDFile* file_data = storage_get_storage_file_data(file, storage);
-    uint16_t bytes_read = 0;
+    uint32_t bytes_read = 0;
     file->internal_error_id = f_read(file_data, buff, bytes_to_read, &bytes_read);
     file->error_id = storage_ext_parse_error(file->internal_error_id);
     return bytes_read;
 }
 
-static uint16_t
-    storage_ext_file_write(void* ctx, File* file, const void* buff, uint16_t const bytes_to_write) {
+static uint32_t
+    storage_ext_file_write(void* ctx, File* file, const void* buff, uint32_t const bytes_to_write) {
 #ifdef FURI_RAM_EXEC
     UNUSED(ctx);
     UNUSED(file);
@@ -443,7 +443,7 @@ static uint16_t
 #else
     StorageData* storage = ctx;
     SDFile* file_data = storage_get_storage_file_data(file, storage);
-    uint16_t bytes_written = 0;
+    uint32_t bytes_written = 0;
     file->internal_error_id = f_write(file_data, buff, bytes_to_write, &bytes_written);
     file->error_id = storage_ext_parse_error(file->internal_error_id);
     return bytes_written;

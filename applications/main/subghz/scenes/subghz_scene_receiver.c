@@ -1,7 +1,7 @@
 #include "../subghz_i.h"
 #include "../views/receiver.h"
 #include <dolphin/dolphin.h>
-#include <lib/subghz/protocols/bin_raw.h>
+#include <subghz/protocols/bin_raw.h>
 
 static const NotificationSequence subghs_sequence_rx = {
     &message_green_255,

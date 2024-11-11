@@ -1,6 +1,6 @@
 #include "pin_code.h"
 
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 
 #include <furi.h>
 #include <notification/notification_messages.h>
@@ -58,7 +58,8 @@ static uint32_t desktop_pin_code_pack(const DesktopPinCode* pin_code) {
 }
 
 bool desktop_pin_code_is_set(void) {
-    return furi_hal_rtc_get_pin_value() >> DESKTOP_PIN_CODE_LENGTH_OFFSET;
+    uint8_t length = furi_hal_rtc_get_pin_value() >> DESKTOP_PIN_CODE_LENGTH_OFFSET;
+    return length >= DESKTOP_PIN_CODE_MIN_LEN && length <= DESKTOP_PIN_CODE_MAX_LEN;
 }
 
 void desktop_pin_code_set(const DesktopPinCode* pin_code) {

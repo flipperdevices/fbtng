@@ -1,6 +1,6 @@
 #include <furi.h>
 
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/view.h>
 
 #include "desktop_view_pin_timeout.h"

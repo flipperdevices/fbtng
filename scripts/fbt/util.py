@@ -68,10 +68,6 @@ def link_dir(target_path, source_path, is_windows):
         os.symlink(source_path, target_path)
 
 
-def single_quote(arg_list):
-    return " ".join(f"'{arg}'" if " " in arg else str(arg) for arg in arg_list)
-
-
 def resolve_real_dir_node(node):
     if isinstance(node, SCons.Node.FS.EntryProxy):
         node = node.get()

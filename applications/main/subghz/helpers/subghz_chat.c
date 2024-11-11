@@ -1,5 +1,5 @@
 #include "subghz_chat.h"
-#include <lib/subghz/subghz_tx_rx_worker.h>
+#include <subghz/subghz_tx_rx_worker.h>
 
 #define TAG "SubGhzChat"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lib/nfc/protocols/iso15693_3/iso15693_3_listener.h>
+#include <nfc/protocols/iso15693_3/iso15693_3_listener.h>
 
 #include "slix.h"
 

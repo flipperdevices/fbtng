@@ -18,6 +18,9 @@ typedef enum {
 } CrashTestView;
 
 typedef enum {
+    CrashTestSubmenuReadNull,
+    CrashTestSubmenuWriteNull,
+    CrashTestSubmenuStackOverflow,
     CrashTestSubmenuCheck,
     CrashTestSubmenuCheckMessage,
     CrashTestSubmenuAssert,
@@ -26,11 +29,33 @@ typedef enum {
     CrashTestSubmenuHalt,
 } CrashTestSubmenu;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winfinite-recursion"
+
+static uint32_t stack_overflow(void) {
+    return stack_overflow();
+}
+
+#pragma GCC diagnostic pop
+
 static void crash_test_submenu_callback(void* context, uint32_t index) {
     CrashTest* instance = (CrashTest*)context;
     UNUSED(instance);
 
     switch(index) {
+    case CrashTestSubmenuReadNull:
+        uint8_t* ptr = NULL;
+        uint8_t val = *ptr;
+        FURI_LOG_E(TAG, "Crash test failed: read null pointer, val: %d", val);
+        break;
+    case CrashTestSubmenuWriteNull:
+        uint8_t* ptr2 = NULL;
+        *ptr2 = 123;
+        FURI_LOG_E(TAG, "Crash test failed: write null pointer");
+        break;
+    case CrashTestSubmenuStackOverflow:
+        stack_overflow();
+        break;
     case CrashTestSubmenuCheck:
         furi_check(false);
         break;
@@ -74,6 +99,24 @@ CrashTest* crash_test_alloc(void) {
     view = submenu_get_view(instance->submenu);
     view_set_previous_callback(view, crash_test_exit_callback);
     view_dispatcher_add_view(instance->view_dispatcher, CrashTestViewSubmenu, view);
+    submenu_add_item(
+        instance->submenu,
+        "Read NULL",
+        CrashTestSubmenuReadNull,
+        crash_test_submenu_callback,
+        instance);
+    submenu_add_item(
+        instance->submenu,
+        "Write NULL",
+        CrashTestSubmenuWriteNull,
+        crash_test_submenu_callback,
+        instance);
+    submenu_add_item(
+        instance->submenu,
+        "Stack Overflow",
+        CrashTestSubmenuStackOverflow,
+        crash_test_submenu_callback,
+        instance);
     submenu_add_item(
         instance->submenu, "Check", CrashTestSubmenuCheck, crash_test_submenu_callback, instance);
     submenu_add_item(

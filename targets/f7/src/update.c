@@ -46,6 +46,7 @@ static bool flipper_update_init(void) {
 
     furi_hal_clock_init();
     furi_hal_rtc_init();
+    furi_hal_nvm_init();
     furi_hal_interrupt_init();
 
     furi_hal_spi_config_init();
@@ -79,7 +80,7 @@ static bool flipper_update_load_stage(const FuriString* work_dir, UpdateManifest
 
     void* img = malloc(stat.fsize);
     uint32_t read_total = 0;
-    uint16_t read_current = 0;
+    UINT read_current = 0;
     const uint16_t MAX_READ = 0xFFFF;
 
     uint32_t crc = 0;
@@ -121,7 +122,7 @@ static bool flipper_update_load_stage(const FuriString* work_dir, UpdateManifest
 static bool flipper_update_get_manifest_path(FuriString* out_path) {
     FIL file;
     FILINFO stat;
-    uint16_t size_read = 0;
+    UINT size_read = 0;
     char manifest_name_buf[UPDATE_OPERATION_MAX_MANIFEST_PATH_LEN] = {0};
 
     furi_string_reset(out_path);
@@ -155,7 +156,7 @@ static UpdateManifest* flipper_update_process_manifest(const FuriString* manifes
     const uint16_t MAX_READ = 0xFFFF;
 
     do {
-        uint16_t size_read = 0;
+        UINT size_read = 0;
         if(f_read(&file, manifest_data + bytes_read, MAX_READ, &size_read) != FR_OK) { //-V769
             break;
         }

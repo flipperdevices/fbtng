@@ -2,6 +2,7 @@
 #include <furi_hal_usb_i.h>
 #include <furi_hal_usb.h>
 #include <furi_hal_power.h>
+#include <furi_hal_gpio.h>
 
 #include <stm32wbxx_ll_pwr.h>
 #include <stm32wbxx_ll_rcc.h>

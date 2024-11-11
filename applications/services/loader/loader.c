@@ -94,10 +94,20 @@ static void loader_show_gui_error(
     if(status.value == LoaderStatusErrorUnknownApp &&
        loader_find_external_application_by_name(name) != NULL) {
         // Special case for external apps
-        dialog_message_set_header(message, "Update needed", 64, 3, AlignCenter, AlignTop);
+        const char* header = NULL;
+        const char* text = NULL;
+        Storage* storage = furi_record_open(RECORD_STORAGE);
+        if(storage_sd_status(storage) == FSE_OK) {
+            header = "Update needed";
+            text = "Update firmware\nto run this app";
+        } else {
+            header = "SD card needed";
+            text = "Install SD card\nto run this app";
+        }
+        furi_record_close(RECORD_STORAGE);
+        dialog_message_set_header(message, header, 64, 3, AlignCenter, AlignTop);
         dialog_message_set_icon(message, &I_WarningDolphinFlip_45x42, 83, 22);
-        dialog_message_set_text(
-            message, "Update firmware\nto run this app", 3, 26, AlignLeft, AlignTop);
+        dialog_message_set_text(message, text, 3, 26, AlignLeft, AlignTop);
         dialog_message_show(dialogs, message);
     } else if(status.value == LoaderStatusErrorUnknownApp) {
         loader_dialog_prepare_and_show(dialogs, &err_app_not_found);
@@ -298,12 +308,14 @@ static void loader_applications_closed_callback(void* context) {
     furi_message_queue_put(loader->queue, &message, FuriWaitForever);
 }
 
-static void loader_thread_state_callback(FuriThreadState thread_state, void* context) {
+static void
+    loader_thread_state_callback(FuriThread* thread, FuriThreadState thread_state, void* context) {
+    UNUSED(thread);
     furi_assert(context);
 
-    Loader* loader = context;
-
     if(thread_state == FuriThreadStateStopped) {
+        Loader* loader = context;
+
         LoaderMessage message;
         message.type = LoaderMessageTypeAppClosed;
         furi_message_queue_put(loader->queue, &message, FuriWaitForever);
@@ -360,8 +372,8 @@ static const FlipperInternalApplication* loader_find_application_by_name(const c
 
 static void loader_start_app_thread(Loader* loader, FlipperInternalApplicationFlag flags) {
     // setup heap trace
-    FuriHalRtcHeapTrackMode mode = furi_hal_rtc_get_heap_track_mode();
-    if(mode > FuriHalRtcHeapTrackModeNone) {
+    FuriHalMemoryHeapTrackMode mode = furi_hal_memory_get_heap_track_mode();
+    if(mode > FuriHalMemoryHeapTrackModeNone) {
         furi_thread_enable_heap_trace(loader->app.thread);
     } else {
         furi_thread_disable_heap_trace(loader->app.thread);
@@ -707,7 +719,7 @@ static bool loader_do_signal(Loader* loader, uint32_t signal, void* arg) {
 
 static bool loader_do_get_application_name(Loader* loader, FuriString* name) {
     if(loader_is_application_running(loader)) {
-        furi_string_set(name, furi_thread_get_name(loader->app.thread));
+        furi_string_set(name, furi_thread_get_name(furi_thread_get_id(loader->app.thread)));
         return true;
     }
 

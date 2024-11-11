@@ -34,7 +34,7 @@ class FlipperAppType(Enum):
 class FlipperApplication:
     APP_ID_REGEX: ClassVar[re.Pattern] = re.compile(r"^[a-z0-9_]+$")
     PRIVATE_FIELD_PREFIX: ClassVar[str] = "_"
-    APP_MANIFEST_DEFAULT_NAME: ClassVar[str] = "application.fam"
+    APP_MANIFEST_DEFAULT_NAME: ClassVar[str] = "*.fam"
 
     @dataclass
     class ExternallyBuiltFile:
@@ -45,7 +45,7 @@ class FlipperApplication:
     class Library:
         name: str
         fap_include_paths: List[str] = field(default_factory=lambda: ["."])
-        sources: List[str] = field(default_factory=lambda: ["*.c*"])
+        sources: List[str] = field(default_factory=lambda: ["*.c", "*.cpp"])
         cflags: List[str] = field(default_factory=list)
         cdefines: List[str] = field(default_factory=list)
         cincludes: List[str] = field(default_factory=list)
@@ -67,7 +67,7 @@ class FlipperApplication:
     resources: Optional[str] = None
 
     # .fap-specific
-    sources: List[str] = field(default_factory=lambda: ["*.c*"])
+    sources: List[str] = field(default_factory=lambda: ["*.c", "*.cpp"])
     fap_version: Union[str, Tuple[int]] = "0.1"
     fap_icon: Optional[str] = None
     fap_libs: List[str] = field(default_factory=list)
@@ -94,8 +94,23 @@ class FlipperApplication:
     def embeds_plugins(self):
         return any(plugin.fal_embedded for plugin in self._plugins)
 
+    @property
+    def unsupported_targets(self):
+        return tuple(target[1:] for target in self.targets if target.startswith("!"))
+
+    @property
+    def supported_targets(self):
+        filtered_targets = tuple(
+            target for target in self.targets if not target.startswith("!")
+        )
+        if len(filtered_targets) == 0:
+            return ("all",)
+        return filtered_targets
+
     def supports_hardware_target(self, target: str):
-        return target in self.targets or "all" in self.targets
+        return target not in self.unsupported_targets and (
+            target in self.targets or "all" in self.supported_targets
+        )
 
     @property
     def is_default_deployable(self):
@@ -124,8 +139,9 @@ class FlipperApplication:
 
 
 class AppManager:
-    def __init__(self):
+    def __init__(self, verbose: bool = False):
         self.known_apps = {}
+        self.verbose = verbose
 
     def get(self, appname: str):
         try:
@@ -172,7 +188,12 @@ class AppManager:
                         f"App {kw.get('appid')} of type {apptype} must not have '{app_property}' in manifest"
                     )
 
-    def load_manifest(self, app_manifest_path: str, app_dir_node: object):
+    def load_manifest(
+        self,
+        app_manifest_path: str,
+        app_dir_node: object,
+        target_hw: Optional[str] = None,
+    ):
         if not os.path.exists(app_manifest_path):
             raise FlipperManifestException(
                 f"App manifest not found at path {app_manifest_path}"
@@ -215,6 +236,12 @@ class AppManager:
 
         # print("Built", app_manifests)
         for app in app_manifests:
+            if target_hw and not app.supports_hardware_target(target_hw):
+                if self.verbose:
+                    print(
+                        f"Skipping {app.appid} due to target mismatch (building for {target_hw}, app supports {app.targets})"
+                    )
+                continue
             self._add_known_app(app)
 
     def _add_known_app(self, app: FlipperApplication):

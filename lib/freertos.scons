@@ -1,11 +1,35 @@
 Import("env")
 
-env.Append(
+if not (rtos_flavor := env["HW_RTOS_FLAVOR"]):
+    raise Exception("rtos_flavor not set for current target")
+
+_rtos_dirs = {
+    "freertos-cm33-ntz": [
+        Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure").srcnode(),
+    ],
+    "freertos-cm4": [
+        Dir("FreeRTOS-Kernel/portable/GCC/ARM_CM4F").srcnode(),
+    ],
+}
+
+_rtos_sources = {
+    "freertos-cm33-ntz": [
+        File("FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"),
+        File("FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"),
+    ],
+    "freertos-cm4": [
+        File("FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c"),
+    ],
+}
+
+env.AppendUnique(
     CPPPATH=[
-        "#/lib/drivers",
-        "#/lib/FreeRTOS-Kernel/include",
-        "#/lib/FreeRTOS-Kernel/portable/GCC/ARM_CM4F",
-        "#/lib/FreeRTOS-glue",
+        Dir("FreeRTOS-Kernel/include").srcnode(),
+        *_rtos_dirs[rtos_flavor],
+        Dir("FreeRTOS-glue").srcnode(),
+    ],
+    CCFLAGS=[
+        # "-Wno-unused-parameter",
     ],
 )
 
@@ -15,9 +39,7 @@ libenv.ApplyLibFlags()
 
 
 sources = libenv.Glob("FreeRTOS-Kernel/*.c", source=True)
-sources += [
-    "FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c",
-]
+sources += _rtos_sources[rtos_flavor]
 
 lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
 libenv.Install("${LIB_DIST_DIR}", lib)

@@ -79,8 +79,8 @@ env = core_env.Clone(
         ),
         "fwbin",
         "python3",
-        "sconsrecursiveglob",
-        "sconsmodular",
+        "recursive_glob",
+        "fbt_components",
         "ccache",
         "fbt_apps",
         "fbt_extapps",
@@ -96,6 +96,7 @@ env = core_env.Clone(
     TEMPFILEARGESCFUNC=tempfile_arg_esc_func,
     SINGLEQUOTEFUNC=single_quote,
     ABSPATHGETTERFUNC=resolve_real_dir_node,
+    F_TARGET_HW="f${TARGET_HW}",
     APPS=[],
     EXTRA_EXT_APPS=[],
     UFBT_API_VERSION=SdkCache(
@@ -241,7 +242,7 @@ known_extapps = [
 ]
 incompatible_apps = []
 for app in known_extapps:
-    if not app.supports_hardware_target(appenv.subst("f${TARGET_HW}")):
+    if not app.supports_hardware_target(appenv.subst("${F_TARGET_HW}")):
         incompatible_apps.append(app)
         continue
 

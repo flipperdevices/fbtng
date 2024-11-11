@@ -1,7 +1,17 @@
 import logging
 import argparse
 import sys
-import colorlog
+
+try:
+    import colorlog
+
+    formatter = colorlog.ColoredFormatter
+    NO_COLOR = None
+except ImportError:
+    import logging as colorlog
+
+    formatter = colorlog.Formatter
+    NO_COLOR = True
 
 
 class App:
@@ -23,15 +33,22 @@ class App:
         if not self.logger.hasHandlers():
             self.handler = colorlog.StreamHandler(sys.stdout)
             self.handler.setLevel(self.log_level)
-            self.formatter = colorlog.ColoredFormatter(
+            formatter_kw = (
+                {}
+                if NO_COLOR
+                else {
+                    "log_colors": {
+                        "DEBUG": "cyan",
+                        # "INFO": "white",
+                        "WARNING": "yellow",
+                        "ERROR": "red",
+                        "CRITICAL": "red,bg_white",
+                    }
+                }
+            )
+            self.formatter = formatter(
                 "%(log_color)s%(asctime)s [%(levelname)s] %(message)s",
-                log_colors={
-                    "DEBUG": "cyan",
-                    # "INFO": "white",
-                    "WARNING": "yellow",
-                    "ERROR": "red",
-                    "CRITICAL": "red,bg_white",
-                },
+                **formatter_kw,
             )
             self.handler.setFormatter(self.formatter)
             self.logger.addHandler(self.handler)

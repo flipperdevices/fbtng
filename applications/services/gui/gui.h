@@ -6,7 +6,7 @@
 #pragma once
 
 #include "view_port.h"
-#include "canvas.h"
+#include <canvas/canvas.h>
 
 #ifdef __cplusplus
 extern "C" {

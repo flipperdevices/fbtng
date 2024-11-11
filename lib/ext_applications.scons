@@ -1,0 +1,61 @@
+Import("env")
+
+
+env.SetDefault(
+    FBT_FAP_DEBUG_ELF_ROOT=env["BUILD_DIR"].Dir(".extapps"),
+)
+
+appenv = env["APPENV"] = env.Clone(
+    tools=[
+        "fbt_extapps",
+        "fbt_assets",
+        "fbt_sdk",
+    ],
+    API_HEADER_DIR=env.Dir("${BUILD_DIR}/api_gen"),
+)
+
+env.AppendUnique(
+    CPPPATH=[
+        appenv["API_HEADER_DIR"],
+    ],
+)
+
+appenv.Replace(
+    LINKER_SCRIPT_PATH=appenv["APP_LINKER_SCRIPT_PATH"],
+)
+
+appenv.AppendUnique(
+    CCFLAGS=[
+        "-mword-relocations",
+        "-mlong-calls",
+        "-fno-common",
+        "-nostdlib",
+    ],
+    LINKFLAGS=[
+        "-Ur",
+        "-Wl,-Ur",
+        "-nostartfiles",
+        "-mlong-calls",
+        "-fno-common",
+        "-nostdlib",
+        "-Wl,--gc-sections",
+        "-Wl,--no-export-dynamic",
+        "-fvisibility=hidden",
+        "-Wl,-e${APP_ENTRY}",
+        "-Xlinker",
+        "-Map=${TARGET}.map",
+        "-specs=nano.specs",
+    ],
+    LIBS=[
+        "m",
+        "gcc",
+        "stdc++",
+        "supc++",
+    ],
+    CFLAGS=[
+        "-Wno-strict-prototypes",
+    ],
+)
+
+# Use same flags as for main fw's app set
+appenv.ApplyLibFlags("applications")

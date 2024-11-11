@@ -1,7 +1,7 @@
 #pragma once
 
 #include "st25tb.h"
-#include <lib/nfc/nfc.h>
+#include <nfc/nfc.h>
 
 #ifdef __cplusplus
 extern "C" {

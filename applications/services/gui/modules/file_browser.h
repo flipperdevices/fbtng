@@ -6,6 +6,7 @@
 #pragma once
 
 #include <gui/view.h>
+#include <furi.h>
 
 #ifdef __cplusplus
 extern "C" {

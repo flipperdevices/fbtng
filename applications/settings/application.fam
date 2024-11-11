@@ -5,6 +5,9 @@ App(
     provides=[
         "passport",
         "system_settings",
+        "clock_settings",
         "about",
     ],
+    targets=["f7", "f18"],
 )
+

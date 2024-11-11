@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lib/nfc/protocols/felica/felica.h>
+#include <nfc/protocols/felica/felica.h>
 
 #ifdef __cplusplus
 extern "C" {

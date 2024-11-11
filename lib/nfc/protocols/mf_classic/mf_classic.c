@@ -3,7 +3,7 @@
 #include <furi/furi.h>
 #include <toolbox/hex.h>
 
-#include <lib/bit_lib/bit_lib.h>
+#include <bit_lib/bit_lib.h>
 
 #define MF_CLASSIC_PROTOCOL_NAME "Mifare Classic"
 
@@ -540,6 +540,22 @@ void mf_classic_set_key_not_found(
         FURI_BIT_CLEAR(data->key_a_mask, sector_num);
     } else if(key_type == MfClassicKeyTypeB) {
         FURI_BIT_CLEAR(data->key_b_mask, sector_num);
+    }
+}
+
+MfClassicKey
+    mf_classic_get_key(const MfClassicData* data, uint8_t sector_num, MfClassicKeyType key_type) {
+    furi_check(data);
+    furi_check(sector_num < mf_classic_get_total_sectors_num(data->type));
+    furi_check(key_type == MfClassicKeyTypeA || key_type == MfClassicKeyTypeB);
+
+    const MfClassicSectorTrailer* sector_trailer =
+        mf_classic_get_sector_trailer_by_sector(data, sector_num);
+
+    if(key_type == MfClassicKeyTypeA) {
+        return sector_trailer->key_a;
+    } else {
+        return sector_trailer->key_b;
     }
 }
 

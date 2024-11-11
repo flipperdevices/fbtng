@@ -1,0 +1,29 @@
+from fbt_extra.util import link_dirs, should_gen_cdb_and_link_dir
+
+
+Import("FW_ENV")
+fwenv = FW_ENV
+
+
+link_dir_command = fwenv["FW_LINK_LATEST"] = fwenv.PhonyTarget(
+    fwenv.subst("${FIRMWARE_BUILD_CFG}_latest"),
+    Action(
+        lambda source, target, env: link_dirs(
+            env, dst=env.Dir("#build/latest"), src=fwenv["BUILD_DIR"]
+        ),
+        None,
+    ),
+)
+
+fw_artifacts = fwenv["FW_ARTIFACTS"]
+
+# If current configuration was explicitly requested, generate compilation database
+# and link its directory as build/latest
+if should_gen_cdb_and_link_dir(fwenv, BUILD_TARGETS):
+    if fw_cdb := fwenv.get("FW_CDB"):
+        fw_artifacts.append(fw_cdb)
+        Depends(fw_cdb, link_dir_command)
+
+    fw_artifacts.append(link_dir_command)
+
+Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_all"), fw_artifacts)

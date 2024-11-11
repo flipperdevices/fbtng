@@ -1,5 +1,6 @@
 #include "gui_i.h"
 #include <assets_icons.h>
+#include <furi_hal_nvm.h>
 
 #define TAG "GuiSrv"
 

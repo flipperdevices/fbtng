@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lib/nfc/protocols/iso14443_3a/iso14443_3a_listener.h>
+#include <nfc/protocols/iso14443_3a/iso14443_3a_listener.h>
 
 #include "iso14443_4a.h"
 
@@ -12,6 +12,7 @@ typedef struct Iso14443_4aListener Iso14443_4aListener;
 
 typedef enum {
     Iso14443_4aListenerEventTypeHalted,
+    Iso14443_4aListenerEventTypeFieldOff,
     Iso14443_4aListenerEventTypeReceivedData,
 } Iso14443_4aListenerEventType;
 

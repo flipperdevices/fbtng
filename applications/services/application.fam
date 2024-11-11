@@ -10,5 +10,7 @@ App(
         "desktop",
         "loader",
         "power",
+        "notification",
     ],
+    targets=["f7", "f18"],
 )

@@ -72,7 +72,7 @@ typedef struct {
 typedef struct {
     const char* path1;
     const char* path2;
-    bool truncate;
+    bool check_subdir;
     FuriThreadId thread_id;
 } SADataCEquivPath;
 
@@ -151,6 +151,7 @@ typedef enum {
     StorageCommandCommonResolvePath,
     StorageCommandSDMount,
     StorageCommandCommonEquivalentPath,
+    StorageCommandSDPresenceChanged,
 } StorageCommand;
 
 typedef struct {

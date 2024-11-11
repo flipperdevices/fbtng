@@ -1,6 +1,6 @@
 #include "cc1101_ext_interconnect.h"
 #include "cc1101_ext.h"
-#include <lib/subghz/devices/cc1101_configs.h>
+#include <subghz/devices/cc1101_configs.h>
 
 #define TAG "SubGhzDeviceCc1101Ext"
 

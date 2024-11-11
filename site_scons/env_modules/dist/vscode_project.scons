@@ -1,0 +1,55 @@
+import os
+from SCons.Node.FS import default_fs
+from pathlib import Path
+from fwinterface import OpenOCDInterface, INTERFACES
+
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+vscode_distenv = distenv.Clone(tools=["fbt_templite"])
+
+# Prepare vscode environment
+vscode_dist = vscode_distenv.Install(
+    "#.vscode",
+    [
+        vscode_distenv.Glob("#.vscode/template/*.json", exclude="*.tmpl"),
+        vscode_distenv.Glob("#.vscode/template/${LANG_SERVER}/*.json"),
+    ],
+)
+
+probes = list(filter(lambda x: isinstance(x, OpenOCDInterface), INTERFACES.values()))
+
+config_dist_dir = vscode_distenv.Dir("#.vscode")
+
+template_substs = {
+    "FBT_PLATFORM_EXECUTABLE_EXT": ".exe" if os.name == "nt" else "",
+    "f_target": firmware_env.subst("${F_TARGET_HW}"),
+    "target": firmware_env.subst("${TARGET_HW}"),
+    "FWENV": firmware_env,
+    "folders": list(
+        map(
+            lambda x: Path(config_dist_dir.rel_path(x)).as_posix(),
+            [Dir("#"), *default_fs.Top.repositories],
+        )
+    ),
+    "probes": probes,
+}
+
+for template_file in vscode_distenv.Glob("#.vscode/template/*.tmpl"):
+    vscode_dist.append(
+        vscode_distenv.TempliteFile(
+            config_dist_dir.File(template_file.name.replace(".tmpl", "")),
+            template_file,
+            SUBST_DICT=template_substs,
+        )
+    )
+
+
+vscode_distenv.Depends(
+    vscode_dist, Value((template_substs["f_target"], template_substs["folders"]))
+)
+vscode_distenv.Precious(vscode_dist)
+vscode_distenv.NoClean(vscode_dist)
+vscode_distenv.Alias(
+    "vscode_dist", (vscode_dist, firmware_env["FW_CDB"], firmware_env["FW_LINK_LATEST"])
+)

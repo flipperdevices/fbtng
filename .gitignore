@@ -13,7 +13,8 @@ compile_commands.json
 .idea/
 
 # Sublime Text
-.sublime-project.sublime-workspace
+/.sublime-project
+/.sublime-project.sublime-workspace
 
 # Python VirtEnvironments
 .env
@@ -64,3 +65,6 @@ PVS-Studio.log
 .gdbinit
 
 /fbt_options_local.py
+
+# JS packages
+node_modules/

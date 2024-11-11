@@ -101,13 +101,13 @@ env.Append(
         File("wrappers.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 
 libenv = env.Clone(FW_LIB_NAME="print")
 libenv.ApplyLibFlags()
-if env["RAM_EXEC"]:
+if libenv.get("RAM_EXEC", False):
     libenv.AppendUnique(CPPDEFINES=["PRINTF_DISABLE_SUPPORT_FLOAT"])
 
 libenv.Append(CCFLAGS=["-Wno-double-promotion"])

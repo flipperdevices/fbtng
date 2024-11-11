@@ -3,7 +3,7 @@
 
 // Need access to u8g2
 #include <gui/gui_i.h>
-#include <gui/canvas_i.h>
+#include <canvas/canvas_i.h>
 #include <u8g2_glue.h>
 
 #include <gui/view_dispatcher.h>

@@ -8,6 +8,7 @@ App(
     provides=["loader_start"],
     stack_size=2 * 1024,
     order=90,
+    targets=["f7", "f18"],
     sdk_headers=[
         "loader.h",
         "firmware_api/firmware_api.h",
@@ -20,4 +21,5 @@ App(
     entry_point="loader_on_system_start",
     requires=["loader"],
     order=90,
+    targets=["f7", "f18"],
 )

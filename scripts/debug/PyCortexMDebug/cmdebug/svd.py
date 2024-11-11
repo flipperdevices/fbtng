@@ -327,7 +327,7 @@ class SVDPeripheralRegister:
     def __init__(self, svd_elem, parent):
         self.parent_base_address = parent.base_address
         self.name = str(svd_elem.name)
-        self.description = str(svd_elem.description)
+        self.description = str(svd_elem.description) if hasattr(svd_elem, "description") else ""
         self.offset = int(str(svd_elem.addressOffset), 0)
         if hasattr(svd_elem, "access"):
             self.access = str(svd_elem.access)

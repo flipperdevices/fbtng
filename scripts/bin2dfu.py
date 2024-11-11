@@ -6,6 +6,8 @@ from zlib import crc32
 
 from flipper.app import App
 
+USB_VID = 0x0483
+USB_PID = 0xDF11
 
 class Main(App):
     def init(self):
@@ -24,10 +26,10 @@ class Main(App):
             "-l", "--label", help="DFU Target label", required=True
         )
         self.parser.add_argument(
-            "--vid", help="USB Vendor ID", default=0x0483, type=lambda x: int(x, 0)
+            "--vid", help="USB Vendor ID", default=USB_VID, type=lambda x: int(x, 0)
         )
         self.parser.add_argument(
-            "--pid", help="USB Product ID", default=0xDF11, type=lambda x: int(x, 0)
+            "--pid", help="USB Product ID", default=USB_PID, type=lambda x: int(x, 0)
         )
 
         self.parser.set_defaults(func=self.convert)

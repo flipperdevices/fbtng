@@ -7,6 +7,8 @@
  */
 #pragma once
 
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21,11 +23,16 @@ extern const void _edata; /**< data end */
 extern const void _sbss; /**< bss start */
 extern const void _ebss; /**< bss end */
 
+extern const void __sram2a_start__; /**< RAM2a Heap start */
+extern const void __sram2a_free__; /**< RAM2a Free space start */
+extern const void __sram2b_start__; /**< RAM2b Start */
+
 extern const void _sMB_MEM2; /**< RAM2a start */
 extern const void _eMB_MEM2; /**< RAM2a end */
 
 extern const void __heap_start__; /**< RAM1 Heap start */
 extern const void __heap_end__; /**< RAM1 Heap end */
+extern const void __heap_size__; /**< RAM1 Heap size (as symbol address) */
 
 extern const void __free_flash_start__; /**< Free Flash space start */
 
