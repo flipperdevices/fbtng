@@ -105,22 +105,11 @@ FURI_NORETURN void __furi_halt_implementation(void);
         }                           \
     } while(0)
 
-/** Interface for outputting into crash log from handler
- */
-typedef struct {
-    void (*const puts)(const char* arg);
-    void (*const print_uint32_as_hex)(uint32_t value);
-    void (*const print_uint32_as_dec)(uint32_t value);
-} FuriCrashLogInterface;
-
-typedef void (*FuriCrashCallback)(void* context, const FuriCrashLogInterface* print_interface);
-
-/** Add a callback to be invoked as part of crash routine
+/** Override this function to add custom crash handling.
  *
- * @param     callback function to call
- * @param     context  user-defined value to pass to callback
+ * Default implementation is a weak function that does nothing. 
  */
-void furi_crash_handler_add(FuriCrashCallback callback, void* context);
+void furi_crash_handler(void);
 
 #ifdef __cplusplus
 }
