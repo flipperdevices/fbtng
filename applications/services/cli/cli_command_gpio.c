@@ -2,6 +2,7 @@
 
 #include <furi.h>
 #include <furi_hal.h>
+#include <furi_hal_nvm.h>
 #include <toolbox/args.h>
 #include <furi_hal_nvm.h>
 
