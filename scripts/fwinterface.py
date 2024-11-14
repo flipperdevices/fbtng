@@ -163,6 +163,7 @@ class OpenOCDInterface(BaseInterface):
                 "telnet_port disabled",
                 "tcl_port disabled",
                 "init",
+                "reset halt",
             )
         ]
         return list(OpenOCDCommandLineParameter.to_args(connect_args))
