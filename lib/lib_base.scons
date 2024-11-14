@@ -1,9 +1,13 @@
 Import("env")
 
+
+# This exists primarily to break circular dependencies between core libraries while keeping their lib definitions simple
 env.AppendUnique(
     CPPPATH=[
         Dir("#/").rdir(),
-        Dir("#/lib").rdir(),
+        # Dir("#/lib").rdir(),
+        Dir("#").getRepositories(),
+        Dir(".").getRepositories(),
         Dir("furi").rdir(),
         Dir("#/targets/furi_hal_include").rdir(),
         *(f"#/{app_dir[0]}" for app_dir in env.get("APPDIRS", []) if app_dir[1]),
