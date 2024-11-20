@@ -32,11 +32,18 @@ static void furi_event_loop_item_notify(FuriEventLoopItem* instance);
 
 static bool furi_event_loop_item_is_waiting(FuriEventLoopItem* instance);
 
-static void furi_event_loop_process_pending_callbacks(FuriEventLoop* instance) {
+static inline void furi_event_loop_process_pending_callbacks(FuriEventLoop* instance) {
     for(; !PendingQueue_empty_p(instance->pending_queue);
         PendingQueue_pop_back(NULL, instance->pending_queue)) {
         const FuriEventLoopPendingQueueItem* item = PendingQueue_back(instance->pending_queue);
         item->callback(item->context);
+    }
+}
+
+static inline void furi_event_loop_process_custom_events(FuriEventLoop* instance) {
+    if(instance->custom.callback) {
+        uint32_t events = furi_thread_flags_wait(0x00FFFFFFUL, FuriFlagWaitAny, 0);
+        instance->custom.callback(events, instance->custom.context);
     }
 }
 
@@ -193,13 +200,6 @@ static void furi_event_loop_process_waiting_list(FuriEventLoop* instance) {
     furi_event_loop_sync_flags(instance);
 }
 
-static void furi_event_loop_restore_flags(FuriEventLoop* instance, uint32_t flags) {
-    if(flags) {
-        xTaskNotifyIndexed(
-            (TaskHandle_t)instance->thread_id, FURI_EVENT_LOOP_FLAG_NOTIFY_INDEX, flags, eSetBits);
-    }
-}
-
 void furi_event_loop_run(FuriEventLoop* instance) {
     furi_check(instance);
     furi_check(instance->thread_id == furi_thread_get_current_id());
@@ -230,20 +230,18 @@ void furi_event_loop_run(FuriEventLoop* instance) {
             if(flags & FuriEventLoopFlagStop) {
                 instance->state = FuriEventLoopStateStopped;
                 break;
-
-            } else if(flags & FuriEventLoopFlagEvent) {
+            }
+            if(flags & FuriEventLoopFlagEvent) {
                 furi_event_loop_process_waiting_list(instance);
-                furi_event_loop_restore_flags(instance, flags & ~FuriEventLoopFlagEvent);
-
-            } else if(flags & FuriEventLoopFlagTimer) {
+            }
+            if(flags & FuriEventLoopFlagTimer) {
                 furi_event_loop_process_timer_queue(instance);
-                furi_event_loop_restore_flags(instance, flags & ~FuriEventLoopFlagTimer);
-
-            } else if(flags & FuriEventLoopFlagPending) {
+            }
+            if(flags & FuriEventLoopFlagPending) {
                 furi_event_loop_process_pending_callbacks(instance);
-
-            } else {
-                furi_crash();
+            }
+            if(flags & FuriEventLoopFlagCustom) {
+                furi_event_loop_process_custom_events(instance);
             }
 
         } else if(!furi_event_loop_process_expired_timers(instance)) {
@@ -279,6 +277,33 @@ static void furi_event_loop_notify(FuriEventLoop* instance, FuriEventLoopFlag fl
 void furi_event_loop_stop(FuriEventLoop* instance) {
     furi_check(instance);
     furi_event_loop_notify(instance, FuriEventLoopFlagStop);
+}
+
+/*
+ * Public direct thread notification API
+ */
+
+void furi_event_loop_set_custom_event_callback(
+    FuriEventLoop* instance,
+    FuriEventLoopCustomCallback callback,
+    void* context) {
+    furi_check(instance);
+    furi_check(instance->thread_id == furi_thread_get_current_id());
+    furi_check(callback);
+
+    instance->custom.callback = callback;
+    instance->custom.context = context;
+
+    if(furi_thread_flags_get()) {
+        furi_event_loop_notify(instance, FuriEventLoopFlagCustom);
+    }
+}
+
+void furi_event_loop_set_custom_event(FuriEventLoop* instance, uint32_t events) {
+    furi_check(instance);
+
+    furi_thread_flags_set(instance->thread_id, events);
+    furi_event_loop_notify(instance, FuriEventLoopFlagCustom);
 }
 
 /*
