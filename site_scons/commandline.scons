@@ -137,7 +137,7 @@ vars.AddVariables(
         "FIRMWARE_APPS",
         "Map of (configuration_name->application_list)",
         {
-            "default": ("basic_services",),
+            "default": ("basic_services","main_apps",),
         },
     ),
     (
@@ -157,6 +157,7 @@ vars.AddVariables(
         [
             ("applications", False),
             ("applications/services", True),
+            ("applications/main", True),
             ("applications_user", False),
         ],
     ),
