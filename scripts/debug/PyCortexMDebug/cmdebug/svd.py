@@ -64,12 +64,10 @@ class SmartDict:
 
     def __setitem__(self, key, value):
         if key in self.od:
-            warnings.warn("Duplicate entry %s", key)
+            warnings.warn(f"Duplicate entry {key}")
         elif key.lower() in self.casemap:
             warnings.warn(
-                "Entry %s differs from duplicate %s only in cAsE",
-                key,
-                self.casemap[key.lower()],
+                f"Entry {key} differs from duplicate {self.casemap[key.lower()]} only in cAsE",
             )
 
         self.casemap[key.lower()] = key
