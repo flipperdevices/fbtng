@@ -163,7 +163,7 @@ class OpenOCDInterface(BaseInterface):
                 "telnet_port disabled",
                 "tcl_port disabled",
                 "init",
-                "reset halt",
+                # "reset halt", # TODO: make it work w/Si917
             )
         ]
         return list(OpenOCDCommandLineParameter.to_args(connect_args))
