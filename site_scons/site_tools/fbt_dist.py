@@ -35,7 +35,7 @@ def create_fw_build_targets(env, configuration_name, extra_params):
         variant_dir=build_dir,  # FIXME
         duplicate=0,
         exports={
-            "ENV": env,
+            "FW_ENV": env,
             "fw_build_meta": fw_build_meta,
         },
     )

@@ -306,7 +306,7 @@ def ConfigureCommandlineVariables(env, variables):
         variables = env.SConscript(
             loader.variables_sconscript,
             exports={
-                "ENV": env,
+                "FW_ENV": env,
                 "VARS": variables,
             },
         )

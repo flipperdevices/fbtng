@@ -1,4 +1,6 @@
-Import("ENV", "fw_build_meta")
+Import("FW_ENV", "fw_build_meta")
+
+ENV = FW_ENV
 
 # Building initial C environment for libs
 env = ENV.Clone(

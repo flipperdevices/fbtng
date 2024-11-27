@@ -59,7 +59,7 @@ coreenv = SConscript(
 # Create a separate "dist" environment and add construction envs to it
 distenv = coreenv.Clone(
     tools=["fbt_dist"],
-    ENV=os.environ,
+    # ENV=os.environ,
     CORE_ENV=coreenv,
 )
 

@@ -26,6 +26,17 @@ for env_value_name in variables_to_forward:
     if environ_value := os.environ.get(env_value_name, None):
         forward_os_env[env_value_name] = environ_value
 
+# Inject common Python script components' path into PYTHONPATH
+forward_os_env["PYTHONPATH"] = os.pathsep.join(
+    (
+        *[
+            os.path.abspath(p)
+            for p in forward_os_env.get("PYTHONPATH", "").split(os.pathsep)
+        ],
+        VAR_ENV.Dir("#/scripts").abspath,
+    )
+)
+
 coreenv = VAR_ENV.Clone(
     toolpath=EXTRA_TOOLPATHS,
     tools=[

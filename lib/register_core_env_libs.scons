@@ -28,7 +28,7 @@ for libname in [
     # "lfrfid",
     # "flipper_application",
     # "music_worker",
-    "mjs",
+    # "mjs",
     # "nanopb",
     # "update_util",
     # "heatshrink",
