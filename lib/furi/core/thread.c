@@ -21,6 +21,12 @@
 
 #define THREAD_NOTIFY_INDEX (1) // Index 0 is used for stream buffers
 
+#if(configNUM_THREAD_LOCAL_STORAGE_POINTERS == 0)
+#error "FuriThread needs configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0"
+#else
+#define THREAD_STORAGE_INDEX (configNUM_THREAD_LOCAL_STORAGE_POINTERS - 1)
+#endif
+
 #define THREAD_MAX_STACK_SIZE (UINT16_MAX * sizeof(StackType_t))
 
 typedef struct FuriThreadStdout FuriThreadStdout;
@@ -95,8 +101,8 @@ static void furi_thread_body(void* context) {
     FuriThread* thread = context;
 
     // store thread instance to thread local storage
-    furi_check(pvTaskGetThreadLocalStoragePointer(NULL, 0) == NULL);
-    vTaskSetThreadLocalStoragePointer(NULL, 0, thread);
+    furi_check(pvTaskGetThreadLocalStoragePointer(NULL, THREAD_STORAGE_INDEX) == NULL);
+    vTaskSetThreadLocalStoragePointer(NULL, THREAD_STORAGE_INDEX, thread);
 
     furi_check(thread->state == FuriThreadStateStarting);
     furi_thread_set_state(thread, FuriThreadStateRunning);
@@ -140,7 +146,7 @@ static void furi_thread_init_common(FuriThread* thread) {
     FuriThread* parent = NULL;
     if(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
         // TLS is not available, if we called not from thread context
-        parent = pvTaskGetThreadLocalStoragePointer(NULL, 0);
+        parent = pvTaskGetThreadLocalStoragePointer(NULL, THREAD_STORAGE_INDEX);
 
         if(parent && parent->appid) {
             furi_thread_set_appid(thread, parent->appid);
@@ -181,8 +187,9 @@ void furi_thread_scrub(void) {
         // Delete task: FreeRTOS will remove task from all lists where it may be
         vTaskDelete(task);
         // Sanity check: ensure that local storage is ours and clear it
-        furi_check(pvTaskGetThreadLocalStoragePointer(task, 0) == thread_to_scrub);
-        vTaskSetThreadLocalStoragePointer(task, 0, NULL);
+        furi_check(
+            pvTaskGetThreadLocalStoragePointer(task, THREAD_STORAGE_INDEX) == thread_to_scrub);
+        vTaskSetThreadLocalStoragePointer(task, THREAD_STORAGE_INDEX, NULL);
 
         // Deliver thread stopped callback
         furi_thread_set_state(thread_to_scrub, FuriThreadStateStopped);
@@ -440,7 +447,7 @@ FuriThreadId furi_thread_get_current_id(void) {
 }
 
 FuriThread* furi_thread_get_current(void) {
-    FuriThread* thread = pvTaskGetThreadLocalStoragePointer(NULL, 0);
+    FuriThread* thread = pvTaskGetThreadLocalStoragePointer(NULL, THREAD_STORAGE_INDEX);
     return thread;
 }
 
@@ -686,7 +693,8 @@ const char* furi_thread_get_appid(FuriThreadId thread_id) {
     const char* appid = "system";
 
     if(!FURI_IS_IRQ_MODE() && (hTask != NULL)) {
-        FuriThread* thread = (FuriThread*)pvTaskGetThreadLocalStoragePointer(hTask, 0);
+        FuriThread* thread =
+            (FuriThread*)pvTaskGetThreadLocalStoragePointer(hTask, THREAD_STORAGE_INDEX);
         if(thread) {
             appid = thread->appid;
         }

@@ -50,11 +50,12 @@ typedef enum {
     FuriEventLoopFlagStop = (1 << 1),
     FuriEventLoopFlagTimer = (1 << 2),
     FuriEventLoopFlagPending = (1 << 3),
+    FuriEventLoopFlagCustom = (1 << 4),
 } FuriEventLoopFlag;
 
 #define FuriEventLoopFlagAll                                                   \
     (FuriEventLoopFlagEvent | FuriEventLoopFlagStop | FuriEventLoopFlagTimer | \
-     FuriEventLoopFlagPending)
+     FuriEventLoopFlagPending | FuriEventLoopFlagCustom)
 
 typedef enum {
     FuriEventLoopProcessStatusComplete,
@@ -75,6 +76,11 @@ typedef struct {
 
 LIST_DUAL_PUSH_DEF(PendingQueue, FuriEventLoopPendingQueueItem, M_POD_OPLIST)
 
+typedef struct {
+    FuriEventLoopCustomCallback callback;
+    void* context;
+} FuriEventLoopCustom;
+
 struct FuriEventLoop {
     // Only works if all operations are done from the same thread
     FuriThreadId thread_id;
@@ -94,4 +100,6 @@ struct FuriEventLoop {
     PendingQueue_t pending_queue;
     // Tick event
     FuriEventLoopTick tick;
+    // Custom event
+    FuriEventLoopCustom custom;
 };

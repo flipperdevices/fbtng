@@ -137,6 +137,28 @@ void furi_event_loop_run(FuriEventLoop* instance);
 void furi_event_loop_stop(FuriEventLoop* instance);
 
 /*
+ * Custom event (direct thread notification) API
+ */
+
+/** Custom event callback type
+ *
+ */
+typedef void (*FuriEventLoopCustomCallback)(uint32_t events, void* context);
+
+/** Set Event Loop direct thread notification callback
+ *
+ */
+void furi_event_loop_set_custom_event_callback(
+    FuriEventLoop* instance,
+    FuriEventLoopCustomCallback callback,
+    void* context);
+
+/**
+ *
+ */
+void furi_event_loop_set_custom_event(FuriEventLoop* instance, uint32_t events);
+
+/*
  * Tick related API
  */
 
