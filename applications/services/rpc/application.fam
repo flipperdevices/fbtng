@@ -6,4 +6,5 @@ App(
     requires=["cli"],
     order=10,
     sdk_headers=["rpc_app.h"],
+    targets=["f7", "f18"],
 )
