@@ -217,16 +217,6 @@ static void js_parse_int(struct mjs* mjs) {
     mjs_return(mjs, mjs_mk_number(mjs, num));
 }
 
-static void js_global_to_string(struct mjs* mjs) {
-    int base = 10;
-    if(mjs_nargs(mjs) > 1) base = mjs_get_int(mjs, mjs_arg(mjs, 1));
-    double num = mjs_get_int(mjs, mjs_arg(mjs, 0));
-    char tmp_str[] = "-2147483648";
-    itoa(num, tmp_str, base);
-    mjs_val_t ret = mjs_mk_string(mjs, tmp_str, ~0, true);
-    mjs_return(mjs, ret);
-}
-
 #ifdef JS_DEBUG
 static void js_dump_write_callback(void* ctx, const char* format, ...) {
     File* file = ctx;
@@ -278,7 +268,6 @@ static int32_t js_thread(void* arg) {
     JS_ASSIGN_MULTI(mjs, global) {
         JS_FIELD("print", MJS_MK_FN(js_print));
         JS_FIELD("delay", MJS_MK_FN(js_delay));
-        JS_FIELD("toString", MJS_MK_FN(js_global_to_string));
         JS_FIELD("parseInt", MJS_MK_FN(js_parse_int));
         JS_FIELD("ffi_address", MJS_MK_FN(js_ffi_address));
         JS_FIELD("require", MJS_MK_FN(js_require));
