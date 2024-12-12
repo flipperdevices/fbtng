@@ -199,7 +199,11 @@ static inline void furi_event_loop_process_pending_callbacks(FuriEventLoop* inst
 
 static inline void furi_event_loop_process_custom_events(FuriEventLoop* instance) {
     if(instance->custom.callback) {
-        uint32_t events = furi_thread_flags_wait(0x00FFFFFFUL, FuriFlagWaitAny, 0);
+        FURI_CRITICAL_ENTER();
+        const uint32_t events = instance->custom.events;
+        instance->custom.events = 0;
+        FURI_CRITICAL_EXIT();
+
         instance->custom.callback(events, instance->custom.context);
     }
 }
@@ -296,7 +300,7 @@ void furi_event_loop_set_custom_event_callback(
     instance->custom.callback = callback;
     instance->custom.context = context;
 
-    if(furi_thread_flags_get()) {
+    if(instance->custom.events) {
         furi_event_loop_notify(instance, FuriEventLoopFlagCustom);
     }
 }
@@ -304,7 +308,10 @@ void furi_event_loop_set_custom_event_callback(
 void furi_event_loop_set_custom_event(FuriEventLoop* instance, uint32_t events) {
     furi_check(instance);
 
-    furi_thread_flags_set(instance->thread_id, events);
+    FURI_CRITICAL_ENTER();
+    instance->custom.events |= events;
+    FURI_CRITICAL_EXIT();
+
     furi_event_loop_notify(instance, FuriEventLoopFlagCustom);
 }
 

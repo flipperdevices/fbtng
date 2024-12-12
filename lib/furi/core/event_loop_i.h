@@ -76,6 +76,7 @@ typedef struct {
 LIST_DUAL_PUSH_DEF(PendingQueue, FuriEventLoopPendingQueueItem, M_POD_OPLIST)
 
 typedef struct {
+    uint32_t events;
     FuriEventLoopCustomCallback callback;
     void* context;
 } FuriEventLoopCustom;
