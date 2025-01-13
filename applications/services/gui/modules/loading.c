@@ -2,7 +2,7 @@
 
 #include <gui/icon_animation.h>
 #include <gui/elements.h>
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/view.h>
 #include <input/input.h>
 

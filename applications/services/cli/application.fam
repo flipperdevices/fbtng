@@ -7,4 +7,6 @@ App(
     stack_size=4 * 1024,
     order=30,
     sdk_headers=["cli.h", "cli_vcp.h"],
+    targets=["f7", "f18"],
+    sources=["cli.c", "cli_command_gpio.c", "cli_commands.c", "cli_vcp.c"],
 )

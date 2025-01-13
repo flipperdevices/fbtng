@@ -737,6 +737,9 @@ void storage_process_message_internal(Storage* app, StorageMessage* message) {
     case StorageCommandSDStatus:
         message->return_data->error_value = storage_process_sd_status(app);
         break;
+
+    default:
+        furi_crash();
     }
 
     if(path != NULL) { //-V547

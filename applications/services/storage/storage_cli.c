@@ -1,12 +1,13 @@
 #include <furi.h>
-#include <furi_hal.h>
+#include <furi_hal_nvm.h>
+#include <furi_hal_version.h>
 
 #include <cli/cli.h>
-#include <lib/toolbox/args.h>
-#include <lib/toolbox/dir_walk.h>
-#include <lib/toolbox/md5_calc.h>
-#include <lib/toolbox/strint.h>
-#include <lib/toolbox/tar/tar_archive.h>
+#include <toolbox/args.h>
+#include <toolbox/md5_calc.h>
+#include <toolbox/dir_walk.h>
+#include <toolbox/strint.h>
+#include <toolbox/tar/tar_archive.h>
 #include <storage/storage.h>
 #include <storage/storage_sd_api.h>
 #include <power/power_service/power.h>

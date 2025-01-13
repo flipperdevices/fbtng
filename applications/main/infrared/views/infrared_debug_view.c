@@ -1,6 +1,6 @@
 #include "infrared_debug_view.h"
 
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/elements.h>
 
 #include <stdlib.h>

@@ -1,9 +1,10 @@
 #include <furi_hal_version.h>
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 
 #include <furi.h>
 #include <stm32wbxx.h>
 #include <stm32wbxx_ll_rtc.h>
+#include <stm32wbxx_ll_system.h>
 
 #include <stdio.h>
 #include <ble/ble.h>

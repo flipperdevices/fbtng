@@ -1,7 +1,7 @@
 #include "../subghz_i.h"
 #include "../views/subghz_read_raw.h"
 #include <dolphin/dolphin.h>
-#include <lib/subghz/protocols/raw.h>
+#include <subghz/protocols/raw.h>
 #include <toolbox/path.h>
 
 #define TAG "SubGhzSceneReadRaw"

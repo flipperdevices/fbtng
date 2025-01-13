@@ -4,8 +4,8 @@
 #include <math.h>
 #include <furi.h>
 #include <furi_hal.h>
-#include <lib/flipper_format/flipper_format.h>
-#include <lib/subghz/types.h>
+#include <flipper_format/flipper_format.h>
+#include <subghz/types.h>
 
 typedef struct SubGhzHistory SubGhzHistory;
 

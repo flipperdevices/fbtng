@@ -1,7 +1,7 @@
 #pragma once
 
 #include "felica.h"
-#include <lib/nfc/nfc.h>
+#include <nfc/nfc.h>
 
 #ifdef __cplusplus
 extern "C" {

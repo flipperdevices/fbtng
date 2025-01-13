@@ -5,7 +5,7 @@
 #include <toolbox/pulse_protocols/pulse_glue.h>
 #include <toolbox/buffer_stream.h>
 #include "tools/varint_pair.h"
-#include <lib/bit_lib/bit_lib.h>
+#include <bit_lib/bit_lib.h>
 
 #define TAG "LfRfidWorker"
 

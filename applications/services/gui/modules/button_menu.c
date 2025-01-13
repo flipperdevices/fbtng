@@ -1,6 +1,6 @@
 #include "button_menu.h"
 
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/elements.h>
 #include <input/input.h>
 

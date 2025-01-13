@@ -1,6 +1,6 @@
 #include "variable_item_list.h"
 #include <gui/elements.h>
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <furi.h>
 #include <m-array.h>
 #include <stdint.h>

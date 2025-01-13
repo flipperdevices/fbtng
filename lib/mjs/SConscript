@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/mjs",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("mjs_core_public.h"),

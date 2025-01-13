@@ -1,5 +1,6 @@
 #include <furi_hal_interrupt.h>
 #include <furi_hal_os.h>
+#include <furi_hal.h>
 
 #include <furi.h>
 #include <FreeRTOS.h>

@@ -1,6 +1,6 @@
 #pragma once
 #include <furi.h>
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/modules/file_browser.h>
 
 #ifdef __cplusplus

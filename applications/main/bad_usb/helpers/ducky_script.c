@@ -2,8 +2,8 @@
 #include <furi_hal.h>
 #include <gui/gui.h>
 #include <input/input.h>
-#include <lib/toolbox/args.h>
-#include <lib/toolbox/strint.h>
+#include <toolbox/args.h>
+#include <toolbox/strint.h>
 #include <storage/storage.h>
 #include "ducky_script.h"
 #include "ducky_script_i.h"

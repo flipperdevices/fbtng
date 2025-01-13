@@ -7,7 +7,7 @@
 #include "nfc_supported_card_plugin.h"
 
 #include <flipper_application/flipper_application.h>
-#include <lib/nfc/protocols/mf_desfire/mf_desfire.h>
+#include <nfc/protocols/mf_desfire/mf_desfire.h>
 
 static const MfDesfireApplicationId myki_app_id = {.data = {0x00, 0x11, 0xf2}};
 static const MfDesfireFileId myki_file_id = 0x0f;

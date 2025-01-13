@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <furi.h>

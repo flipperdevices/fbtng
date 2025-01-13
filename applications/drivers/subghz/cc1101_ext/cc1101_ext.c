@@ -1,9 +1,10 @@
 #include "cc1101_ext.h"
-#include <lib/subghz/devices/cc1101_configs.h>
+#include <subghz/devices/cc1101_configs.h>
 
 #include <furi_hal_region.h>
 #include <furi_hal_version.h>
 #include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 #include <furi_hal_spi.h>
 #include <furi_hal_interrupt.h>
 #include <furi_hal_resources.h>

@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include <lib/flipper_format/flipper_format.h>
-#include <lib/toolbox/level_duration.h>
+#include <flipper_format/flipper_format.h>
+#include <toolbox/level_duration.h>
 
 #include "environment.h"
 #include <furi.h>

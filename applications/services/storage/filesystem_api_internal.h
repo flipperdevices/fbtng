@@ -90,8 +90,8 @@ typedef struct {
         FS_AccessMode access_mode,
         FS_OpenMode open_mode);
     bool (*const close)(void* context, File* file);
-    uint16_t (*read)(void* context, File* file, void* buff, uint16_t bytes_to_read);
-    uint16_t (*write)(void* context, File* file, const void* buff, uint16_t bytes_to_write);
+    uint32_t (*read)(void* context, File* file, void* buff, uint32_t bytes_to_read);
+    uint32_t (*write)(void* context, File* file, const void* buff, uint32_t bytes_to_write);
     bool (*const seek)(void* context, File* file, uint32_t offset, bool from_start);
     uint64_t (*tell)(void* context, File* file);
     bool (*const truncate)(void* context, File* file);

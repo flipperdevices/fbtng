@@ -1,0 +1,110 @@
+from fbt.sdk.cache import LazySdkVersionLoader
+
+from dataclasses import dataclass, field
+
+from SCons.Node import NodeList
+from SCons.Warnings import warn, WarningOnByDefault
+
+
+@dataclass
+class FlipperExtAppBuildArtifacts:
+    application_map: dict = field(default_factory=dict)
+    sdk_tree: NodeList = field(default_factory=NodeList)
+
+
+Import("FW_ENV")
+fwenv = FW_ENV
+
+# Build external apps + configure SDK
+if fwenv.get("IS_BASE_FIRMWARE", False):
+    fw_artifacts = fwenv["FW_ARTIFACTS"]
+    # Ensure all libs are built - even if they are not used in firmware
+    fw_artifacts.append(fwenv["LIB_DIST_DIR"].glob("*.a"))
+
+    # API version getter
+    fwenv.Append(FBT_API_VERSION=LazySdkVersionLoader(fwenv.subst("$SDK_DEFINITION")))
+    fwenv.PhonyTarget(
+        "get_apiversion",
+        "@echo $( ${FBT_API_VERSION} $)",
+    )
+
+    appenv = fwenv["APPENV"]
+
+    for app in fwenv["APPBUILD"].get_ext_apps():
+        appenv.BuildAppElf(app)
+
+    fwenv["FW_EXTAPPS"] = extapps = FlipperExtAppBuildArtifacts()
+    extapps.application_map = appenv["EXT_APPS"]
+
+    if appenv["FORCE"]:
+        appenv.AlwaysBuild(
+            list(
+                app_artifact.compact
+                for app_artifact in extapps.application_map.values()
+            )
+        )
+
+    Alias(
+        "faps",
+        list(
+            app_artifact.validator for app_artifact in extapps.application_map.values()
+        ),
+    )
+
+    if appsrc := appenv.subst("$APPSRC"):
+        launch_target = appenv.AddAppLaunchTarget(appsrc, "launch")
+        Alias("launch_app", launch_target)
+        appenv.PhonyTarget(
+            "launch_app",
+            Action(
+                lambda **kw: warn(
+                    WarningOnByDefault,
+                    "The 'launch_app' target is deprecated. Use 'launch' instead.",
+                ),
+                None,
+            ),
+        )
+
+        appenv.AddAppBuildTarget(appsrc, "build")
+
+    # SDK management
+    sdk_env = appenv.Clone()
+    sdk_env.AppendUnique(CPPPATH="#")
+    amalgamated_api = "${BUILD_DIR}/sdk_origin"
+    sdk_source = sdk_env.ApiAmalgamator(
+        amalgamated_api,
+        # Deps on root SDK headers and generated files
+        (sdk_env["SDK_HEADERS"], sdk_env["FW_ASSETS_HEADERS"]),
+    )
+    # Extra deps on headers included in deeper levels
+    # Available on second and subsequent builds
+    Depends(sdk_source, appenv.ProcessSdkDepends(f"{amalgamated_api}.d"))
+
+    appenv["SDK_DIR"] = appenv.Dir("${BUILD_DIR}/sdk_headers")
+    sdk_header_tree = appenv.SDKHeaderTreeExtractor(appenv["SDK_DIR"], amalgamated_api)
+    Depends(sdk_header_tree, appenv["SDK_DEFINITION"])
+    # AlwaysBuild(sdk_tree)
+    Alias("sdk_tree", sdk_header_tree)
+    extapps.sdk_tree = sdk_header_tree
+
+    api_check = appenv.ApiTableValidator(appenv["SDK_DEFINITION"], amalgamated_api)
+    Precious(api_check)
+    NoClean(api_check)
+    AlwaysBuild(api_check)
+    Alias("api_check", api_check)
+
+    firmware_apitable = appenv.ApiSymbolTable(
+        "${API_HEADER_DIR}/firmware_api_table.h", appenv["SDK_DEFINITION"]
+    )
+    Alias("api_table", firmware_apitable)
+
+    fwenv.Replace(FW_API_TABLE=firmware_apitable)
+    fwenv.AppendUnique(
+        FW_STATIC_ANALYSIS_DEPS=[firmware_apitable],
+        _APP_ICONS=appenv["_APP_ICONS"],
+    )
+
+    if appenv["FORCE"]:
+        appenv.AlwaysBuild(sdk_source, sdk_header_tree, api_check, firmware_apitable)
+
+    fw_artifacts.append(extapps.sdk_tree)

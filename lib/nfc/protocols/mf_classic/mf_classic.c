@@ -3,7 +3,7 @@
 #include <furi/furi.h>
 #include <toolbox/hex.h>
 
-#include <lib/bit_lib/bit_lib.h>
+#include <bit_lib/bit_lib.h>
 
 #define MF_CLASSIC_PROTOCOL_NAME "Mifare Classic"
 

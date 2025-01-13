@@ -48,6 +48,8 @@
 #define configUSE_TICKLESS_IDLE                 2
 #define configRECORD_STACK_HIGH_ADDRESS         1
 #define configUSE_NEWLIB_REENTRANT              0
+#define configENABLE_TRUSTZONE                  0
+#define configRUN_FREERTOS_SECURE_ONLY          0
 
 /* Defaults to size_t for backward compatibility, but can be changed
    if lengths will always be less than the number of bytes in a size_t. */

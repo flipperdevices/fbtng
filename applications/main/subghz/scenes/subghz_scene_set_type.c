@@ -1,7 +1,7 @@
 #include "../subghz_i.h"
 #include "../helpers/subghz_txrx_create_protocol_key.h"
-#include <lib/subghz/blocks/math.h>
-#include <lib/subghz/protocols/protocol_items.h>
+#include <subghz/blocks/math.h>
+#include <subghz/protocols/protocol_items.h>
 
 #define TAG "SubGhzSetType"
 

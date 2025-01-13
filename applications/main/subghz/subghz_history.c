@@ -1,6 +1,6 @@
 #include "subghz_history.h"
-#include <lib/subghz/receiver.h>
-#include <lib/subghz/protocols/came.h>
+#include <subghz/receiver.h>
+#include <subghz/protocols/came.h>
 
 #include <furi.h>
 

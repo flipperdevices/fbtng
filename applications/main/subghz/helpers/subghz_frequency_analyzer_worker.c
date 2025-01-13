@@ -1,5 +1,5 @@
 #include "subghz_frequency_analyzer_worker.h"
-#include <lib/drivers/cc1101.h>
+#include <drivers/cc1101.h>
 
 #include <furi.h>
 #include <float_tools.h>

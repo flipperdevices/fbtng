@@ -5,7 +5,7 @@
 
 #include <gui/gui_i.h>
 #include <gui/view.h>
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/elements.h>
 #include <gui/modules/file_browser_worker.h>
 #include <storage/storage.h>

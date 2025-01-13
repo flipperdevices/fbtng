@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <furi.h>
-#include "canvas.h"
+#include <canvas/canvas.h>
 
 #ifdef __cplusplus
 extern "C" {

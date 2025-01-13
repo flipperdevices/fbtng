@@ -1,0 +1,11 @@
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+
+keyboard_env = distenv.Clone()
+SConscript(
+    "#companions/keyboard/SConscript",
+    exports={"FW_ENV": keyboard_env},
+    variant_dir=Dir("#build/companions/keyboard"),
+    duplicate=0,
+)

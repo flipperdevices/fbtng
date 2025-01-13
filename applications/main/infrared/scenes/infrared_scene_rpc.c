@@ -1,5 +1,5 @@
 #include "../infrared_app_i.h"
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 
 #define TAG "InfraredApp"
 

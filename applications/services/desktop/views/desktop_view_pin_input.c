@@ -1,4 +1,4 @@
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <furi.h>
 #include <gui/view.h>
 #include <gui/elements.h>

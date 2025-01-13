@@ -132,8 +132,10 @@ def CompileIcons(env, target_dir, source_dir, *, icon_bundle_name="assets_icons"
 
 def generate(env):
     env.SetDefault(
-        ASSETS_COMPILER="${FBT_SCRIPT_DIR}/assets.py",
-        NANOPB_COMPILER="${ROOT_DIR}/lib/nanopb/generator/nanopb_generator.py",
+        ASSETS_COMPILER=env.File("${FBT_SCRIPT_DIR}/assets.py").rfile(),
+        NANOPB_COMPILER=env.File(
+            "${ROOT_DIR}/lib/nanopb/generator/nanopb_generator.py"
+        ).rfile(),
     )
     env.AddMethod(CompileIcons)
 

@@ -53,7 +53,7 @@ vars.AddVariables(
     (
         "BLACKMAGIC",
         "Blackmagic probe location",
-        "auto",
+        "auto",  # Look for blackmagic probe on serial ports and local network
     ),
     EnumVariable(
         "SWD_TRANSPORT",

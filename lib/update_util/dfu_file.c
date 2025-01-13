@@ -75,9 +75,9 @@ static DfuUpdateBlockResult dfu_file_perform_task_for_update_pages(
     furi_assert(task);
     furi_assert(header);
     task->progress_cb(0, task->context);
-    const size_t FLASH_PAGE_SIZE = furi_hal_flash_get_page_size();
-    const size_t FLASH_PAGE_ALIGNMENT_MASK = FLASH_PAGE_SIZE - 1;
-    if((header->dwElementAddress & FLASH_PAGE_ALIGNMENT_MASK) != 0) {
+    const size_t DEVICE_FLASH_PAGE_SIZE = furi_hal_flash_get_page_size();
+    const size_t DEVICE_FLASH_PAGE_ALIGNMENT_MASK = DEVICE_FLASH_PAGE_SIZE - 1;
+    if((header->dwElementAddress & DEVICE_FLASH_PAGE_ALIGNMENT_MASK) != 0) {
         /* start address is not aligned by page boundary -- we don't support that. Yet. */
         return UpdateBlockResult_Failed;
     }
@@ -89,12 +89,12 @@ static DfuUpdateBlockResult dfu_file_perform_task_for_update_pages(
         return UpdateBlockResult_Skipped;
     }
 
-    uint8_t* fw_block = malloc(FLASH_PAGE_SIZE);
+    uint8_t* fw_block = malloc(DEVICE_FLASH_PAGE_SIZE);
     size_t bytes_read = 0;
     uint32_t element_offs = 0;
 
     while(element_offs < header->dwElementSize) {
-        uint32_t n_bytes_to_read = FLASH_PAGE_SIZE;
+        uint32_t n_bytes_to_read = DEVICE_FLASH_PAGE_SIZE;
         if((element_offs + n_bytes_to_read) > header->dwElementSize) {
             n_bytes_to_read = header->dwElementSize - element_offs;
         }

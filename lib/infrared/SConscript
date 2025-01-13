@@ -2,8 +2,8 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/infrared/encoder_decoder",
-        "#/lib/infrared/worker",
+        Dir("encoder_decoder").srcnode(),
+        Dir("worker").srcnode(),
     ],
     SDK_HEADERS=[
         File("encoder_decoder/infrared.h"),
@@ -11,7 +11,7 @@ env.Append(
         File("worker/infrared_transmit.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

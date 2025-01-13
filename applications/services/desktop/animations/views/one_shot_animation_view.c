@@ -1,7 +1,7 @@
 
 #include "one_shot_animation_view.h"
 #include <furi.h>
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/view.h>
 #include <gui/icon_i.h>
 #include <stdint.h>

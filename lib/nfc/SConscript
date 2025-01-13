@@ -2,10 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/nfc",
-    ],
-    LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         # Main
@@ -56,6 +53,9 @@ env.Append(
         File("helpers/iso13239_crc.h"),
         File("helpers/nfc_data_generator.h"),
         File("helpers/crypto1.h"),
+    ],
+    LINT_SOURCES=[
+        Dir(".").srcnode(),
     ],
 )
 

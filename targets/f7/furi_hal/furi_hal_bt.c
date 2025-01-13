@@ -15,7 +15,7 @@
 
 #include <furi_hal_version.h>
 #include <furi_hal_power.h>
-#include <furi_hal_bus.c>
+#include <furi_hal_bus.h>
 #include <services/battery_service.h>
 #include <furi.h>
 
@@ -35,6 +35,20 @@ static FuriHalBt furi_hal_bt = {
     .core2_mtx = NULL,
     .stack = FuriHalBtStackUnknown,
 };
+
+void furi_hal_bt_log_c2_state() {
+    const BleGlueHardfaultInfo* fault_info = ble_glue_get_hardfault_info();
+    if(fault_info == NULL) {
+        furi_log_puts("\r\n\tcore2: not faulted");
+    } else {
+        furi_log_puts("\r\n\tcore2: hardfaulted.\r\n\tPC: ");
+        furi_log_puthex32(fault_info->source_pc);
+        furi_log_puts("\r\n\tLR: ");
+        furi_log_puthex32(fault_info->source_lr);
+        furi_log_puts("\r\n\tSP: ");
+        furi_log_puthex32(fault_info->source_sp);
+    }
+}
 
 void furi_hal_bt_init(void) {
     FURI_LOG_I(TAG, "Start BT initialization");

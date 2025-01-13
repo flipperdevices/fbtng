@@ -1,6 +1,6 @@
 #include "pin_code.h"
 
-#include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
 
 #include <furi.h>
 #include <notification/notification_messages.h>

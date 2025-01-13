@@ -4,7 +4,7 @@
 #include <furi_hal_resources.h>
 #include <furi_hal.h>
 
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/icon_i.h>
 #include <gui/icon_animation_i.h>
 
