@@ -2,6 +2,7 @@
 
 #include <furi_hal_rfid.h>
 #include <furi_hal_ibutton.h>
+#include <furi_hal_gpio.h>
 
 #include <toolbox/protocols/protocol_dict.h>
 

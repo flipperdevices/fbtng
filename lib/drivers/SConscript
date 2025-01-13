@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/drivers",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("cc1101_regs.h"),
@@ -10,7 +10,7 @@ env.Append(
         File("st25r3916.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

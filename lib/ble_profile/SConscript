@@ -2,7 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/ble_profile",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("extra_profiles/hid_profile.h"),

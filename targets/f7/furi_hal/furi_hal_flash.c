@@ -2,6 +2,7 @@
 #include <furi_hal_bt.h>
 #include <furi_hal_power.h>
 #include <furi_hal_cortex.h>
+#include <furi_hal_gpio.h>
 #include <furi.h>
 #include <ble/ble.h>
 #include <interface/patterns/ble_thread/shci/shci.h>

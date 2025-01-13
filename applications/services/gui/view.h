@@ -6,9 +6,9 @@
 #pragma once
 
 #include <input/input.h>
+#include <canvas/canvas.h>
 
 #include "icon_animation.h"
-#include "canvas.h"
 
 #include <stddef.h>
 #include <stdint.h>

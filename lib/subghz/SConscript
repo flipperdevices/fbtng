@@ -2,10 +2,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/subghz",
-    ],
-    LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("environment.h"),
@@ -26,6 +23,9 @@ env.Append(
         File("devices/cc1101_configs.h"),
         File("devices/cc1101_int/cc1101_int_interconnect.h"),
         File("subghz_file_encoder_worker.h"),
+    ],
+    LINT_SOURCES=[
+        Dir(".").srcnode(),
     ],
 )
 

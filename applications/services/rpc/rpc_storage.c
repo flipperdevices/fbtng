@@ -5,8 +5,8 @@
 #include <rpc/rpc_i.h>
 #include <storage/filesystem_api_defines.h>
 #include <storage/storage.h>
-#include <lib/toolbox/md5_calc.h>
-#include <lib/toolbox/path.h>
+#include <toolbox/md5_calc.h>
+#include <toolbox/path.h>
 #include <update_util/int_backup.h>
 #include <toolbox/tar/tar_archive.h>
 

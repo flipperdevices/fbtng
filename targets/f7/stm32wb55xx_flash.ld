@@ -111,6 +111,9 @@ SECTIONS {
         . = ALIGN(8);
     } >RAM1
 
+    /* Store remaining heap size as a symbol address */
+    __heap_size__ = __heap_end__ - __heap_start__;
+
     /* Free Flash space, that can be used for internal storage */
     .free_flash(DSECT) : {
         __free_flash_start__ = .;

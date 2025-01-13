@@ -2,7 +2,7 @@
 
 #include <m-array.h>
 
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <gui/elements.h>
 
 #include <toolbox/m_cstr_dup.h>

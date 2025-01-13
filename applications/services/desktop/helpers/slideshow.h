@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 
 typedef struct Slideshow Slideshow;
 

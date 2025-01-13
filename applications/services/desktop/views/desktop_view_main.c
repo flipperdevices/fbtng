@@ -1,7 +1,7 @@
 #include <gui/gui_i.h>
 #include <gui/view.h>
 #include <gui/elements.h>
-#include <gui/canvas.h>
+#include <canvas/canvas.h>
 #include <furi.h>
 #include <input/input.h>
 #include <dolphin/dolphin.h>

@@ -4,8 +4,8 @@
 #include <alt_boot.h>
 #include <assets_icons.h>
 #include <toolbox/compress.h>
-#include <gui/canvas.h>
-#include <gui/canvas_i.h>
+#include <canvas/canvas.h>
+#include <canvas/canvas_i.h>
 
 void flipper_boot_dfu_show_splash(void) {
     // Initialize

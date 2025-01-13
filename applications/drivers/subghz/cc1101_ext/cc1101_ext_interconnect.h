@@ -1,5 +1,5 @@
 #pragma once
-#include <lib/subghz/devices/types.h>
+#include <subghz/devices/types.h>
 
 #define SUBGHZ_DEVICE_CC1101_EXT_NAME "cc1101_ext"
 

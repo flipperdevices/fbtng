@@ -3,19 +3,19 @@
 #include <furi.h>
 #include <furi_hal.h>
 
-#include <applications/drivers/subghz/cc1101_ext/cc1101_ext_interconnect.h>
+#include <subghz/cc1101_ext/cc1101_ext_interconnect.h>
+#include <subghz/devices/cc1101_int/cc1101_int_interconnect.h>
 
-#include <lib/subghz/subghz_keystore.h>
-#include <lib/subghz/receiver.h>
-#include <lib/subghz/transmitter.h>
-#include <lib/subghz/subghz_file_encoder_worker.h>
-#include <lib/subghz/protocols/protocol_items.h>
-#include <lib/subghz/devices/cc1101_int/cc1101_int_interconnect.h>
-#include <lib/subghz/devices/devices.h>
-#include <lib/subghz/devices/cc1101_configs.h>
+#include <subghz/subghz_keystore.h>
+#include <subghz/receiver.h>
+#include <subghz/transmitter.h>
+#include <subghz/subghz_file_encoder_worker.h>
+#include <subghz/protocols/protocol_items.h>
+#include <subghz/devices/devices.h>
+#include <subghz/devices/cc1101_configs.h>
 
-#include <lib/toolbox/args.h>
-#include <lib/toolbox/strint.h>
+#include <toolbox/args.h>
+#include <toolbox/strint.h>
 
 #include "helpers/subghz_chat.h"
 

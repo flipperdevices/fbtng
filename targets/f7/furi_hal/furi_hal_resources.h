@@ -2,6 +2,7 @@
 
 #include <furi.h>
 #include <furi_hal_adc.h>
+#include <furi_hal_gpio.h>
 
 #ifdef __cplusplus
 extern "C" {

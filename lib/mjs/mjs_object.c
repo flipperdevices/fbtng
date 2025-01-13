@@ -9,7 +9,7 @@
 #include "mjs_primitive.h"
 #include "mjs_string.h"
 #include "mjs_util.h"
-#include "furi.h"
+#include <furi.h>
 
 #include "common/mg_str.h"
 

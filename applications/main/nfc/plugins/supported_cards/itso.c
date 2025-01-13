@@ -2,8 +2,8 @@
 #include "nfc_supported_card_plugin.h"
 
 #include <flipper_application/flipper_application.h>
-#include <lib/nfc/protocols/mf_desfire/mf_desfire.h>
-#include <lib/toolbox/strint.h>
+#include <nfc/protocols/mf_desfire/mf_desfire.h>
+#include <toolbox/strint.h>
 
 #include <applications/services/locale/locale.h>
 #include <datetime/datetime.h>

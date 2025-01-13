@@ -4,6 +4,8 @@
 #include <furi_hal_bt.h>
 #include <furi_hal_crypto.h>
 #include <furi_hal_rtc.h>
+#include <furi_hal_nvm.h>
+#include <furi_hal_memory.h>
 
 #include <interface/patterns/ble_thread/shci/shci.h>
 #include <furi.h>
@@ -332,7 +334,13 @@ void furi_hal_info_get(PropertyValueCallback out, char sep, void* context) {
         furi_hal_rtc_is_flag_set(FuriHalRtcFlagStealthMode));
 
     property_value_out(
-        &property_context, "%u", 3, "system", "heap", "track", furi_hal_rtc_get_heap_track_mode());
+        &property_context,
+        "%u",
+        3,
+        "system",
+        "heap",
+        "track",
+        furi_hal_memory_get_heap_track_mode());
     property_value_out(&property_context, "%u", 2, "system", "boot", furi_hal_rtc_get_boot_mode());
     property_value_out(
         &property_context,

@@ -1,8 +1,8 @@
 #include <furi.h>
 #include <furi_hal.h>
 #include <cli/cli.h>
-#include <lib/toolbox/args.h>
-#include <lib/toolbox/hex.h>
+#include <toolbox/args.h>
+#include <toolbox/hex.h>
 
 #include <furi_hal_nfc.h>
 

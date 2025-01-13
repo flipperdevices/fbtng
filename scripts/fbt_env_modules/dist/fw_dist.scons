@@ -1,0 +1,8 @@
+Import("FW_ENV", "DIST_ENV")
+distenv, firmware_env = DIST_ENV, FW_ENV
+
+
+
+# Target for copying & renaming binaries to dist folder
+# basic_dist = distenv.DistCommand("fw_dist", distenv["DIST_DEPENDS"])
+# distenv.Default(basic_dist)

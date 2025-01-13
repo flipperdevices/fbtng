@@ -1,5 +1,5 @@
 #include "came_atomo.h"
-#include <lib/toolbox/manchester_decoder.h>
+#include <toolbox/manchester_decoder.h>
 #include "../blocks/const.h"
 #include "../blocks/decoder.h"
 #include "../blocks/encoder.h"

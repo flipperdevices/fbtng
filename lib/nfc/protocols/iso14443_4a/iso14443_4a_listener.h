@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lib/nfc/protocols/iso14443_3a/iso14443_3a_listener.h>
+#include <nfc/protocols/iso14443_3a/iso14443_3a_listener.h>
 
 #include "iso14443_4a.h"
 

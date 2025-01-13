@@ -1,7 +1,8 @@
 #include "args.h"
 #include "hex.h"
 #include "strint.h"
-#include "m-core.h"
+
+#include <m-core.h>
 
 size_t args_get_first_word_length(FuriString* args) {
     size_t ws = furi_string_search_char(args, ' ');

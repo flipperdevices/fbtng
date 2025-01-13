@@ -4,7 +4,7 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/nanopb",
+        Dir("nanopb").srcnode(),
     ],
     CPPDEFINES=[
         "PB_ENABLE_MALLOC",
@@ -19,6 +19,12 @@ env.Append(
 
 libenv = env.Clone(FW_LIB_NAME="nanopb")
 libenv.ApplyLibFlags()
+
+libenv.AppendUnique(
+    CPPFLAGS=[
+        "-Wno-undef",
+    ]
+)
 
 sources = Glob(
     "nanopb/*.c*",

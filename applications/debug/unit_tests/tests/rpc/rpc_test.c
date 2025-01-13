@@ -8,9 +8,9 @@
 #include <loader/loader.h>
 #include <storage/filesystem_api_defines.h>
 
-#include <lib/toolbox/api_lock.h>
-#include <lib/toolbox/md5_calc.h>
-#include <lib/toolbox/path.h>
+#include <toolbox/api_lock.h>
+#include <toolbox/md5_calc.h>
+#include <toolbox/path.h>
 
 #include <m-list.h>
 #include "../test.h" // IWYU pragma: keep

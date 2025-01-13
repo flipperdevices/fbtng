@@ -151,6 +151,7 @@ typedef enum {
     StorageCommandCommonResolvePath,
     StorageCommandSDMount,
     StorageCommandCommonEquivalentPath,
+    StorageCommandSDPresenceChanged,
 } StorageCommand;
 
 typedef struct {

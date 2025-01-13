@@ -78,6 +78,7 @@ def _resources_dist_action(target, source, env):
 def generate(env, **kw):
     env.SetDefault(
         ASSETS_COMPILER="${FBT_SCRIPT_DIR}/assets.py",
+        RESOURCES_ROOT="${BUILD_DIR}/resources",
     )
 
     if not env["VERBOSE"]:

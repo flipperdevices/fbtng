@@ -9,6 +9,18 @@ App(
     stack_size=3 * 1024,
     order=120,
     sdk_headers=["storage.h"],
+    targets=["f7", "f18"],
+    sources=[
+        "filesystem_api.c",
+        "storage.c",
+        "storage_external_api.c",
+        "storage_internal_api.c",
+        "storage_glue.c",
+        "storage_processing.c",
+        "storage_sd_api.c",
+        "storages/storage_ext.c",
+        "storages/sd_notify.c",
+    ],
 )
 
 App(
@@ -17,4 +29,6 @@ App(
     entry_point="storage_on_system_start",
     requires=["storage"],
     order=90,
+    targets=["f7", "f18"],
+    sources=["storage_cli.c"],
 )

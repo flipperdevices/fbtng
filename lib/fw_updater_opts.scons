@@ -1,0 +1,24 @@
+Import("env")
+
+
+env.AppendUnique(
+    CPPDEFINES=[
+        "FW_CFG_${FIRMWARE_APP_SET}",
+        "FW_ORIGIN_${FIRMWARE_ORIGIN}",
+    ]
+)
+
+if env["IS_BASE_FIRMWARE"]:
+    env.Append(
+        RAM_EXEC=False,
+    )
+else:
+    env.Append(
+        RAM_EXEC=True,
+        CPPDEFINES=[
+            "FURI_RAM_EXEC",
+        ],
+    )
+    env.Replace(
+        LINKER_SCRIPT_PATH=env["TARGET_CFG"].linker_script_ram,
+    )

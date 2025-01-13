@@ -20,7 +20,7 @@ extern "C" {
  */
 bool update_operation_get_package_dir_name(const char* full_path, FuriString* out_manifest_dir);
 
-/* When updating this enum, also update assets/protobuf/system.proto */
+/* When updating this enum, also update assets/protobuf_rpc/system.proto */
 typedef enum {
     UpdatePrepareResultOK,
     UpdatePrepareResultManifestPathInvalid,

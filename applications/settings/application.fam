@@ -8,4 +8,6 @@ App(
         "clock_settings",
         "about",
     ],
+    targets=["f7", "f18"],
 )
+

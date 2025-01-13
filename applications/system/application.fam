@@ -7,4 +7,5 @@ App(
         "js_app",
         # "archive",
     ],
+    targets=["f7", "f18"],
 )

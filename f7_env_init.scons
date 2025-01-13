@@ -1,0 +1,18 @@
+Import("env")
+
+from pathlib import Path
+
+# Register all modules in env_modules as dist and fw env components
+for dist_module in env.Glob("site_scons/f64_env_modules/dist/*.scons"):
+    module_basename = Path(dist_module.name).stem
+    env.RegisterComponent(f"dist_{module_basename}", dist_module.srcnode())
+
+SConscript(
+    "#/lib/register_f7_libs.scons",
+    exports={"env": env},
+    duplicate=0,
+)
+
+env.AppendUnique(
+    LINT_SOURCES=[Dir("applications").rdir()],
+)

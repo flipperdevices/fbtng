@@ -1,6 +1,6 @@
 #include "system_settings.h"
 #include <loader/loader.h>
-#include <lib/toolbox/value_index.h>
+#include <toolbox/value_index.h>
 #include <locale/locale.h>
 
 const char* const log_level_text[] = {
@@ -297,8 +297,10 @@ SystemSettings* system_settings_alloc(void) {
         heap_trace_mode_changed,
         app);
     value_index = value_index_uint32(
-        furi_hal_rtc_get_heap_track_mode(), heap_trace_mode_value, COUNT_OF(heap_trace_mode_text));
-    furi_hal_rtc_set_heap_track_mode(heap_trace_mode_value[value_index]);
+        furi_hal_memory_get_heap_track_mode(),
+        heap_trace_mode_value,
+        COUNT_OF(heap_trace_mode_text));
+    furi_hal_memory_set_heap_track_mode(heap_trace_mode_value[value_index]);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, heap_trace_mode_text[value_index]);
 

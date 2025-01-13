@@ -1,5 +1,5 @@
 entry,status,name,type,params
-Version,+,78.1,,
+Version,+,80.0,,
 Header,+,applications/drivers/subghz/cc1101_ext/cc1101_ext_interconnect.h,,
 Header,+,applications/services/bt/bt_service/bt.h,,
 Header,+,applications/services/bt/bt_service/bt_keys_storage.h,,
@@ -246,7 +246,7 @@ Header,+,lib/toolbox/strint.h,,
 Header,+,lib/toolbox/tar/tar_archive.h,,
 Header,+,lib/toolbox/value_index.h,,
 Header,+,lib/toolbox/varint.h,,
-Header,+,lib/toolbox/version.h,,
+Header,+,lib/version/version.h,,
 Header,+,targets/f7/ble_glue/furi_ble/event_dispatcher.h,,
 Header,+,targets/f7/ble_glue/furi_ble/gatt.h,,
 Header,+,targets/f7/ble_glue/furi_ble/profile_interface.h,,
@@ -254,57 +254,24 @@ Header,+,targets/f7/ble_glue/profiles/serial_profile.h,,
 Header,+,targets/f7/ble_glue/services/battery_service.h,,
 Header,+,targets/f7/ble_glue/services/dev_info_service.h,,
 Header,+,targets/f7/ble_glue/services/serial_service.h,,
-Header,+,targets/f7/furi_hal/furi_hal_bus.h,,
-Header,+,targets/f7/furi_hal/furi_hal_clock.h,,
-Header,+,targets/f7/furi_hal/furi_hal_dma.h,,
-Header,+,targets/f7/furi_hal/furi_hal_flash.h,,
-Header,+,targets/f7/furi_hal/furi_hal_gpio.h,,
-Header,+,targets/f7/furi_hal/furi_hal_i2c_config.h,,
-Header,+,targets/f7/furi_hal/furi_hal_i2c_types.h,,
-Header,+,targets/f7/furi_hal/furi_hal_ibutton.h,,
-Header,+,targets/f7/furi_hal/furi_hal_idle_timer.h,,
-Header,+,targets/f7/furi_hal/furi_hal_interrupt.h,,
-Header,+,targets/f7/furi_hal/furi_hal_os.h,,
+Header,+,targets/f7/furi_hal/furi_hal_mpu.h,,
 Header,+,targets/f7/furi_hal/furi_hal_pwm.h,,
-Header,+,targets/f7/furi_hal/furi_hal_resources.h,,
-Header,+,targets/f7/furi_hal/furi_hal_rfid.h,,
-Header,+,targets/f7/furi_hal/furi_hal_rtc.h,,
-Header,+,targets/f7/furi_hal/furi_hal_serial.h,,
-Header,+,targets/f7/furi_hal/furi_hal_serial_control.h,,
-Header,+,targets/f7/furi_hal/furi_hal_serial_types.h,,
-Header,+,targets/f7/furi_hal/furi_hal_spi_config.h,,
-Header,+,targets/f7/furi_hal/furi_hal_spi_types.h,,
-Header,+,targets/f7/furi_hal/furi_hal_subghz.h,,
-Header,+,targets/f7/furi_hal/furi_hal_target_hw.h,,
 Header,+,targets/f7/furi_hal/furi_hal_usb_cdc.h,,
+Header,+,targets/f7/furi_hal/furi_hal_usb_hid_u2f.h,,
 Header,+,targets/f7/platform_specific/cxx_virtual_stub.h,,
 Header,+,targets/f7/platform_specific/intrinsic_export.h,,
 Header,+,targets/f7/platform_specific/math_wrapper.h,,
 Header,+,targets/furi_hal_include/furi_hal.h,,
-Header,+,targets/furi_hal_include/furi_hal_adc.h,,
-Header,+,targets/furi_hal_include/furi_hal_bt.h,,
+Header,+,targets/furi_hal_include/furi_hal_bus.h,,
 Header,+,targets/furi_hal_include/furi_hal_cortex.h,,
-Header,+,targets/furi_hal_include/furi_hal_crypto.h,,
 Header,+,targets/furi_hal_include/furi_hal_debug.h,,
-Header,+,targets/furi_hal_include/furi_hal_i2c.h,,
+Header,+,targets/furi_hal_include/furi_hal_flash.h,,
 Header,+,targets/furi_hal_include/furi_hal_info.h,,
-Header,+,targets/furi_hal_include/furi_hal_infrared.h,,
-Header,+,targets/furi_hal_include/furi_hal_light.h,,
+Header,+,targets/furi_hal_include/furi_hal_interrupt.h,,
 Header,+,targets/furi_hal_include/furi_hal_memory.h,,
-Header,+,targets/furi_hal_include/furi_hal_mpu.h,,
-Header,+,targets/furi_hal_include/furi_hal_nfc.h,,
-Header,+,targets/furi_hal_include/furi_hal_power.h,,
-Header,+,targets/furi_hal_include/furi_hal_random.h,,
-Header,+,targets/furi_hal_include/furi_hal_region.h,,
-Header,+,targets/furi_hal_include/furi_hal_sd.h,,
-Header,+,targets/furi_hal_include/furi_hal_speaker.h,,
-Header,+,targets/furi_hal_include/furi_hal_spi.h,,
-Header,+,targets/furi_hal_include/furi_hal_usb.h,,
-Header,+,targets/furi_hal_include/furi_hal_usb_ccid.h,,
-Header,+,targets/furi_hal_include/furi_hal_usb_hid.h,,
-Header,+,targets/furi_hal_include/furi_hal_usb_hid_u2f.h,,
+Header,+,targets/furi_hal_include/furi_hal_os.h,,
+Header,+,targets/furi_hal_include/furi_hal_rtc.h,,
 Header,+,targets/furi_hal_include/furi_hal_version.h,,
-Header,+,targets/furi_hal_include/furi_hal_vibro.h,,
 Function,-,LL_ADC_CommonDeInit,ErrorStatus,ADC_Common_TypeDef*
 Function,-,LL_ADC_CommonInit,ErrorStatus,"ADC_Common_TypeDef*, const LL_ADC_CommonInitTypeDef*"
 Function,-,LL_ADC_CommonStructInit,void,LL_ADC_CommonInitTypeDef*
@@ -333,7 +300,7 @@ Function,-,LL_I2C_DeInit,ErrorStatus,const I2C_TypeDef*
 Function,+,LL_I2C_Init,ErrorStatus,"I2C_TypeDef*, const LL_I2C_InitTypeDef*"
 Function,-,LL_I2C_StructInit,void,LL_I2C_InitTypeDef*
 Function,-,LL_Init1msTick,void,uint32_t
-Function,+,LL_LPTIM_DeInit,ErrorStatus,LPTIM_TypeDef*
+Function,-,LL_LPTIM_DeInit,ErrorStatus,LPTIM_TypeDef*
 Function,-,LL_LPTIM_Disable,void,LPTIM_TypeDef*
 Function,+,LL_LPTIM_Init,ErrorStatus,"LPTIM_TypeDef*, const LL_LPTIM_InitTypeDef*"
 Function,-,LL_LPTIM_StructInit,void,LL_LPTIM_InitTypeDef*
@@ -385,7 +352,7 @@ Function,-,LL_SetFlashLatency,ErrorStatus,uint32_t
 Function,+,LL_SetSystemCoreClock,void,uint32_t
 Function,-,LL_TIM_BDTR_Init,ErrorStatus,"TIM_TypeDef*, const LL_TIM_BDTR_InitTypeDef*"
 Function,-,LL_TIM_BDTR_StructInit,void,LL_TIM_BDTR_InitTypeDef*
-Function,+,LL_TIM_DeInit,ErrorStatus,TIM_TypeDef*
+Function,-,LL_TIM_DeInit,ErrorStatus,TIM_TypeDef*
 Function,-,LL_TIM_ENCODER_Init,ErrorStatus,"TIM_TypeDef*, const LL_TIM_ENCODER_InitTypeDef*"
 Function,-,LL_TIM_ENCODER_StructInit,void,LL_TIM_ENCODER_InitTypeDef*
 Function,-,LL_TIM_HALLSENSOR_Init,ErrorStatus,"TIM_TypeDef*, const LL_TIM_HALLSENSOR_InitTypeDef*"
@@ -823,7 +790,6 @@ Function,+,canvas_draw_str,void,"Canvas*, int32_t, int32_t, const char*"
 Function,+,canvas_draw_str_aligned,void,"Canvas*, int32_t, int32_t, Align, Align, const char*"
 Function,+,canvas_draw_triangle,void,"Canvas*, int32_t, int32_t, size_t, size_t, CanvasDirection"
 Function,+,canvas_draw_xbm,void,"Canvas*, int32_t, int32_t, size_t, size_t, const uint8_t*"
-Function,+,canvas_draw_xbm_ex,void,"Canvas*, int32_t, int32_t, size_t, size_t, IconRotation, const uint8_t*"
 Function,+,canvas_get_font_params,const CanvasFontParameters*,"const Canvas*, Font"
 Function,+,canvas_glyph_width,size_t,"Canvas*, uint16_t"
 Function,+,canvas_height,size_t,const Canvas*
@@ -1214,6 +1180,7 @@ Function,-,ftrylockfile,int,FILE*
 Function,-,funlockfile,void,FILE*
 Function,-,funopen,FILE*,"const void*, int (*)(void*, char*, int), int (*)(void*, const char*, int), fpos_t (*)(void*, fpos_t, int), int (*)(void*)"
 Function,-,furi_background,void,
+Function,-,furi_crash_handler,void,
 Function,+,furi_delay_ms,void,uint32_t
 Function,+,furi_delay_tick,void,uint32_t
 Function,+,furi_delay_until_tick,FuriStatus,uint32_t
@@ -1229,6 +1196,8 @@ Function,+,furi_event_loop_free,void,FuriEventLoop*
 Function,+,furi_event_loop_is_subscribed,_Bool,"FuriEventLoop*, FuriEventLoopObject*"
 Function,+,furi_event_loop_pend_callback,void,"FuriEventLoop*, FuriEventLoopPendingCallback, void*"
 Function,+,furi_event_loop_run,void,FuriEventLoop*
+Function,+,furi_event_loop_set_custom_event,void,"FuriEventLoop*, uint32_t"
+Function,+,furi_event_loop_set_custom_event_callback,void,"FuriEventLoop*, FuriEventLoopCustomCallback, void*"
 Function,+,furi_event_loop_stop,void,FuriEventLoop*
 Function,+,furi_event_loop_subscribe_event_flag,void,"FuriEventLoop*, FuriEventFlag*, FuriEventLoopEvent, FuriEventLoopEventCallback, void*"
 Function,+,furi_event_loop_subscribe_message_queue,void,"FuriEventLoop*, FuriMessageQueue*, FuriEventLoopEvent, FuriEventLoopEventCallback, void*"
@@ -1278,6 +1247,7 @@ Function,+,furi_hal_bt_is_alive,_Bool,
 Function,+,furi_hal_bt_is_gatt_gap_supported,_Bool,
 Function,+,furi_hal_bt_is_testing_supported,_Bool,
 Function,+,furi_hal_bt_lock_core2,void,
+Function,-,furi_hal_bt_log_c2_state,void,
 Function,+,furi_hal_bt_nvm_sram_sem_acquire,void,
 Function,+,furi_hal_bt_nvm_sram_sem_release,void,
 Function,+,furi_hal_bt_reinit,void,
@@ -1441,8 +1411,12 @@ Function,+,furi_hal_light_sequence,void,const char*
 Function,+,furi_hal_light_set,void,"Light, uint8_t"
 Function,+,furi_hal_memory_alloc,void*,size_t
 Function,+,furi_hal_memory_get_free,size_t,
+Function,+,furi_hal_memory_get_heap_track_mode,FuriHalMemoryHeapTrackMode,
+Function,+,furi_hal_memory_get_region,const FuriHalMemoryRegion*,uint32_t
+Function,+,furi_hal_memory_get_region_count,uint32_t,
 Function,+,furi_hal_memory_init,void,
 Function,+,furi_hal_memory_max_pool_block,size_t,
+Function,+,furi_hal_memory_set_heap_track_mode,void,FuriHalMemoryHeapTrackMode
 Function,+,furi_hal_mpu_disable,void,
 Function,+,furi_hal_mpu_enable,void,
 Function,-,furi_hal_mpu_init,void,
@@ -1488,6 +1462,8 @@ Function,+,furi_hal_nfc_timer_block_tx_stop,void,
 Function,+,furi_hal_nfc_timer_fwt_start,void,uint32_t
 Function,+,furi_hal_nfc_timer_fwt_stop,void,
 Function,+,furi_hal_nfc_trx_reset,FuriHalNfcError,
+Function,-,furi_hal_nvm_init,void,
+Function,-,furi_hal_nvm_init_early,void,
 Function,-,furi_hal_os_init,void,
 Function,+,furi_hal_os_tick,void,
 Function,+,furi_hal_power_check_otg_fault,_Bool,
@@ -1747,7 +1723,9 @@ Function,+,furi_log_level_from_string,_Bool,"const char*, FuriLogLevel*"
 Function,+,furi_log_level_to_string,_Bool,"FuriLogLevel, const char**"
 Function,+,furi_log_print_format,void,"FuriLogLevel, const char*, const char*, ..."
 Function,+,furi_log_print_raw_format,void,"FuriLogLevel, const char*, ..."
+Function,+,furi_log_puthex32,void,uint32_t
 Function,+,furi_log_puts,void,const char*
+Function,+,furi_log_putu32,void,uint32_t
 Function,+,furi_log_remove_handler,_Bool,FuriLogHandler
 Function,+,furi_log_set_level,void,FuriLogLevel
 Function,+,furi_log_tx,void,"const uint8_t*, size_t"
@@ -2054,6 +2032,8 @@ Function,+,infrared_worker_tx_stop,void,InfraredWorker*
 Function,-,initstate,char*,"unsigned, char*, size_t"
 Function,+,input_get_key_name,const char*,InputKey
 Function,+,input_get_type_name,const char*,InputType
+Function,-,input_key_press,void,InputKey
+Function,-,input_key_release,void,InputKey
 Function,-,iprintf,int,"const char*, ..."
 Function,-,isalnum,int,int
 Function,-,isalnum_l,int,"int, locale_t"

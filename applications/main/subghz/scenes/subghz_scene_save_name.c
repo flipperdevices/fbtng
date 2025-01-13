@@ -1,7 +1,7 @@
 #include "../subghz_i.h"
 #include "subghz/types.h"
 #include "../helpers/subghz_custom_event.h"
-#include <lib/subghz/protocols/raw.h>
+#include <subghz/protocols/raw.h>
 #include <gui/modules/validators.h>
 #include <dolphin/dolphin.h>
 #include <toolbox/name_generator.h>

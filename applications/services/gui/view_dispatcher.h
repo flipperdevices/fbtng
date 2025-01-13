@@ -18,6 +18,7 @@
 #include "view.h"
 #include "gui.h"
 #include "scene_manager.h"
+#include <furi.h>
 
 #ifdef __cplusplus
 extern "C" {

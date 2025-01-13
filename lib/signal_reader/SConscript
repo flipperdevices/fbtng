@@ -2,13 +2,13 @@ Import("env")
 
 env.Append(
     CPPPATH=[
-        "#/lib/signal_reader",
+        Dir(".").srcnode(),
     ],
     SDK_HEADERS=[
         File("signal_reader.h"),
     ],
     LINT_SOURCES=[
-        Dir("."),
+        Dir(".").srcnode(),
     ],
 )
 

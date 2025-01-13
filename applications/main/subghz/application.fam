@@ -14,7 +14,7 @@ App(
     ],
     requires=["region"],
     resources="resources",
-    fap_libs=["assets", "hwdrivers"],
+    fap_libs=["icon_assets", "hwdrivers"],
     fap_icon="icon.png",
     fap_category="Sub-GHz",
 )
