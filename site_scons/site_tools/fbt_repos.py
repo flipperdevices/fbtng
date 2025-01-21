@@ -42,10 +42,9 @@ def initialize_repo_dir(env, repo_dir):
 
 
 def InitializeRepositories(env):
-    # TODO: also iterate over repos supplied via command line (-Y)
-    for repo_path in env.get("FBT_EXTRA_REPOS", []):
+    repos = env.GetOption("repository") + env.get("FBT_EXTRA_REPOS", [])
+    for repo_path in repos:
         initialize_repo_dir(env, env.Dir(repo_path))
-
 
 def generate(env):
     env.SetDefault(
