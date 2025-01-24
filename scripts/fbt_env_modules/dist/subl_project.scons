@@ -1,5 +1,6 @@
 import os
 from SCons.Node.FS import default_fs
+from pathlib import Path
 
 Import("FW_ENV", "DIST_ENV")
 distenv, firmware_env = DIST_ENV, FW_ENV
@@ -10,11 +11,16 @@ template_substs = {
     "FBT_PLATFORM_EXECUTABLE_EXT": ".exe" if os.name == "nt" else "",
     "TARGET_HW": firmware_env.subst("${TARGET_HW}"),
     "FWENV": firmware_env,
-    "folders": [".", *default_fs.Top.repositories],
+    "folders": list(
+        map(
+            lambda x: Path(distenv["PROJECT_ROOT"].rel_path(x)).as_posix(),
+            [Dir("#"), *default_fs.Top.repositories],
+        )
+    ),
 }
 
 subl_dist = subl_distenv.TempliteFile(
-    subl_distenv.Dir("#").File(".sublime-project"),
+    subl_distenv.Dir("${PROJECT_ROOT}").File(".sublime-project"),
     subl_distenv.Dir("#").File(".sublime-project.tmpl"),
     SUBST_DICT=template_substs,
 )
