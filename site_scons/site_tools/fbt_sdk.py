@@ -179,8 +179,9 @@ class SdkTreeBuilder:
 
     def deploy_action(self):
         self._parse_sdk_depends()
-        self._run_deploy_commands()
-        self._generate_sdk_meta()
+        # FIXME: disabled for now until proper flattening is implemented
+        # self._run_deploy_commands()
+        # self._generate_sdk_meta()
 
 
 def _deploy_sdk_header_tree_action(target, source, env):

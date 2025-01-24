@@ -1,8 +1,0 @@
-Import("env")
-
-env.Append(
-    CPPPATH=[
-        Dir("./cmsis_core/device").rdir(),
-        Dir("./cmsis_core/include").rdir(),
-    ]
-)

@@ -20,7 +20,7 @@ def GetProjetDirName(env, project=None):
 
 def create_fw_build_targets(env, configuration_name, extra_params):
     flavor = GetProjetDirName(env, configuration_name)
-    build_dir = env.Dir("#build").Dir(flavor)
+    build_dir = env.Dir("${PROJECT_ROOT}/build").Dir(flavor)
     fw_build_meta = dict(extra_params or {})
     fw_build_meta.update(
         {

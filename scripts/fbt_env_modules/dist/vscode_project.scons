@@ -8,9 +8,13 @@ distenv, firmware_env = DIST_ENV, FW_ENV
 
 vscode_distenv = distenv.Clone(tools=["fbt_templite"])
 
+
+config_dist_dir = vscode_distenv.Dir("${PROJECT_ROOT}/.vscode")
+vscode_distenv.Replace(VSCODE_ROOT=config_dist_dir)
+
 # Prepare vscode environment
 vscode_dist = vscode_distenv.Install(
-    "#.vscode",
+    "${VSCODE_ROOT}",
     [
         vscode_distenv.Glob("#.vscode/template/*.json", exclude="*.tmpl"),
         vscode_distenv.Glob("#.vscode/template/${LANG_SERVER}/*.json"),
@@ -18,8 +22,6 @@ vscode_dist = vscode_distenv.Install(
 )
 
 probes = list(filter(lambda x: isinstance(x, OpenOCDInterface), INTERFACES.values()))
-
-config_dist_dir = vscode_distenv.Dir("#.vscode")
 
 template_substs = {
     "FBT_PLATFORM_EXECUTABLE_EXT": ".exe" if os.name == "nt" else "",
