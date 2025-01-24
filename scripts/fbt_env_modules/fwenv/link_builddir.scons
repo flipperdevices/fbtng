@@ -9,7 +9,7 @@ link_dir_command = fwenv["FW_LINK_LATEST"] = fwenv.PhonyTarget(
     fwenv.subst("${FIRMWARE_BUILD_CFG}_latest"),
     Action(
         lambda source, target, env: link_dirs(
-            env, dst=env.Dir("#build/latest"), src=fwenv["BUILD_DIR"]
+            env, dst=env.Dir("${BUILD_DIR}/../latest"), src=fwenv["BUILD_DIR"]
         ),
         None,
     ),
