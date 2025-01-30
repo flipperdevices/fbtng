@@ -12,7 +12,7 @@ def FindComponentSconscript(env, module, dir_node=None):
 
     # We cannot operate on scons nodes here, because mere construction of the
     # node will leave a "virtual" node that will be later globbable.
-    paths_to_check = [f"{module}/SConscript", f"{module}.scons"]
+    paths_to_check = [f"{module}.scons", f"{module}/SConscript"]
     for repo_dir in dir_node.get_all_rdirs():
         # print(f"FindComponentSconscript: {module} {dir_node} {repo_dir}")
         for path in paths_to_check:
