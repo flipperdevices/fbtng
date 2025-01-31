@@ -11,6 +11,7 @@ from flipper.debug.extensions import (
     CoreConfigurationExtension,
     RemoteParametesExtension,
 )
+from fwinterface import OpenOCDAdapter, OpenOCDCommandLineParameter
 
 
 class FlashExtension(BaseDebugExtension):
@@ -47,17 +48,43 @@ class Main(App):
         GdbConfigurationManager.configure_arg_parser(self.parser)
         self.parser.set_defaults(func=self.run)
 
+    def get_faster_flash_cmdline(self, adapter) -> list[str]:
+        if isinstance(adapter, OpenOCDAdapter):
+            flash_cmd = OpenOCDCommandLineParameter(
+                OpenOCDCommandLineParameter.Type.COMMAND,
+                " ".join(
+                    [
+                        "program",
+                        f'"{self.args.file}"',
+                        "verify" if self.args.verify else "",
+                        "reset",
+                        "exit",
+                    ]
+                ),
+            )
+
+            return [*adapter.to_args(), *flash_cmd.to_str_args()]
+        return []
+
     def run(self):
         signal.signal(signal.SIGINT, signal.SIG_IGN)
 
         mgr = GdbConfigurationManager()
         proc = None
         try:
-            gdb_args = [self.GDB_BIN]
-            gdb_args.extend(mgr.get_gdb_args(self.args))
-            self.logger.debug(f"Running: {gdb_args}")
-            proc = subprocess.run(gdb_args)
-            return 0
+            remote_mgr = mgr.get_extension(RemoteParametesExtension)
+            print(remote_mgr._dicover_adapter_for_args(self.args))
+            if flash_cmd := self.get_faster_flash_cmdline(
+                remote_mgr._dicover_adapter_for_args(self.args)
+            ):
+                self.logger.info(f"Using fast flash command line: {flash_cmd}")
+            else:
+                flash_cmd = [self.GDB_BIN]
+                flash_cmd.extend(mgr.get_gdb_args(self.args))
+
+            self.logger.debug(f"Running: {flash_cmd}")
+            proc = subprocess.run(flash_cmd, check=True)
+            return proc.returncode
         except Exception as e:
             self.logger.error(f"Error: {e}")
             if self.args.debug:

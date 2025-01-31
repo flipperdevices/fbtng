@@ -44,6 +44,12 @@ class GdbConfigurationManager:
     def __init__(self):
         self.extensions = [extension() for extension in self.extension_classes]
 
+    def get_extension(self, extension_kls: BaseDebugExtension):
+        for extension in self.extensions:
+            if isinstance(extension, extension_kls):
+                return extension
+        return None
+
     @classmethod
     def configure_arg_parser(cls, parser: argparse.ArgumentParser):
         for extension_cls in cls.extension_classes:

@@ -4,11 +4,11 @@ from pathlib import Path
 from typing import Optional
 
 
-@dataclass
+@dataclass(frozen=True)
 class FbtHardwarePlatform:
     name: str
     openocd_interface_file: Optional[Path]
-    openocd_init_commands: list[str]
+    openocd_init_commands: tuple[str]
     flash_address: Optional[int]
     ram_address: Optional[int]
     svd_file: Optional[Path]
@@ -24,7 +24,7 @@ class FbtHardwarePlatform:
                 if (cfg := oocd_params.get("chip_config", None))
                 else None
             ),
-            oocd_params.get("init_commands", []),
+            tuple(oocd_params.get("init_commands", [])),
             flash_address=int(param_dict.get("flash_address", "0x0"), 16),
             ram_address=int(param_dict.get("ram_address", "0x0"), 16),
             svd_file=(

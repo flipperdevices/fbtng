@@ -1,10 +1,11 @@
 import argparse
 import pathlib
 from collections.abc import Iterable
+from functools import lru_cache
 from typing import Optional
 
 from flipper.utils.hw_platform import FbtHardwarePlatform
-from fwinterface import INTERFACES, discover_probes
+from fwinterface import INTERFACES, BaseAdapter, discover_probes
 
 from . import BaseDebugExtension, GdbParam
 
@@ -41,30 +42,25 @@ class RemoteParametesExtension(BaseDebugExtension):
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         self._debug_root = args.root
-        for arg in self._get_remote(args):
+        for arg in self._build_remote_args(args):
             yield GdbParam(arg, True)
 
-    def _get_remote(self, args: argparse.Namespace):
+    def _build_remote_args(self, args: argparse.Namespace) -> Iterable[str]:
+        return self._dicover_adapter_for_args(args).to_connection_args()
+
+    def _dicover_adapter_for_args(self, args: argparse.Namespace) -> BaseAdapter:
         serial = args.serial[0]
         interface = args.interface
 
         if serial.upper() == self.DEFAULT_ADAPTER_SERIAL.upper():
             serial = None
 
-        return self._build_connection_args(args.platform, serial, interface)
+        return self._discover_adapter(args.platform, serial, interface)
 
-    def _build_connection_args(
-        self,
-        platform: FbtHardwarePlatform,
-        adapter_sn: Optional[str],
-        interface: str | None,
-    ):
-        adapter = self._discover_adapter(platform, adapter_sn, interface)
-        return adapter.to_connection_args()
-
+    @lru_cache
     def _discover_adapter(
         self, platform: FbtHardwarePlatform, adapter_sn: Optional[str], interface: str
-    ):
+    ) -> BaseAdapter:
         if interface.upper() == self.DEFAULT_ADAPTER_INTERFACE.upper():
             interface = None
         elif interface in INTERFACES:
