@@ -52,7 +52,7 @@ coreenv = VAR_ENV.Clone(
         "fbt_components",
         "fbt_envutils",
         "recursive_glob",
-        "ccache",
+        # "ccache", # FIXME: incompatible with CC/CXXCOM wrappers below
     ],
     FBT_COMPONENT_SCRIPTS=COMPONENT_SCRIPTS,
     TEMPFILE=TempFileMunge,
@@ -87,5 +87,8 @@ SetOption("max_drift", 1)
 
 wrap_tempfile(coreenv, "LINKCOM")
 wrap_tempfile(coreenv, "ARCOM")
+
+wrap_tempfile(coreenv, "CCCOM")
+wrap_tempfile(coreenv, "CXXCOM")
 
 Return("coreenv")
