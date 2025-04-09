@@ -4,19 +4,24 @@ fwenv = FW_ENV
 
 fw_elf_env = fwenv.Clone(tools=["fwbin"])
 
+# Add whole-archive flags to the firmware ELF wrapping `FW_LIBS` libraries
+# (note that this is required to avoid multi-pass linking with libraries)
+# Rest of libraries passed in `FW_EXTRA_LIBS` are not wrapped
+fw_elf_env.Prepend(_LIBFLAGS="-Wl,--whole-archive ")
+fw_elf_env.Append(
+    _LIBFLAGS=" -Wl,--no-whole-archive "
+    + fwenv["_LIBFLAGS"].replace(", LIBS, ", ", FW_NOARCHIVE_LIBS, ")
+)
+
 fwelf_src = fwenv["FW_ELF"] = fw_elf_env.Program(
     "${FIRMWARE_BUILD_CFG}",
     [],  # sources - empty, because firmware is built from libraries only
     LIBS=fwenv["FW_LIBS"],
+    NOARCHIVE_LIBS=fwenv["FW_NOARCHIVE_LIBS"],
 )
-Depends(fwelf_src, fwenv["LINKER_SCRIPT_PATH"])
 
 Depends(fwelf_src, fwenv["LINKER_SCRIPT_PATH"])
 
-# Add whole-archive flags to the firmware ELF
-# - note that this is required to avoid multi-pass linking with libraries
-fw_elf_env.Prepend(_LIBFLAGS="-Wl,--whole-archive ")
-fw_elf_env.Append(_LIBFLAGS=" -Wl,--no-whole-archive")
 
 fwelf = fwenv["FW_ELF"] = fwenv.Install("${BUILD_DIR}", fwelf_src)
 Alias(fwenv.subst("${FIRMWARE_BUILD_CFG}_elf"), fwelf)
