@@ -79,6 +79,12 @@ typedef void (*FuriHalRtcAlarmCallback)(void* context);
  */
 void furi_hal_rtc_set_alarm_callback(FuriHalRtcAlarmCallback callback, void* context);
 
+/** Set RTC Fault Data
+ *
+ * @param[in]  value  The value
+ */
+void furi_hal_rtc_set_fault_data(uint32_t value);
+
 #ifdef __cplusplus
 }
 #endif
