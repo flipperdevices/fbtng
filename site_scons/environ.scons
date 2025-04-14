@@ -10,6 +10,16 @@ from fbt.util import (
 )
 from SCons.Platform import TempFileMunge
 
+
+class FbtFileMunge(TempFileMunge):
+    def __call__(self, target, source, env, for_signature):
+        # print(env.Dump())
+        if "__COMPILATIONDB_NOMUNGE" in env:
+            return self.cmd
+
+        return super().__call__(target, source, env, for_signature)
+
+
 Import("VAR_ENV", "COMPONENT_SCRIPTS", "EXTRA_TOOLPATHS")
 
 forward_os_env = {
@@ -55,7 +65,7 @@ coreenv = VAR_ENV.Clone(
         # "ccache", # FIXME: incompatible with CC/CXXCOM wrappers below
     ],
     FBT_COMPONENT_SCRIPTS=COMPONENT_SCRIPTS,
-    TEMPFILE=TempFileMunge,
+    TEMPFILE=FbtFileMunge,
     POSIXPATH=PosixPathWrapper,
     MAXLINELENGTH=2048,
     PROGSUFFIX=".elf",
