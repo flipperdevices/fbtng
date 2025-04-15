@@ -3,6 +3,7 @@
 #include <furi.h>
 #include <furi_hal_adc.h>
 #include <furi_hal_gpio.h>
+#include <furi_hal_pwm.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +42,7 @@ typedef struct {
     const GpioPin* pin;
     const char* name;
     const FuriHalAdcChannel channel;
+    const FuriHalPwmOutputId pwm_output;
     const uint8_t number;
     const bool debug;
 } GpioPinRecord;
