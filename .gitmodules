@@ -41,7 +41,7 @@
 [submodule "fbt_layers/fbtng"]
 	path = fbt_layers/fbtng
 	url = https://github.com/flipperdevices/fbtng.git
-	branch = porta/fz-sync
+	branch = porta/fz-sync-fbtng
 [submodule "scripts/toolchain"]
 	path = scripts/toolchain
 	url = https://github.com/flipperdevices/fbtng-bootstrap.git
