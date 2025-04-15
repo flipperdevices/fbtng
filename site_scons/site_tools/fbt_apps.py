@@ -62,17 +62,25 @@ def PrepareApplicationsBuild(env):
 
 def DumpApplicationConfig(target, source, env):
     print(f"Loaded {len(env['APPMGR'].known_apps)} app definitions.")
-    if "APPBUILD" not in env:
-        print(fg.red("No apps selected for the build."))
-        return
     print(fg.boldgreen("Firmware modules configuration:"))
     for apptype in FlipperAppType:
         app_sublist = env["APPBUILD"].get_apps_of_type(apptype)
-        if app_sublist:
+        # Print a warning if any apps in the list have same .order value
+        unique_order_values = set(app.order for app in app_sublist)
+        if len(app_sublist) != len(unique_order_values) and max(unique_order_values):
+            print(
+                fg.red(f"{apptype.value}: ")
+                + fg.yellow(
+                    "Duplicate .order values in group:\n\t"
+                    + ", ".join(f"{app.appid} ({app.order})" for app in app_sublist)
+                )
+            )
+        elif app_sublist:
             print(
                 fg.green(f"{apptype.value}:\n\t"),
                 ", ".join(app.appid for app in app_sublist),
             )
+
     if incompatible_ext_apps := env["APPBUILD"].get_incompatible_ext_apps():
         print(
             fg.blue("Incompatible apps (skipped):\n\t"),
