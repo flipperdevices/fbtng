@@ -3,6 +3,7 @@
 #include <furi.h>
 #include <furi_hal.h>
 
+#include <subghz/devices/cc1101_int/cc1101_int_interconnect.h>
 #include <applications/drivers/subghz/cc1101_ext/cc1101_ext_interconnect.h>
 #include <cli/cli_main_commands.h>
 #include <toolbox/cli/cli_ansi.h>

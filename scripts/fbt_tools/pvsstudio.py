@@ -25,7 +25,7 @@ def _emit_pvsreport(target, source, env):
     return [target_dir.File("index.html")], source
 
 
-def atexist_handler():
+def atexit_handler():
     global __no_browser
     if __no_browser:
         return
@@ -122,7 +122,7 @@ def generate(env):
             ),
         }
     )
-    atexit.register(atexist_handler)
+    atexit.register(atexit_handler)
 
 
 def exists(env):

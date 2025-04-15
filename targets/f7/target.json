@@ -99,6 +99,8 @@
         "microtar",
         "mbedtls",
         "icon_assets",
+        "u8g2",
+        "canvas_u8g2",
         "toolbox",
         "print",
         "fatfs",
@@ -111,8 +113,6 @@
         "digital_signal",
         "pulse_reader",
         "signal_reader",
-        "u8g2",
-        "canvas_u8g2",
         "lfrfid",
         "flipper_application",
         "music_worker",
@@ -140,8 +140,6 @@
         "fw_artifacts",
         "sdk_extapps",
         "resources",
-        "fw_cdb",
-        "static_analysis",
         "link_builddir"
     ],
     "dist_modules": [
@@ -152,8 +150,6 @@
         "lint",
         "devboard",
         "doxygen",
-        "vscode_project",
-        "subl_project",
         "cli"
     ],
     "extra_target_meta": {
