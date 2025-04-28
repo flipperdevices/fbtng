@@ -31,7 +31,7 @@ def generate(env):
                             "-o",
                             "${TARGET.dir.posix}",
                             "--dir",
-                            "${ROOT_DIR}",
+                            "${PROJECT_ROOT}",
                         ]
                     ],
                     "${VERSIONCOMSTR}",

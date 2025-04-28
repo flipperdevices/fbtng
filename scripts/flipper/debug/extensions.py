@@ -10,7 +10,7 @@ from fwinterface import INTERFACES, BaseAdapter, discover_probes
 from . import BaseDebugExtension, GdbParam
 
 
-class RemoteParametesExtension(BaseDebugExtension):
+class RemoteParametersExtension(BaseDebugExtension):
     DEFAULT_ADAPTER_SERIAL = "auto"
     DEFAULT_ADAPTER_INTERFACE = "auto"
 
@@ -20,16 +20,16 @@ class RemoteParametesExtension(BaseDebugExtension):
             "--serial",
             help="Serial number of the debug adapter",
             nargs=1,
-            default=[RemoteParametesExtension.DEFAULT_ADAPTER_SERIAL],
+            default=[RemoteParametersExtension.DEFAULT_ADAPTER_SERIAL],
         )
         parser.add_argument(
             "-i",
             "--interface",
             choices=(
-                RemoteParametesExtension.DEFAULT_ADAPTER_INTERFACE,
+                RemoteParametersExtension.DEFAULT_ADAPTER_INTERFACE,
                 *INTERFACES.keys(),
             ),
-            default=RemoteParametesExtension.DEFAULT_ADAPTER_INTERFACE,
+            default=RemoteParametersExtension.DEFAULT_ADAPTER_INTERFACE,
             help="Interface to use",
         )
         parser.add_argument(
@@ -112,7 +112,7 @@ class CoreConfigurationExtension(BaseDebugExtension):
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         yield GdbParam(f"--quiet", is_file=True)  # Suppress the welcome message
         if args.init:
-            yield GdbParam(f"source {args.root / self.GDBINIT}")
+            yield GdbParam(f"source {self.posix_path(args.root / self.GDBINIT)}")
         if args.file:
             yield GdbParam(args.file, is_file=True)
         if args.compare:
@@ -148,7 +148,7 @@ class RTOSExtension(BaseDebugExtension):
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         if args.with_rtos:
-            yield GdbParam(f"source {args.root / self.RTOS_SCRIPT}")
+            yield GdbParam(f"source {self.posix_path(args.root / self.RTOS_SCRIPT)}")
 
 
 class SVDLoaderExtension(BaseDebugExtension):
@@ -164,8 +164,10 @@ class SVDLoaderExtension(BaseDebugExtension):
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         if args.with_svd:
-            yield GdbParam(f"source {args.root / self.CORTEX_DEBUG_SCRIPT}")
-            yield GdbParam(f"svd_load {args.platform.svd_file}")
+            yield GdbParam(
+                f"source {self.posix_path(args.root / self.CORTEX_DEBUG_SCRIPT)}"
+            )
+            yield GdbParam(f"svd_load {self.posix_path(args.platform.svd_file)}")
 
 
 class FlipperScriptsExtension(BaseDebugExtension):
@@ -189,8 +191,12 @@ class FlipperScriptsExtension(BaseDebugExtension):
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         if args.apps_root:
-            yield GdbParam(f"source {args.root / self.APPS_SCRIPT}")
-            yield GdbParam(f"fap-set-debug-elf-root {args.apps_root[0]}")
+            yield GdbParam(f"source {self.posix_path(args.root / self.APPS_SCRIPT)}")
+            yield GdbParam(
+                f"fap-set-debug-elf-root {self.posix_path(args.apps_root[0])}"
+            )
         if args.with_fwversion:
-            yield GdbParam(f"source {args.root / self.FIRMWARE_SCRIPT}")
+            yield GdbParam(
+                f"source {self.posix_path(args.root / self.FIRMWARE_SCRIPT)}"
+            )
             yield GdbParam("fw-version")
