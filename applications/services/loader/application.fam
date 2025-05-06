@@ -20,6 +20,6 @@ App(
     apptype=FlipperAppType.STARTUP,
     entry_point="loader_on_system_start",
     requires=["loader"],
-    order=90,
+    order=80,
     targets=["f7", "f18"],
 )

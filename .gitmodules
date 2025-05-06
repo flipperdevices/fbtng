@@ -34,13 +34,14 @@
 [submodule "fbt_layers/core_libs"]
 	path = fbt_layers/core_libs
 	url = https://github.com/flipperdevices/fbtng-corelibs.git
+	branch = porta/fz-sync
 [submodule "fbt_layers/freertos"]
 	path = fbt_layers/freertos
 	url = https://github.com/flipperdevices/fbtng-freertos.git
 [submodule "fbt_layers/fbtng"]
 	path = fbt_layers/fbtng
 	url = https://github.com/flipperdevices/fbtng.git
-	branch = hedger/ng-bootstrap
+	branch = porta/fz-sync-fbtng
 [submodule "scripts/toolchain"]
 	path = scripts/toolchain
 	url = https://github.com/flipperdevices/fbtng-bootstrap.git

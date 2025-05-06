@@ -116,6 +116,7 @@ _fw_default_apps_config = {
         "updater_app",
         "radio_device_cc1101_ext",
         "unit_tests",
+        "archive",
     ],
 }
 

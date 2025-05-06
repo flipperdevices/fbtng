@@ -17,6 +17,7 @@
         "-Wdouble-promotion",
         "-fdata-sections",
         "-ffunction-sections",
+        "-Wa,-gdwarf-sections",
         "-fsingle-precision-constant",
         "-fno-math-errno"
     ],
@@ -98,6 +99,8 @@
         "microtar",
         "mbedtls",
         "icon_assets",
+        "u8g2",
+        "canvas_u8g2",
         "toolbox",
         "print",
         "fatfs",
@@ -110,8 +113,6 @@
         "digital_signal",
         "pulse_reader",
         "signal_reader",
-        "u8g2",
-        "canvas_u8g2",
         "lfrfid",
         "flipper_application",
         "music_worker",
@@ -130,7 +131,8 @@
         "furi",
         "ext_applications",
         "firmware_applications",
-        "elf_mapfile_gen"
+        "elf_mapfile_gen",
+        "ieee754_parse_wrap"
     ],
     "fw_modules": [
         "app_check",
@@ -138,8 +140,6 @@
         "fw_artifacts",
         "sdk_extapps",
         "resources",
-        "fw_cdb",
-        "static_analysis",
         "link_builddir"
     ],
     "dist_modules": [
@@ -150,8 +150,6 @@
         "lint",
         "devboard",
         "doxygen",
-        "vscode_project",
-        "subl_project",
         "cli"
     ],
     "extra_target_meta": {
