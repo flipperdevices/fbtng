@@ -124,12 +124,13 @@ class SdkTreeBuilder:
 
     def _generate_sdk_meta(self):
         filtered_paths = ["."]
+        # TODO: make it so that fbt layers are flattened before we get here
         full_fw_paths = list(
             map(
                 os.path.normpath,
                 (
                     self.sdk_env.Dir(inc_dir).relpath
-                    for inc_dir in self.sdk_env["CPPPATH"]
+                    for inc_dir in self.sdk_env.Flatten(self.sdk_env["CPPPATH"])
                 ),
             )
         )
@@ -165,8 +166,9 @@ class SdkTreeBuilder:
         return target, source
 
     def _run_deploy_commands(self):
+        root_dir = self.env["PROJECT_ROOT"]
         dirs_to_create = set(
-            self.sdk_deploy_dir.Dir(dirpath).path for dirpath in self.header_dirs
+            self.sdk_deploy_dir.Dir(root_dir.rel_path(self.env.Dir(dirpath))).path for dirpath in self.header_dirs
         )
 
         shutil.rmtree(self.sdk_root_dir.path, ignore_errors=False)
@@ -175,13 +177,12 @@ class SdkTreeBuilder:
             os.makedirs(sdkdir, exist_ok=True)
 
         for header in self.header_depends:
-            shutil.copy2(header, self.sdk_deploy_dir.File(header).path)
+            shutil.copy2(header, self.sdk_deploy_dir.File(root_dir.rel_path(self.env.File(header))).path)
 
     def deploy_action(self):
         self._parse_sdk_depends()
-        # FIXME: disabled for now until proper flattening is implemented
-        # self._run_deploy_commands()
-        # self._generate_sdk_meta()
+        self._run_deploy_commands()
+        self._generate_sdk_meta()
 
 
 def _deploy_sdk_header_tree_action(target, source, env):
