@@ -4,12 +4,16 @@ from functools import cache
 
 
 @cache
-def get_git_commit_unix_timestamp():
-    return int(subprocess.check_output(["git", "show", "-s", "--format=%ct"]))
+def get_git_commit_unix_timestamp(target_dir=None):
+    return int(
+        subprocess.check_output(["git", "show", "-s", "--format=%ct"], cwd=target_dir)
+        .strip()
+        .decode()
+    )
 
 
 @cache
-def get_fast_git_version_id():
+def get_fast_git_version_id(target_dir=None):
     try:
         version = (
             subprocess.check_output(
@@ -20,7 +24,8 @@ def get_fast_git_version_id():
                     "--dirty",
                     "--all",
                     "--long",
-                ]
+                ],
+                cwd=target_dir,
             )
             .strip()
             .decode()
