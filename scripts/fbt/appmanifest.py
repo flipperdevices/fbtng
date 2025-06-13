@@ -28,6 +28,7 @@ class FlipperAppType(Enum):
     MENUEXTERNAL = "MenuExternal"
     METAPACKAGE = "Package"
     PLUGIN = "Plugin"
+    CLICMD = "CliCommand"
 
 
 @dataclass
@@ -277,6 +278,7 @@ class AppBuildset:
         FlipperAppType.ARCHIVE,
         FlipperAppType.SETTINGS,
         FlipperAppType.STARTUP,
+        FlipperAppType.CLICMD,
     )
     EXTERNAL_APP_TYPES_MAP = {
         # AppType -> bool: true if always deploy, false if obey app set
