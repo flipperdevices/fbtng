@@ -31,7 +31,7 @@ if fbt_variables.UnknownVariables():
     print("Unrecognized command-line variables:")
     for key, value in fbt_variables.UnknownVariables().items():
         print(f"  {key} = {value}")
-    raise StopError("Please check your command line.")
+    # raise StopError("Please check your command line.")
 
 try:
     ValidateOptions(throw_exception=True)
