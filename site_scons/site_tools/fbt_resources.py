@@ -42,11 +42,17 @@ def __generate_resources_dist_entries(env):
 
     # Deploy other stuff from _EXTRA_DIST
     for extra_dist in env["_EXTRA_DIST"]:
+        target_path = None
+        if hasattr(extra_dist, "__iter__"):
+            extra_dist, target_path = extra_dist
+
         if isinstance(extra_dist, Dir):
             src_target_entries.append(
                 (
                     extra_dist,
-                    resources_root.Dir(extra_dist.name),
+                    resources_root.Dir(
+                        extra_dist.name if not target_path else target_path
+                    ),
                 )
             )
         else:
