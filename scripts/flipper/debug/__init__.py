@@ -2,6 +2,7 @@ import argparse
 from collections.abc import Iterable
 from dataclasses import dataclass
 from itertools import chain
+from pathlib import Path
 
 
 @dataclass
@@ -32,6 +33,10 @@ class BaseDebugExtension:
 
     def append_gdb_args(self, args: argparse.Namespace) -> Iterable[GdbParam]:
         raise NotImplementedError
+
+    @staticmethod
+    def posix_path(path: str | Path) -> str:
+        return Path(path).resolve().as_posix() if path else None
 
 
 class GdbConfigurationManager:

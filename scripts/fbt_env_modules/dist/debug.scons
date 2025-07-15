@@ -30,6 +30,7 @@ firmware_debug = debug_env.PhonyTarget(
     "debug",
     [
         [
+            "${PYTHON3}",
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
             "${SOURCE}",
@@ -54,6 +55,7 @@ debug_env.PhonyTarget(
     "debug_other",
     [
         [
+            "${PYTHON3}",
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
         ],
@@ -65,6 +67,7 @@ debug_env.PhonyTarget(
     "gdb_trace_all",
     [
         [
+            "${PYTHON3}",
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
             "${SOURCE}",

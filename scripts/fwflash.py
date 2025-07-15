@@ -9,7 +9,7 @@ from flipper.app import App
 from flipper.debug import BaseDebugExtension, GdbConfigurationManager, GdbParam
 from flipper.debug.extensions import (
     CoreConfigurationExtension,
-    RemoteParametesExtension,
+    RemoteParametersExtension,
 )
 from fwinterface import OpenOCDAdapter, OpenOCDCommandLineParameter
 
@@ -37,7 +37,7 @@ class FlashExtension(BaseDebugExtension):
 
 
 GdbConfigurationManager.register_extension(CoreConfigurationExtension)
-GdbConfigurationManager.register_extension(RemoteParametesExtension)
+GdbConfigurationManager.register_extension(RemoteParametersExtension)
 GdbConfigurationManager.register_extension(FlashExtension)
 
 
@@ -55,7 +55,7 @@ class Main(App):
                 " ".join(
                     [
                         "program",
-                        f'"{self.args.file}"',
+                        f'"{BaseDebugExtension.posix_path(self.args.file)}"',
                         "verify" if self.args.verify else "",
                         "reset",
                         "exit",
@@ -72,7 +72,7 @@ class Main(App):
         mgr = GdbConfigurationManager()
         proc = None
         try:
-            remote_mgr = mgr.get_extension(RemoteParametesExtension)
+            remote_mgr = mgr.get_extension(RemoteParametersExtension)
             print(remote_mgr._dicover_adapter_for_args(self.args))
             if flash_cmd := self.get_faster_flash_cmdline(
                 remote_mgr._dicover_adapter_for_args(self.args)

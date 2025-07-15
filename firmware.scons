@@ -49,6 +49,8 @@ env = ENV.Clone(
     # Firmware environment must return its own list of artifacts for the
     # dist environment via this variable
     FW_ARTIFACTS=[],
+    FW_NOARCHIVE_LIBS=[],
+    FW_LIBS=[],
 )
 
 Export("env")

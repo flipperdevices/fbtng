@@ -121,7 +121,7 @@ class Main(App):
 
         current_info.update(
             {
-                "BUILD_DATE": build_date.strftime("%d-%m-%Y"),
+                "BUILD_DATE": build_date.strftime("%Y-%m-%d"),
                 "TARGET": self.args.target,
                 "FIRMWARE_ORIGIN": self.args.firmware_origin,
             }

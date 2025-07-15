@@ -9,13 +9,13 @@ from flipper.debug.extensions import (
     CoreConfigurationExtension,
     ExtraCommandsExtension,
     FlipperScriptsExtension,
-    RemoteParametesExtension,
+    RemoteParametersExtension,
     RTOSExtension,
     SVDLoaderExtension,
 )
 
 GdbConfigurationManager.register_extension(CoreConfigurationExtension)
-GdbConfigurationManager.register_extension(RemoteParametesExtension)
+GdbConfigurationManager.register_extension(RemoteParametersExtension)
 GdbConfigurationManager.register_extension(FlipperScriptsExtension)
 GdbConfigurationManager.register_extension(SVDLoaderExtension)
 GdbConfigurationManager.register_extension(RTOSExtension)
