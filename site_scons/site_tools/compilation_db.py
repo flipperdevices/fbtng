@@ -127,7 +127,7 @@ def compilation_db_entry_action(target, source, env, **kw):
     command = env["__COMPILATIONDB_UACTION"].strfunction(
         target=env["__COMPILATIONDB_UOUTPUT"],
         source=env["__COMPILATIONDB_USOURCE"],
-        env=env["__COMPILATIONDB_ENV"],
+        env=env["__COMPILATIONDB_ENV"].Clone(__COMPILATIONDB_NOMUNGE=True),
     )
 
     cmdline = split(command)
