@@ -1,13 +1,10 @@
 from ansi.color import fg
 from fbt.appmanifest import (
     AppManager,
-    AppBuildset,
     FlipperApplication,
     FlipperAppType,
     FlipperManifestException,
 )
-from SCons.Action import Action
-from SCons.Builder import Builder
 from SCons.Errors import StopError
 from SCons.Script import GetOption
 from SCons.Warnings import WarningOnByDefault, warn
@@ -19,6 +16,8 @@ from SCons.Warnings import WarningOnByDefault, warn
 
 def LoadAppManifest(env, entry):
     try:
+        # print(env["APPDIRS"], env["TARGET_HW"])
+        # print(f"Loading app manifest for {entry.abspath} in {env['TARGET_HW']}...")
         manifest_glob = entry.glob(FlipperApplication.APP_MANIFEST_DEFAULT_NAME)
         if len(manifest_glob) == 0:
             try:

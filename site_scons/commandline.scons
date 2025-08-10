@@ -1,13 +1,30 @@
 # Commandline options
 
-AddOption(
+from SCons.Script.Main import OptionsParser
+
+
+def SafeAddOption(*args, **kwargs):
+    """Add an option to the command line parser, ensuring it doesn't conflict with existing options."""
+    # if (optdest := kwargs.get("dest")) and optdest in OptionsParser.values.__defaults__:
+    #     print(f"Option {optdest} already exists, skipping addition.")
+    #     return
+
+    try:
+        AddOption(*args, **kwargs)
+    except Exception as e:
+        # print(f"Error adding option {args[0]}: {e}")
+        pass
+
+
+SafeAddOption(
     "--with-updater",
     dest="fullenv",
+    settable=True,
     action="store_true",
     help="Full firmware environment",
 )
 
-AddOption(
+SafeAddOption(
     "--options",
     dest="optionfile",
     type="string",
@@ -17,7 +34,7 @@ AddOption(
     help="Environment option file",
 )
 
-AddOption(
+SafeAddOption(
     "--extra-int-apps",
     action="store",
     dest="extra_int_apps",
@@ -25,7 +42,7 @@ AddOption(
     help="List of applications to add to firmware's built-ins. Also see FIRMWARE_APP_SET and FIRMWARE_APPS",
 )
 
-AddOption(
+SafeAddOption(
     "--extra-define",
     action="append",
     dest="extra_defines",
@@ -33,7 +50,7 @@ AddOption(
     help="Extra global define that will be passed to C/C++ compiler, can be specified multiple times",
 )
 
-AddOption(
+SafeAddOption(
     "--extra-ext-apps",
     action="store",
     dest="extra_ext_apps",
@@ -41,7 +58,7 @@ AddOption(
     help="List of applications to forcefully build as standalone .elf",
 )
 
-AddOption(
+SafeAddOption(
     "--proxy-env",
     action="store",
     dest="proxy_env",
@@ -49,6 +66,8 @@ AddOption(
     help="Comma-separated list of additional environment variables to pass to child SCons processes",
 )
 
+
+# print(OptionsParser.values)
 
 # Construction environment variables
 
@@ -83,7 +102,7 @@ vars.AddVariables(
     (
         "TARGET_HW",
         "Hardware target",
-        "7",
+        "",
     ),
     (
         "DIST_SUFFIX",
@@ -137,7 +156,10 @@ vars.AddVariables(
         "FIRMWARE_APPS",
         "Map of (configuration_name->application_list)",
         {
-            "default": ("basic_services","main_apps",),
+            "default": (
+                "basic_services",
+                "main_apps",
+            ),
         },
     ),
     (

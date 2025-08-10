@@ -247,6 +247,10 @@ class HardwareTargetLoader:
 
 
 def ConfigureForTarget(env, lightweight=False):
+    if not env["TARGET_HW"]:
+        raise StopError("TARGET_HW is not set!")
+
+    # print(f"Configuring for target {env['TARGET_HW']}, {lightweight=}...")
     env.SetDefault(
         F_TARGET_HW="f${TARGET_HW}",
         FBT_ENV_SETUP_SCRIPTS=[env.File("#/site_scons/register_components.scons")],

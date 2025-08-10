@@ -4,11 +4,19 @@ from SCons.Defaults import Copy
 import os
 import multiprocessing
 
+__seen_repos = set()
 
 def initialize_repo_dir(env, repo_dir):
     if not repo_dir.exists():
         raise StopError(f"Repository directory does not exist: {repo_dir}")
 
+    if repo_dir in __seen_repos:
+        if env["VERBOSE"]:
+            print(f"Repository {repo_dir} already initialized, skipping.")
+        env.Repository(repo_dir)
+        return
+
+    __seen_repos.add(repo_dir)
     git_env = env.Clone(ENV=os.environ)
     if not os.environ.get("FBT_NO_SYNC"):
         if git_env.Execute(
