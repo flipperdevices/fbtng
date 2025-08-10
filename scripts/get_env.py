@@ -7,9 +7,10 @@ import os
 import random
 import re
 import shlex
-import ssl
 import string
+import sys
 import urllib.request
+import urllib.error
 
 
 def id_gen(size=5, chars=string.ascii_uppercase + string.digits):
@@ -30,22 +31,37 @@ def parse_args():
 
 
 def get_commit_json(event):
-    context = ssl._create_unverified_context()
     commit_url = event["pull_request"]["base"]["repo"]["commits_url"].replace(
         "{/sha}", f"/{event['pull_request']['head']['sha']}"
     )
-    request = urllib.request.Request(commit_url)
-    if "GH_TOKEN" in os.environ:
-        request.add_header("Authorization", "Bearer %s" % (os.environ["GH_TOKEN"]))
 
-    with urllib.request.urlopen(request, context=context) as commit_file:
-        commit_json = json.loads(commit_file.read().decode("utf-8"))
-    return commit_json
+    headers = {"Accept": "application/vnd.github.v3+json"}
+    if "GH_TOKEN" in os.environ:
+        print("Using GitHub token for authentication", file=sys.stderr)
+        headers["Authorization"] = f"Bearer {os.environ['GH_TOKEN']}"
+
+    request = urllib.request.Request(commit_url, headers=headers)
+
+    try:
+        with urllib.request.urlopen(request) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        print(f"HTTP Error: {e.code} {e.reason}", file=sys.stderr)
+        print(f"URL: {commit_url}", file=sys.stderr)
+        print(f"Response headers:\n{e.headers}", file=sys.stderr)
+        try:
+            print(f"Response body:\n{e.read().decode('utf-8')}", file=sys.stderr)
+        except Exception as read_e:
+            print(f"Could not read error response body: {read_e}", file=sys.stderr)
+        raise
+    except urllib.error.URLError as e:
+        print(f"URL Error: {e.reason}", file=sys.stderr)
+        raise
 
 
 def get_details(event, args):
     data = {}
-    current_time = datetime.datetime.utcnow().date()
+    current_time = datetime.datetime.now(datetime.timezone.utc).date()
     if args.type == "pull":
         commit_json = get_commit_json(event)
         data["commit_comment"] = shlex.quote(commit_json["commit"]["message"])
@@ -62,7 +78,7 @@ def get_details(event, args):
         data["commit_hash"] = event["commits"][-1]["id"]
         ref = event["ref"]
     data["commit_sha"] = data["commit_hash"][:8]
-    data["branch_name"] = re.sub("refs/\w+/", "", ref)
+    data["branch_name"] = re.sub(r"refs/\w+/", "", ref)
     data["suffix"] = (
         data["branch_name"].replace("/", "_")
         + "-"
