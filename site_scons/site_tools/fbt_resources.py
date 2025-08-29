@@ -31,14 +31,8 @@ def __generate_resources_dist_entries(env):
         for res_file in env.GlobRecursive("*", apps_resource_dir):
             if not isinstance(res_file, File):
                 continue
-            src_target_entries.append(
-                (
-                    res_file,
-                    resources_root.File(
-                        res_file.get_path(apps_resource_dir),
-                    ),
-                )
-            )
+            dst_node = resources_root.File(res_file.get_path(apps_resource_dir))
+            src_target_entries.append((res_file, dst_node))
 
     # Deploy other stuff from _EXTRA_DIST
     for extra_dist in env["_EXTRA_DIST"]:
@@ -64,22 +58,20 @@ def __generate_resources_dist_entries(env):
 def _resources_dist_emitter(target, source, env):
     src_target_entries = __generate_resources_dist_entries(env)
     source = list(map(lambda entry: entry[0], src_target_entries))
+    target = list(map(lambda entry: entry[1], src_target_entries))
     return (target, source)
 
 
 def _resources_dist_action(target, source, env):
-    dist_entries = __generate_resources_dist_entries(env)
-    assert len(dist_entries) == len(source)
-    # print([(src.abspath, target.abspath) for src, target in dist_entries])
-    # return
+    assert len(target) == len(source)
 
     shutil.rmtree(env.Dir(env["RESOURCES_ROOT"]).abspath, ignore_errors=True)
-    for src, target in dist_entries:
+    for src, dst in zip(source, target):
         if isinstance(src, File):
-            os.makedirs(os.path.dirname(target.path), exist_ok=True)
-            shutil.copy(src.path, target.path)
+            os.makedirs(os.path.dirname(dst.path), exist_ok=True)
+            shutil.copy(src.path, dst.path)
         elif isinstance(src, Dir):
-            shutil.copytree(src.path, target.path, dirs_exist_ok=True)
+            shutil.copytree(src.path, dst.path, dirs_exist_ok=True)
         else:
             raise StopError(f"Unsupported dist entry type: {type(src)}")
 
@@ -98,26 +90,26 @@ def generate(env, **kw):
 
     env.Append(
         BUILDERS={
-            "ManifestBuilder": Builder(
-                action=[
-                    Action(
-                        _resources_dist_action,
-                        "${RESOURCEDISTCOMSTR}",
-                    ),
-                    Action(
-                        [
-                            [
-                                "${PYTHON3}",
-                                "${ASSETS_COMPILER}",
-                                "manifest",
-                                "${TARGET.dir.posix}",
-                                "--timestamp=${GIT_UNIX_TIMESTAMP}",
-                            ]
-                        ],
-                        "${RESMANIFESTCOMSTR}",
-                    ),
-                ],
+            "ResourcesDistBuilder": Builder(
+                action=Action(
+                    _resources_dist_action,
+                    "${RESOURCEDISTCOMSTR}",
+                ),
                 emitter=_resources_dist_emitter,
+            ),
+            "ManifestBuilder": Builder(
+                action=Action(
+                    [
+                        [
+                            "${PYTHON3}",
+                            "${ASSETS_COMPILER}",
+                            "manifest",
+                            "${TARGET.dir.posix}",
+                            "--timestamp=${GIT_UNIX_TIMESTAMP}",
+                        ]
+                    ],
+                    "${RESMANIFESTCOMSTR}",
+                ),
             ),
         }
     )

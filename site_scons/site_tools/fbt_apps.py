@@ -61,7 +61,11 @@ def PrepareApplicationsBuild(env):
 
 def DumpApplicationConfig(target, source, env):
     print(f"Loaded {len(env['APPMGR'].known_apps)} app definitions.")
-    print(fg.boldgreen("Firmware modules configuration:"))
+    print(
+        fg.boldgreen(
+            f"Firmware modules configuration for {env.subst('${F_TARGET_HW}')}:"
+        )
+    )
     for apptype in FlipperAppType:
         app_sublist = env["APPBUILD"].get_apps_of_type(apptype)
         # Print a warning if any apps in the list have same .order value
