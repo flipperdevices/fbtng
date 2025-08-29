@@ -24,7 +24,11 @@ FORWARDED_ENV_VARIABLES = [
     "HOME",
     "APPDATA",
     "PYTHONHOME",
+    "PYTHONPATH",
     "PYTHONNOUSERSITE",
+    "REQUESTS_CA_BUNDLE",
+    "SSL_CERT_FILE",
+    # Temp & user dirs
     "TMP",
     "TEMP",
     "USERPROFILE",
@@ -33,6 +37,7 @@ FORWARDED_ENV_VARIABLES = [
     "CCACHE_DISABLE",
     # Colors for tools
     "TERM",
+    "TERMINFO_DIRS",
     # Toolchain
     "FBT_TOOLCHAIN_PATH",
     "UFBT_HOME",
