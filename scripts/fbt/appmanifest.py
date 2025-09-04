@@ -284,7 +284,7 @@ class AppBuildset:
         # AppType -> bool: true if always deploy, false if obey app set
         FlipperAppType.EXTERNAL: True,
         FlipperAppType.PLUGIN: True,
-        FlipperAppType.DEBUG: True,
+        # FlipperAppType.DEBUG: True, # FIXME: needed for FZ
         FlipperAppType.MENUEXTERNAL: False,
     }
 
