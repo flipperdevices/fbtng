@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <version/version.h>
+#include <furi.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -205,6 +206,12 @@ size_t furi_hal_version_uid_size(void);
  * @return     pointer to UID
  */
 const uint8_t* furi_hal_version_uid(void);
+
+/** Get device serial number (UID) as a string
+  *
+  * @param[in]  uid     a string to store the value
+  */
+void furi_hal_version_get_uid_str(FuriString* uid);
 
 #ifdef __cplusplus
 }
