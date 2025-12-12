@@ -38,7 +38,10 @@ class GitVersion:
         try:
             version = self._exec_git("describe --tags --abbrev=0 --exact-match")
         except subprocess.CalledProcessError:
-            version = "unknown"
+            try:
+                version = f"r{self._exec_git('rev-list --count HEAD')}"
+            except subprocess.CalledProcessError:
+                version = "unknown"
 
         if "SOURCE_DATE_EPOCH" in os.environ:
             commit_date = datetime.utcfromtimestamp(
