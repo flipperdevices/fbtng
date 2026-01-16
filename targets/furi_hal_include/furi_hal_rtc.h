@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <datetime/datetime.h>
 
 #ifdef __cplusplus
@@ -45,7 +44,13 @@ void furi_hal_rtc_get_datetime(DateTime* datetime);
  *
  * @return     Unix Timestamp in seconds from UNIX epoch start
  */
-uint32_t furi_hal_rtc_get_timestamp(void);
+time_t furi_hal_rtc_get_timestamp(void);
+
+/** Get UNIX Timestamp
+ *
+ * @return     Unix Timestamp in milliseconds from UNIX epoch start
+ */
+time_t furi_hal_rtc_get_timestamp_ms(void);
 
 /** Set alarm
  *
