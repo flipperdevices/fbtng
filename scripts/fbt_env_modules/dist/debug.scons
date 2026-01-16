@@ -62,7 +62,9 @@ debug_env.PhonyTarget(
     ],
 )
 
-# Backtrace all threads
+# Backtrace all threads (supports ELF= and BATCH=1)
+_custom_elf = ARGUMENTS.get("ELF", "")
+_batch_mode = ARGUMENTS.get("BATCH", "0") == "1"
 debug_env.PhonyTarget(
     "gdb_trace_all",
     [
@@ -70,7 +72,8 @@ debug_env.PhonyTarget(
             "${PYTHON3}",
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
-            "${SOURCE}",
+            "--batch" if _batch_mode else None,
+            _custom_elf if _custom_elf else "${SOURCE}",
             "--with-rtos" if "rtos" in _target_debug_tags else None,
             "-ex",
             "thread apply all bt",
@@ -78,5 +81,5 @@ debug_env.PhonyTarget(
             "quit",
         ],
     ],
-    source=firmware_env["FW_ELF"],
+    source=firmware_env["FW_ELF"] if not _custom_elf else None,
 )
