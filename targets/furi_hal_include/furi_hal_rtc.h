@@ -46,6 +46,12 @@ void furi_hal_rtc_get_datetime(DateTime* datetime);
  */
 time_t furi_hal_rtc_get_timestamp(void);
 
+/** Get UNIX Timestamp
+ *
+ * @return     Unix Timestamp in milliseconds from UNIX epoch start
+ */
+time_t furi_hal_rtc_get_timestamp_ms(void);
+
 /** Set alarm
  *
  * @param[in]  datetime  The date time to set or NULL if time change is not needed
