@@ -62,7 +62,7 @@ debug_env.PhonyTarget(
     ],
 )
 
-# Backtrace all threads (supports ELF= and BATCH=1)
+# Backtrace all threads (supports OTHER_ELF to override FW_ELF)
 debug_env.PhonyTarget(
     "gdb_trace_all",
     [
