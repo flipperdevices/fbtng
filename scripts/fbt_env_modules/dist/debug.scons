@@ -62,7 +62,7 @@ debug_env.PhonyTarget(
     ],
 )
 
-# Backtrace all threads
+# Backtrace all threads (supports OTHER_ELF to override FW_ELF)
 debug_env.PhonyTarget(
     "gdb_trace_all",
     [
@@ -70,6 +70,7 @@ debug_env.PhonyTarget(
             "${PYTHON3}",
             "${FBT_DEBUG_SCRIPT}",
             *__base_debug_opts,
+            "--batch",
             "${SOURCE}",
             "--with-rtos" if "rtos" in _target_debug_tags else None,
             "-ex",
@@ -78,5 +79,9 @@ debug_env.PhonyTarget(
             "quit",
         ],
     ],
-    source=firmware_env["FW_ELF"],
+    source=(
+        firmware_env["OTHER_ELF"]
+        if firmware_env["OTHER_ELF"]
+        else firmware_env["FW_ELF"]
+    ),
 )

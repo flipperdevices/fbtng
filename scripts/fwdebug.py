@@ -27,6 +27,11 @@ class Main(App):
 
     def init(self):
         GdbConfigurationManager.configure_arg_parser(self.parser)
+        self.parser.add_argument(
+            "--batch",
+            action="store_true",
+            help="Run GDB in batch (non-interactive) mode",
+        )
         self.parser.set_defaults(func=self.run)
 
     def run(self):
@@ -36,10 +41,12 @@ class Main(App):
         proc = None
         try:
             gdb_args = [self.GDB_BIN]
+            if self.args.batch:
+                gdb_args.append("-batch")
             gdb_args.extend(mgr.get_gdb_args(self.args))
             self.logger.debug(f"Running: {gdb_args}")
             proc = subprocess.run(gdb_args)
-            return 0
+            return proc.returncode if self.args.batch else 0
         except Exception as e:
             self.logger.error(f"Error: {e}")
             if self.args.debug:
