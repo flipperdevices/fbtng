@@ -32,13 +32,13 @@ void furi_hal_rtc_prepare_for_shutdown(void);
  *
  * @param      datetime  The date time to set
  */
-void furi_hal_rtc_set_datetime(DateTime* datetime);
+void furi_hal_rtc_set_datetime(const DateTimeMs* datetime);
 
 /** Get RTC Date Time
  *
- * @param      datetime  The datetime
+ * @return      The datetime
  */
-void furi_hal_rtc_get_datetime(DateTime* datetime);
+DateTimeMs furi_hal_rtc_get_datetime(void);
 
 /** Get UNIX Timestamp
  *
