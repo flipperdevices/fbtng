@@ -31,6 +31,9 @@ class FlipperAppType(Enum):
     CLICMD = "CliCommand"
 
 
+MAX_APP_PRIORITY = 100
+
+
 @dataclass
 class FlipperApplication:
     APP_ID_REGEX: ClassVar[re.Pattern] = re.compile(r"^[a-z0-9_]+$")
@@ -63,6 +66,7 @@ class FlipperApplication:
     stack_size: int = 2048
     icon: Optional[str] = None
     order: int = 0
+    priority: int = MAX_APP_PRIORITY // 2
     sdk_headers: List[str] = field(default_factory=list)
     targets: List[str] = field(default_factory=lambda: ["all"])
     resources: Optional[str] = None
@@ -188,6 +192,10 @@ class AppManager:
                     raise FlipperManifestException(
                         f"App {kw.get('appid')} of type {apptype} must not have '{app_property}' in manifest"
                     )
+        if (priority := kw.get("priority")) and priority not in range(0, MAX_APP_PRIORITY + 1):
+            raise FlipperManifestException(
+                f"App {kw.get('appid')}: priority {priority} is out of range (0..{MAX_APP_PRIORITY})"
+            )
 
     def load_manifest(
         self,
