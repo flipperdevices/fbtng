@@ -74,7 +74,7 @@ class OpenOCDTarget:
     def for_platform(platform: FbtHardwarePlatform) -> "OpenOCDTarget":
         return OpenOCDTarget(
             platform.name,
-            str(platform.openocd_interface_file),
+            str(platform.openocd_interface_file.as_posix()),
             platform.openocd_init_commands,
         )
 
