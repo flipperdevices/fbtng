@@ -1,5 +1,6 @@
 set confirm off
 set pagination off
+set remotetimeout 10
 set print pretty on
 set print object on
 set print static-members on

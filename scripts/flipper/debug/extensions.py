@@ -114,7 +114,7 @@ class CoreConfigurationExtension(BaseDebugExtension):
         if args.init:
             yield GdbParam(f"source {self.posix_path(args.root / self.GDBINIT)}")
         if args.file:
-            yield GdbParam(args.file, is_file=True)
+            yield GdbParam(self.posix_path(args.file), is_file=True)
         if args.compare:
             yield GdbParam("compare-sections")
 
