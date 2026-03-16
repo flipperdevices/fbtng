@@ -234,6 +234,11 @@ vars.AddVariables(
         "Extra arguments to pass to certain scripts supporting it",
         "",
     ),
+    (
+        "EXTRA_DEFINES",
+        "Extra global defines that will be passed to C/C++ compiler",
+        [],
+    )
 )
 
 Return("vars")
