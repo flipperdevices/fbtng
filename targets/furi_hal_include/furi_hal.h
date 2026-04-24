@@ -10,6 +10,7 @@ template <unsigned int N>
 struct STOP_EXTERNING_ME {};
 #endif
 
+#include <furi_hal_cpu.h>
 #include <furi_hal_rtc.h>
 #include <furi_hal_flash.h>
 #include <furi_hal_memory.h>
