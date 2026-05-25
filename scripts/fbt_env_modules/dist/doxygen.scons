@@ -1,0 +1,21 @@
+from fbt.util import open_browser_action
+
+Import("DIST_ENV")
+
+doxy_env = DIST_ENV.Clone(tools=["doxygen"])
+project_root = doxy_env["PROJECT_ROOT"]
+
+doxy_build = doxy_env.DoxyBuild(
+    "${PROJECT_ROOT}/documentation/doxygen/build/html/index.html",
+    "${PROJECT_ROOT}/documentation/doxygen/Doxyfile-awesome.cfg",
+    doxy_env_variables={
+        "DOXY_SRC_ROOT": project_root.abspath,
+        "DOXY_BUILD_DIR": project_root.Dir("documentation/doxygen/build").abspath,
+        "DOXY_CONFIG_DIR": project_root.Dir("documentation/doxygen", create=False).abspath,
+    },
+)
+doxy_env.Alias("doxygen", doxy_build)
+doxy_env.AlwaysBuild(doxy_build)
+
+# Open generated documentation in browser
+doxy_env.PhonyTarget("doxy", open_browser_action, source=doxy_build)
