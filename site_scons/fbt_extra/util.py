@@ -32,3 +32,10 @@ def find_variable_config(variables_container, var_name):
         raise StopError(f"Variable {var_name} not found in variables container")
 
     return option
+
+
+def open_browser_action(target, source, env):
+    if sys.platform == "darwin":
+        subprocess.run(["open", source[0].abspath])
+    else:
+        webbrowser.open(source[0].abspath)
