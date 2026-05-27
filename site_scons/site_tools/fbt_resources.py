@@ -41,14 +41,15 @@ def __generate_resources_dist_entries(env):
             extra_dist, target_path = extra_dist
 
         if isinstance(extra_dist, Dir):
-            src_target_entries.append(
-                (
-                    extra_dist,
-                    resources_root.Dir(
-                        extra_dist.name if not target_path else target_path
-                    ),
-                )
+            dst_dir = resources_root.Dir(
+                extra_dist.name if not target_path else target_path
             )
+            for res_file in env.GlobRecursive("*", extra_dist):
+                if not isinstance(res_file, File):
+                    continue
+                src_target_entries.append(
+                    (res_file, dst_dir.File(res_file.get_path(extra_dist)))
+                )
         else:
             raise StopError(f"Unsupported extra dist type: {type(extra_dist)}")
 
@@ -70,8 +71,6 @@ def _resources_dist_action(target, source, env):
         if isinstance(src, File):
             os.makedirs(os.path.dirname(dst.path), exist_ok=True)
             shutil.copy(src.path, dst.path)
-        elif isinstance(src, Dir):
-            shutil.copytree(src.path, dst.path, dirs_exist_ok=True)
         else:
             raise StopError(f"Unsupported dist entry type: {type(src)}")
 
