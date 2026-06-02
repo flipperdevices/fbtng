@@ -63,7 +63,7 @@ class Main(App):
             help="Path to user extensions folder")
         self.parser.set_defaults(func=self.run)
 
-        known_args, _ = parser.parse_known_args()
+        known_args, _ = self.parser.parse_known_args()
         if known_args.user_extensions:
             self.logger.debug(f"Loading user extensions from {known_args.user_extensions}")
             for ext in enumerate_user_extensions(known_args.user_extensions):
