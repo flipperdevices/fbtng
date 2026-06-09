@@ -26,6 +26,7 @@ class HardwareTargetLoader:
         self.linker_script_app = None
         self.sdk_symbols = None
         self.platform_desc = None
+        self.platform_debug_extensions = None
         self.rtos_flavor = None
         self.lib_modules = []
         self.fw_modules = []
@@ -157,21 +158,25 @@ class HardwareTargetLoader:
         for dict_prop_name in ("extra_target_meta",):
             self.extra_target_meta.update(config.get(dict_prop_name, {}))
 
+        make_file = lambda x: target_dir.File(x).rfile()
+        make_dir = lambda x: target_dir.Dir(x).rdir()
+
         file_attrs = (
-            ## (name, is_target_file_node)
-            ("linker_script_flash", True),
-            ("linker_script_ram", True),
-            ("linker_script_app", True),
-            ("sdk_symbols", True),
-            ("platform_desc", True),
-            ("rtos_flavor", False),
-            ("variables_sconscript", True),
-            ("target_sconscript", True),
+            ## (name, constructor)
+            ("linker_script_flash", make_file),
+            ("linker_script_ram", make_file),
+            ("linker_script_app", make_file),
+            ("sdk_symbols", make_file),
+            ("platform_desc", make_file),
+            ("platform_debug_extensions", make_dir),
+            ("rtos_flavor", None),
+            ("variables_sconscript", make_file),
+            ("target_sconscript", make_file),
         )
 
-        for attr_name, is_target_file_node in file_attrs:
+        for attr_name, constructor in file_attrs:
             if val := config.get(attr_name):  # and not getattr(self, attr_name):
-                node = target_dir.File(val).rfile() if is_target_file_node else val
+                node = constructor(val) if constructor else val
                 # print(f"Got node {node} for {attr_name}")
                 setattr(self, attr_name, node)
 
@@ -274,6 +279,7 @@ def ConfigureForTarget(env, lightweight=False):
         HW_CONFIG_FILE=target_loader.platform_desc,
         HW_SVD_FILE=env.File(hw_target_obj.svd_file).rfile(),
         HW_IMAGE_BASE_ADDRESS=f"{hw_target_obj.flash_address:#x}",
+        HW_DEBUG_EXTENSIONS_DIR=target_loader.platform_debug_extensions
     )
     env.AppendUnique(
         FBT_ENV_SETUP_SCRIPTS=target_loader.env_setup_scripts,

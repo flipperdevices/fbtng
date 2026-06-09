@@ -4,6 +4,7 @@ distenv, firmware_env = DIST_ENV, FW_ENV
 debug_env = distenv.Clone(
     tools=["fbt_debugopts"],
     HW_CONFIG_FILE=firmware_env["HW_CONFIG_FILE"],
+    HW_DEBUG_EXTENSIONS_DIR=firmware_env["HW_DEBUG_EXTENSIONS_DIR"],
 )
 
 __base_debug_opts = [
@@ -23,6 +24,10 @@ if "svd" in _target_debug_tags:
 
 if "fwversion" in _target_debug_tags:
     __base_debug_opts.append("--with-fwversion")
+
+if debug_env["HW_DEBUG_EXTENSIONS_DIR"] is not None:
+    __base_debug_opts.append("--user-extensions")
+    __base_debug_opts.append("${HW_DEBUG_EXTENSIONS_DIR}")
 
 
 # Debugging firmware
