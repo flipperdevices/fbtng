@@ -32,7 +32,17 @@ def _walk_scandir(root_abspath, pattern, exclude_patterns):
                 for entry in entries:
                     if entry.name.startswith("."):
                         continue
-                    if any(fnmatch.fnmatch(entry.name, p) for p in exclude_patterns):
+                    # Exclude patterns with '/' must be matched against the
+                    # full relative path (e.g. "furi_hal/version_device.c").
+                    # Plain patterns (e.g. "*~") match against the entry name
+                    # only — same semantics as SCons' native glob exclude.
+                    relpath = os.path.relpath(entry.path, root_abspath)
+                    if any(
+                        fnmatch.fnmatch(relpath, p)
+                        if "/" in p
+                        else fnmatch.fnmatch(entry.name, p)
+                        for p in exclude_patterns
+                    ):
                         continue
 
                     if entry.is_dir(follow_symlinks=False):
@@ -43,12 +53,7 @@ def _walk_scandir(root_abspath, pattern, exclude_patterns):
                         if not fnmatch.fnmatch(entry.name, leaf_pattern):
                             continue
                         if dir_parts:
-                            relpath = os.path.relpath(entry.path, root_abspath)
-                            rel_parts = relpath.split(os.sep)
-                            file_dir_parts = rel_parts[:-1]
-                            # Non-recursive patterns require exact directory depth.
-                            # "service/*.c" matches "service/foo.c" but NOT
-                            # "a/service/foo.c".
+                            file_dir_parts = relpath.split(os.sep)[:-1]
                             if not recursive and len(file_dir_parts) != len(dir_parts):
                                 continue
                             if len(file_dir_parts) < len(dir_parts):

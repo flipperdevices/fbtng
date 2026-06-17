@@ -109,6 +109,35 @@ class TestWalkScandir:
         assert "a.c" not in paths
         assert "b.c" in paths
 
+    def test_exclude_path_pattern(self, tmpdir):
+        """Exclude patterns with '/' match against the full relative path."""
+        # Exclude a specific file by relative path
+        results = sorted(_walk_scandir(tmpdir, "*.c", ["sub/d.c"]))
+        basenames = [os.path.basename(r) for r in results]
+        assert "d.c" not in basenames
+        assert "e.c" in basenames
+
+    def test_exclude_path_pattern_deep(self, tmpdir):
+        """Path-based exclusion matches deeply nested files."""
+        results = sorted(_walk_scandir(tmpdir, "*.c", ["sub/deep/f.c"]))
+        basenames = [os.path.basename(r) for r in results]
+        assert "f.c" not in basenames
+
+    def test_exclude_directory_by_path(self, tmpdir):
+        """Excluding a directory prunes the entire subtree."""
+        results = sorted(_walk_scandir(tmpdir, "*.c", ["sub/deep"]))
+        basenames = [os.path.basename(r) for r in results]
+        assert "f.c" not in basenames
+        assert "d.c" in basenames  # sub/d.c still matches
+
+    def test_exclude_wildcard_path(self, tmpdir):
+        """Wildcard in path exclusion matches directory components."""
+        results = sorted(_walk_scandir(tmpdir, "*.c", ["*/d.c"]))
+        basenames = [os.path.basename(r) for r in results]
+        assert "d.c" not in basenames  # sub/d.c excluded
+        assert "e.c" in basenames      # sub/e.c still there
+        assert "f.c" in basenames      # sub/deep/f.c has different path
+
     def test_hidden_files_skipped(self, tmpdir):
         """Files starting with '.' are skipped (matching SCons behavior)."""
         results = list(_walk_scandir(tmpdir, "*.c", ["*~"]))
