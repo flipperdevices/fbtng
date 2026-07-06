@@ -45,7 +45,9 @@ env = ENV.Clone(
             ],
         }
     },
-    CPPDEFINES=ENV["EXTRA_DEFINES"] + GetOption("extra_defines"),
+    CPPDEFINES=ENV["EXTRA_DEFINES"] +
+        ENV.get("PROJECT_DEFINES", []) + 
+        GetOption("extra_defines"),
     # Firmware environment must return its own list of artifacts for the
     # dist environment via this variable
     FW_ARTIFACTS=[],
