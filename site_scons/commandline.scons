@@ -2,21 +2,10 @@
 
 from SCons.Script.Main import OptionsParser
 
-
-def SafeAddOption(*args, **kwargs):
-    """Add an option to the command line parser, ensuring it doesn't conflict with existing options."""
-    # if (optdest := kwargs.get("dest")) and optdest in OptionsParser.values.__defaults__:
-    #     print(f"Option {optdest} already exists, skipping addition.")
-    #     return
-
-    try:
-        AddOption(*args, **kwargs)
-    except Exception as e:
-        # print(f"Error adding option {args[0]}: {e}")
-        pass
+from fbt.util import safe_add_option
 
 
-SafeAddOption(
+safe_add_option(
     "--with-updater",
     dest="fullenv",
     settable=True,
@@ -24,7 +13,7 @@ SafeAddOption(
     help="Full firmware environment",
 )
 
-SafeAddOption(
+safe_add_option(
     "--options",
     dest="optionfile",
     type="string",
@@ -34,7 +23,7 @@ SafeAddOption(
     help="Environment option file",
 )
 
-SafeAddOption(
+safe_add_option(
     "--extra-int-apps",
     action="store",
     dest="extra_int_apps",
@@ -42,7 +31,7 @@ SafeAddOption(
     help="List of applications to add to firmware's built-ins. Also see FIRMWARE_APP_SET and FIRMWARE_APPS",
 )
 
-SafeAddOption(
+safe_add_option(
     "--extra-define",
     action="append",
     dest="extra_defines",
@@ -50,7 +39,7 @@ SafeAddOption(
     help="Extra global define that will be passed to C/C++ compiler, can be specified multiple times",
 )
 
-SafeAddOption(
+safe_add_option(
     "--extra-ext-apps",
     action="store",
     dest="extra_ext_apps",
@@ -58,7 +47,7 @@ SafeAddOption(
     help="List of applications to forcefully build as standalone .elf",
 )
 
-SafeAddOption(
+safe_add_option(
     "--proxy-env",
     action="store",
     dest="proxy_env",
