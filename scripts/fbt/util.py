@@ -7,6 +7,7 @@ from pathlib import Path, PurePosixPath
 
 import SCons
 from SCons.Errors import StopError
+from SCons.Script import AddOption
 from SCons.Subst import quote_spaces
 
 WINPATHSEP_RE = re.compile(r"\\([^\"'\\]|$)")
@@ -110,3 +111,16 @@ def open_browser_action(target, source, env):
         subprocess.run(["open", source[0].abspath])
     else:
         webbrowser.open(source[0].abspath)
+
+
+def safe_add_option(*args, **kwargs):
+    """Add an option to the command line parser, ensuring it doesn't conflict with existing options."""
+    # if (optdest := kwargs.get("dest")) and optdest in OptionsParser.values.__defaults__:
+    #     print(f"Option {optdest} already exists, skipping addition.")
+    #     return
+
+    try:
+        AddOption(*args, **kwargs)
+    except Exception as e:
+        # print(f"Error adding option {args[0]}: {e}")
+        pass
