@@ -47,6 +47,15 @@ for template_file in vscode_distenv.Glob("#.vscode/template/*.tmpl"):
         )
     )
 
+for template_file in vscode_distenv.Glob("#.vscode/template/${LANG_SERVER}/*.tmpl"):
+    vscode_dist.append(
+        vscode_distenv.TempliteFile(
+            config_dist_dir.File(template_file.name.replace(".tmpl", "")),
+            template_file,
+            SUBST_DICT=template_substs,
+        )
+    )
+
 
 vscode_distenv.Depends(
     vscode_dist, Value((template_substs["f_target"], template_substs["folders"]))
