@@ -11,7 +11,7 @@
         {
             "name": "[{{ probe.name }}] Attach {{ f_target }} {{ "(NoRTOS)" if not rtos_enabled else "" }}",
             "cwd": "${workspaceFolder}",
-            "executable": "./build/latest/firmware.elf",
+            "executable": "{{ fbt_dir }}/build/latest/firmware.elf",
             "request": "attach",
             "type": "cortex-debug",
             "servertype": "openocd",
@@ -34,8 +34,8 @@
             "postAttachCommands": [
                 // "source scripts/debug/flipperversion.py",
                 // "fw-version",
-                "source scripts/debug/flipperapps.py",
-                "fap-set-debug-elf-root build/latest/.extapps"
+                "source {{ fbt_dir }}/scripts/debug/flipperapps.py",
+                "fap-set-debug-elf-root {{ fbt_dir }}/build/latest/.extapps"
             ],
             // "showDevDebugOutput": "raw",
         },
