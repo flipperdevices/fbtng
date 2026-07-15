@@ -28,6 +28,7 @@ template_substs = {
     "f_target": firmware_env.subst("${F_TARGET_HW}"),
     "target": firmware_env.subst("${TARGET_HW}"),
     "FWENV": firmware_env,
+    "fbt_dir": Path(Dir("#").abspath).as_posix(),
     "folders": list(
         map(
             lambda x: Path(config_dist_dir.rel_path(x)).as_posix(),
@@ -38,6 +39,15 @@ template_substs = {
 }
 
 for template_file in vscode_distenv.Glob("#.vscode/template/*.tmpl"):
+    vscode_dist.append(
+        vscode_distenv.TempliteFile(
+            config_dist_dir.File(template_file.name.replace(".tmpl", "")),
+            template_file,
+            SUBST_DICT=template_substs,
+        )
+    )
+
+for template_file in vscode_distenv.Glob("#.vscode/template/${LANG_SERVER}/*.tmpl"):
     vscode_dist.append(
         vscode_distenv.TempliteFile(
             config_dist_dir.File(template_file.name.replace(".tmpl", "")),

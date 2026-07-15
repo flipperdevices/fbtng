@@ -15,7 +15,7 @@
     "clangd.path": "${workspaceFolder}/toolchain/current/bin/clangd{{ FBT_PLATFORM_EXECUTABLE_EXT }}",
     "clangd.arguments": [
         "--query-driver=**/arm-none-eabi-*",
-        "--compile-commands-dir=${workspaceFolder}/build/latest",
+        "--compile-commands-dir={{ fbt_dir }}/build/latest",
         "--clang-tidy",
         "--header-insertion=never"
     ]
