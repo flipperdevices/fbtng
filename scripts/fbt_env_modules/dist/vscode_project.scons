@@ -24,12 +24,11 @@ vscode_dist = vscode_distenv.Install(
 probes = list(filter(lambda x: isinstance(x, OpenOCDInterface), INTERFACES.values()))
 
 template_substs = {
-    "FBT_PLATFORM_EXECUTABLE_EXT": ".exe" if os.name == "nt" else "",
     "f_target": firmware_env.subst("${F_TARGET_HW}"),
     "target": firmware_env.subst("${TARGET_HW}"),
     "FWENV": firmware_env,
     "fbt_dir": Path(Dir("#").abspath).as_posix(),
-    "toolchain_dir": Path(os.environ["FBT_TOOLCHAIN_PATH"], "toolchain").as_posix(),
+    "clangd_path": Path(path).as_posix() if (path := firmware_env.WhereIs("clangd")) else "",
     "folders": list(
         map(
             lambda x: Path(config_dist_dir.rel_path(x)).as_posix(),
