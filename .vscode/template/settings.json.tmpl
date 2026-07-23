@@ -12,7 +12,7 @@
         "SConstruct": "python",
         "*.fam": "python"
     },
-    "clangd.path": "{{ toolchain_dir }}/current/bin/clangd{{ FBT_PLATFORM_EXECUTABLE_EXT }}",
+    "clangd.path": "{{ clangd_path }}",
     "clangd.arguments": [
         "--query-driver=**/arm-none-eabi-*",
         "--compile-commands-dir={{ fbt_dir }}/build/latest",
