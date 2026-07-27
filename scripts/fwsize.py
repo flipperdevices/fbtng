@@ -43,7 +43,10 @@ class Main(App):
         PAGE_SIZE = 4096
         binsize = os.path.getsize(self.args.binname)
         pages = math.ceil(binsize / PAGE_SIZE)
-        last_page_state = (binsize % PAGE_SIZE) * 100 / PAGE_SIZE
+        remainder = binsize % PAGE_SIZE
+        # A size that lands exactly on a page boundary fills that page completely,
+        # it does not leave an empty one.
+        last_page_state = 100.0 if binsize and remainder == 0 else remainder * 100 / PAGE_SIZE
         print(
             fg.yellow(
                 f"{os.path.basename(self.args.binname):<11}: {pages:>4} flash pages (last page {last_page_state:.02f}% full)"
