@@ -20,28 +20,29 @@ void furi_hal_memory_init(void);
 
 /**
  * @brief Allocate memory from separate memory pool. That memory can't be freed.
- * 
- * @param size 
- * @return void* 
+ *
+ * @param size
+ * @return void*
  */
 void* furi_hal_memory_alloc(size_t size);
 
 /**
  * @brief Get free memory pool size
- * 
- * @return size_t 
+ *
+ * @return size_t
  */
 size_t furi_hal_memory_get_free(void);
 
 /**
  * @brief Get max free block size from memory pool
- * 
- * @return size_t 
+ *
+ * @return size_t
  */
 size_t furi_hal_memory_max_pool_block(void);
 
 typedef struct {
     void* start;
+    void* end;
     size_t size_bytes;
 } FuriHalMemoryRegion;
 
@@ -61,6 +62,14 @@ const FuriHalMemoryRegion* furi_hal_memory_get_region(uint32_t index);
  * @return      Number of available memory regions
  */
 uint32_t furi_hal_memory_get_region_count(void);
+
+/** Check whether the address is within the given region
+ *
+ * @param[in] address The address to be checked
+ * @param[in] index Region number
+ * @return @c true if the address is within the region (inclusive), @c false otherwise
+ */
+bool furi_hal_memory_is_address_in_region(const void* address, uint32_t index);
 
 typedef enum {
     FuriHalMemoryHeapTrackModeNone = 0, /**< Disable allocation tracking */
