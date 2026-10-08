@@ -85,6 +85,42 @@ def resolve_real_dir_node(node):
     raise StopError(f"Can't find absolute path for {node.name} ({node})")
 
 
+def expand_paths_over_repositories(env, entries):
+    """Resolve repo-relative entries to existing absolute paths across all SCons repositories."""
+    roots = []
+    seen_roots = set()
+    for repo_dir in env.Dir("#").get_all_rdirs():
+        abspath = repo_dir.get_abspath()
+        if abspath not in seen_roots:
+            seen_roots.add(abspath)
+            roots.append(abspath)
+
+    results = []
+    seen = set()
+
+    def _add(path):
+        if os.path.exists(path) and path not in seen:
+            seen.add(path)
+            results.append(path)
+
+    for entry in entries:
+        if not entry:
+            continue
+        if hasattr(entry, "get_abspath"):
+            if isinstance(entry, SCons.Node.FS.EntryProxy):
+                entry = entry.get()
+            _add(entry.srcnode().get_abspath())
+            continue
+        path = os.fspath(entry)
+        if os.path.isabs(path):
+            _add(path)
+            continue
+        for root in roots:
+            _add(os.path.join(root, path))
+
+    return results
+
+
 class PosixPathWrapper:
     def __init__(self, pathobj):
         self.pathobj = pathobj

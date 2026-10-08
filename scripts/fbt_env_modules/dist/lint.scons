@@ -1,4 +1,7 @@
 Import("FW_ENV", "DIST_ENV")
+
+from fbt.util import expand_paths_over_repositories
+
 distenv, firmware_env = DIST_ENV, FW_ENV
 
 
@@ -35,6 +38,11 @@ distenv.PhonyTarget(
 # Here we add additional Python files residing in repo root
 firmware_env.Append(
     PY_LINT_SOURCES=[
+        *(
+            script
+            for script in firmware_env.get("FBT_SCRIPT_LIB", {}).values()
+            if script
+        ),
         # Py code folders
         "site_scons",
         "scripts",
@@ -47,6 +55,11 @@ firmware_env.Append(
         "firmware.scons",
         "fbt_options.py",
     ]
+)
+
+# Build runs from fbtng; resolve repo-relative entries across all repositories
+py_lint_sources = expand_paths_over_repositories(
+    firmware_env, firmware_env["PY_LINT_SOURCES"]
 )
 
 
@@ -73,12 +86,12 @@ distenv.PhonyTarget(
         "--diff",
         *black_base_args,
     ],
-    PY_LINT_SOURCES=firmware_env["PY_LINT_SOURCES"],
+    PY_LINT_SOURCES=py_lint_sources,
 )
 
 distenv.PhonyTarget(
     "format_py",
     black_commandline,
     PY_BLACK_ARGS=black_base_args,
-    PY_LINT_SOURCES=firmware_env["PY_LINT_SOURCES"],
+    PY_LINT_SOURCES=py_lint_sources,
 )
