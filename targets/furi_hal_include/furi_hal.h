@@ -20,10 +20,17 @@ struct STOP_EXTERNING_ME {};
 #include <furi_hal_cortex.h>
 #include <furi_hal_bus.h>
 #include <furi_hal_target.h>
+#include <furi_hal_power.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/** Super-early FuriHal init
+ * 
+ * Init critical subsystems used for determining the reset source.
+ */
+void furi_hal_init_super_early(void);
 
 /** Early FuriHal init
  * 
